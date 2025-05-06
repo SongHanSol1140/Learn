@@ -1,0 +1,193 @@
+<html태그>
+
+    <div id="#"></div> = 블록 구간을 특정할때 사용
+    <~ class="."> </~> = 특정 구간에 지정한 속성값을 줄때 사용
+    <span></span> = class와 같은식으로 사용 할 수 있지만 좀더 넓게보는 요소값임
+    <br> = 줄바꿈
+    <hr> = 페이지에 수평줄 생성
+    <strong> : 낭독기에서 강조하여 읽어줌 (굵게)
+    <em> : 낭독기에서 강조하여 읽어줌(기울이기)
+    <h1~6></h1~6> 제목 사이즈 조절, h1은 페이지에 하나만 사용가능하다
+    <b> = 볼드체
+    <i> = 이탤릭체
+    <small> = 글씨를 작게해줌
+    <abbr> = 축약, 마우스를 갓다댈시 기입한 단어가 보임
+    <q> = 인용시 사용 ""자동생성 <q cite>의 약자
+    <sup> = 윗첨자
+    <sub> = 아래첨자
+    <u> = 언더라인의 약자, 밑줄을 그어준다 낭독기에선 밑줄이라고 읽어줌
+    <s> = 취소선을 그어줌 글씨에 ───────그어짐
+    <mark> = 형광펜 효과
+    <blockquote></blockquote> = 자동으로 들여쓰기(TAB)를 해주는 태그
+    <caption>제목 | 중앙정렬
+    <figure>+<figcaption> 제목 | 중앙정렬 안됨
+    <!-- figure(형상) = 멀티미디어 컨텐츠라고 브라우저가 인식함 -->
+    <pre></pre> = 태그, 명령어를 무시하고 모두 표시하게 만드는 태그
+    <a href="주소">내용</a> = '내용'을 누를시 입력된 주소로 하이퍼링크 생성
+    <a href="주소" target="_blank">내용</a> _blank붙일시 새창에서 이동함 -->
+    <img src="주소" alt="내용" width="숫자" height="숫자"> = 이미지 태그, 크기조절
+      <!-- 예시<img src="./images/b.jpg" alt="아이" width="200" height="320"> -->
+    <table> = 테이블(표)생성
+        <tr> ┌─────────→ 행 : 가로줄
+             ├┬────────→ 행
+             ││
+             ││
+             ↓↓
+            <td> 열 : 세로줄
+            </td>
+        </tr>
+        셀합치기
+        <td colspan="n">
+            행(가로) 합치기
+        <td rowspan="n">
+            열(세로) 합치기
+            
+         <!-- 시멘틱태그 -->
+         <col style="~">
+         <!-- col style은 colgroup요소 -->
+         <!-- colgroup은 반드시 caption 다음에 코딩 -->
+         <!-- 테이블2-2예시 참조 -->
+<텍스트 에어리어, 메모, text>
+     <!-- cols 글자개수, rows 줄수 -->
+     <label for="">Memo</label>
+     <textarea id="memo" cols="60" rows="8"></textarea>
+     <input type="text">
+
+    <nav> = <ul>,<li>의 시멘틱 태그
+        <ul></ul> = 순서가 상관없는(크게 상관없는) 목록을 정리할때 사용 각 항목앞에 작은원 또는 사각형 블릿이 붙음
+    
+        <ol></ol> = 순서가 중요한 목록을 순차적으로 정리해야할 때 사용, 각 항목앞에 기본적으로 1,2,3순으로 붙음
+             // <li></li> = <ul>,<ol>의 자식태그
+        // 예시
+            <ul>
+                <li>1번 메뉴
+                    <ul>
+                        <li>1번 하위메뉴1</li>
+                        <li>1번 하위메뉴2</li>
+                    </ul>
+                </li>
+            </ul>
+        // 또다른 예시
+            <ol>
+                <li>
+                    <ol>
+                        <li></li>
+                        <li></li>
+                    </ol>
+                </li>
+            </ol>
+    ※ul과 사용방법자체는 같다, 허나 용도가다름
+
+             <ol></ol>의 활용
+             <ol type="a"></ol> = a,b,c,d순으로 목록을 정리
+             <ol type="i"></ol> = 로마자순으로 목록을 계산
+             <ol start="n"></ol> = 지정한 기호부터 항목을 세어감
+                  <!-- <ol start="5"></ol>로 입력시 항목이 5부터 시작함 -->
+    
+    
+        <dl></dl> = 정의형 리스트 태그, 특정 내용을 정의해야 할 때, 선언할 때 사용 자식태그로 <dt><dd>외에 사용안함
+             <dt></dt> = 정의할 목록의 제목
+             <dd></dd> = 정의한 제목(dd)의 내용, 설명
+             ※제목(dt)과 내용(dd)으로 dt가 dd의 <부모태그>처럼 보이지만 서로 <형제태그>임
+
+        // 예시
+            <dl>
+                <dt>제목
+                    <dd>내용</dd>
+                </dt>
+            </dl>
+
+form 태그<!-- 09_폼.html참조 -->
+
+    <form action="#" method="get(post)" name="#">
+         <fieldset>박스생성
+              <legend>박스제목</legend>
+              <label for="#">로그인 정보</label>
+              <input type="text/password" id="#" maxlength="8">
+              <!-- label for="#" '로그인 정보'를 눌럿을때 설정된 input이 선택됨 
+                   maxlength="n" = 최대문자수 제한 -->
+
+              <label for="c_id">* 아이디 : </label>
+              <input type="text" id="c_id" required autocomplete="on" autofocus>
+              <label for="c_pw"><span1>*</span1> 비밀번호 : </label>
+              <input type="password" id="c_pw" required placeholder="비밀번호를 입력해 주세요">
+              <!-- required 필수항목으로 설정
+                   placeholder 설정한 힌트주기 
+                   autocomplete="on/off" = 자동완성기능
+                   autofocus = 브라우저가 켜졋을때 해당위치에 커서가 자동으로 올라가있음 -->
+         </fieldset>
+         <input type="submit" value="전송">
+         <input type="reset" value="취소">
+         submit(전송)과 reset(취소)를 무조건 입력해줘야 서버에 데이터가 전송됨
+    </form>
+
+    <input 타입>
+         <!-- 1. 텍스트형 = 정보를 기입하여 전송할 수 있음 -->
+         <label for="a_id">아이디 : </label>
+         <input type="text" id="a_id" size="12">
+
+         <!-- 2. 패스워드 -->
+         <label for="a_pw1">비밀번호 : </label>
+         <input type="password" id="a_pw1">
+
+         <!-- 3. 메모 -->
+         <label for="a_memo">메모</label>
+         <textarea id="a_memo" cols="60" rows="3"></textarea>
+
+         <!-- 4. 데이터 전송,취소버튼 생성 -->
+         <input type="submit" value="전송">
+         <input type="reset" value="취소">
+
+         <!-- 5. 라디오(radio) 버튼 -->
+         데이터중 하나만 선택할때 사용
+         name을 같은 객체로 정할것
+         체크형 박스로 input값에 문자열이 포함되지 않기때문에 서버로 전송할 수 있는 value값을 추가해줘야함
+         <label>123
+              <input type="radio" name="subject" value="html" checked>HTML
+         </label>
+         <!-- checked: 선택된채로 브라우저가시작함 -->
+         <label>456
+              <input type="radio" name="subject" value="css">CSS
+         </label>
+         <label>789
+              <input type="radio" name="subject" value="js">javaScript
+         </label>
+
+         <!-- 6. 체크박스(checkbox) -->
+         하나만 선택 가능한 type="radio"와 다르게 복수선택이 가능하다
+         <label>
+              <input type="checkbox" name="mailing1" value="html">HTML
+         </label>
+         <label>
+              <input type="checkbox" name="mailing2" value="css">CSS
+         </label>
+         <label>
+              <input type="checkbox" name="mailing3" value="js">javaScript
+         </label>
+         <!-- 7. HTML5 input type = 아직모름 -->
+         <label for="c_search">검색 : </label>
+              <input type="search" name="c_search" id="c_search">
+         <label for="c_url">사이트 주소 : </label>
+              <input type="url" name="c_url" id="c_url">
+         <!-- 8. 수량을 셀수있는 input -->
+         <label for="c_number">수량 : </label>
+              <input type="number" name="c_number" id="c_number" value="0" min="1" max="10" step="2">
+         <!-- 9. 날짜선택 -->
+         <label for="c_date">날짜선택(년,월,일) : </label>
+              <input type="date" name="c_date" id="c_date">
+          
+          <!-- 10. 파일업로드 -->
+          <input type="file" name="upload" class="form-control">
+
+
+<비디오, 멀티미디어 객체>
+<figure>
+    <figcaption text-align="center">first mp4.</figcaption>
+         <video muted autoplay controls>
+              <source src="./media/video_sil1.mp4" type="video/mp4">
+         </video>
+    <figcaption>second mp4</figcaption>
+         <video controls>
+              <source src="./media/video_sil2.mp4" type="video/mp4">
+         </video>
+</figure> 

@@ -1,0 +1,15 @@
+<사용하는 쉘 확인>
+    songhansol@songhansol-ui-MacBookPro ~ % echo $SHELL
+    =>
+        /bin/zsh
+<파일 편집>
+    sudo nano ~/.zshrc
+    =>
+    <!-- 
+        제일 상단에 넣을 구문
+        이 라인을 추가하면 기본 시스템 경로가 우선적으로 로드됩니다.
+    -->
+    export PATH="/usr/local/bin:/usr/bin:/bin:$PATH"
+    
+<환경변수 재설정>
+    source ~/.zshrc

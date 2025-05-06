@@ -1,0 +1,15 @@
+    <!-- Capacitor 설치 -->
+    npm install @capacitor/core @capacitor/cli @capacitor/android @capacitor/network
+    npm install @capacitor/network
+
+    <!-- 프로젝트에 대한 기본 설정 진행 -->
+        npx cap init
+    <!-- 안드로이드 플랫폼 추가 -->
+        npx cap add android
+    <!-- 만들어둔 리액트파일 빌드 -->
+        npm run build
+    <!-- 빌드된 파일을 동기화해서 안드로이드앱 동기화 -->
+        npx cap sync
+    <!-- 동기화된 파일 안드로이드 스튜디오로 실행 -->
+        npx cap open android
+        여기서 빌드하면 됨

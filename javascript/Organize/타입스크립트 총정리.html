@@ -1,0 +1,152 @@
+<!-- VS코드로 볼것 -->
+<!-- 키워드 조회를 위해 한페이지에 모음 -->
+
+
+<타입스크립트 설치>
+    터미널 실행후
+    <!-- 전역설치 =>-->
+    npm install -g typescript
+    <!-- 프로젝트에서만 설치 -->
+    <!-- 익스프레스에서 -->
+    npm install --save-dev typescript
+    npm i --save-dev @types/express
+    npm i --save-dev @types/node
+    npm i --save-dev @types/cors
+    npm i --save-dev @types/multer
+    npm install cors
+
+    tsconfig 생성
+    tsc --init
+    <!-- sqlite용 타입스크립트 -->
+    npm install @types/sqlite3 --save-dev
+<타입 스크립트 실행용 ts-node>
+npm i -g ts-node
+    <!-- 실행 -->
+    ts-node server.ts
+
+<리액트 타입스크립트 설치>
+npx create-react-app . --template typescript
+
+<라즈베리파이에서 타입스크립트>
+sudo npm install -g typescript
+    <!--
+        npm i (설치한다)
+        -g(전역설치)
+        typescript(타입스크립트)
+        -g를 입력하지 않으면 해당 폴더에서만 타입스크립트가 설치되어 전역사용(모든 폴더에서 사용)이 불가능함
+    -->
+<시스템 환경변수에 타입스크립트 추가>
+    제어판 -> 시스템 - 고급 시스템 설정 -> 환경변수
+    시스템 변수 -> Path -> 편집 -> 새로만들기
+    C:\Users\사용자 이름\AppData\Roaming\npm 추가
+
+
+<버전 확인>
+    설치 후 tsc -v 입력하면 버전을 볼 수 있음
+    만약여기서 오류가 출력된다면 하단에 PwoerShell관련 오류를 읽어볼것
+
+<버전 확인후 tsc --init>
+    이제 tsconfig.json파일을 생성하기위해
+    tsc --init 터미널에 입력
+    tsconfig.json 파일이 생성됩니다.
+
+<ts파일 생성>
+    코딩 후 터미널에 tsc실행
+    ts파일을 읽어서 js파일이 생성됩니다.
+
+
+<!-- 본인이 겪은 설치시 오류 -->
+PowerShell 보안오류가 나옴
+PowerShell 실행 정책으로 인한 오류
+터미널
+Set-ExecutionPolicy RemoteSigned 실행
+
+Set-ExecutionPolicy RemoteSigned ?
+보안 단계를 RemoteSigned로 설정(변경)
+
+RemoteSigned 직접 작성한 스크립트 파일은 실행가능
+다운로드한 스크립트 파일은 전자 서명을 확인하고 승인해야 실행이 가능한 보안단계
+───────────────────────────────────────────────────────────────────────────────────────────────
+<타입스크립트를 사용하는 이유>
+    <정확한 데이터 타입 검사>
+        자바스크립트의 경우 10 - '1' = 9; 는 9로 출력됨 (다이나믹 타이핑)
+        보통은 장점이지만, 큰 규모의 프로젝트의 경우 이것은 오히려 단점
+        Typescript는 Javascript와 다르게 데이터타입을 엄격하게 검사하여 오류를 출력
+
+    <변수 선언시 타입 등록 가능>
+        타입스크립트는 자바스크립트와 다르게 변수의 데이터 타입을 설정할 수 있음
+        설정된 타입과 다른 데이터타입이 들어올 시 오류 출력
+
+    <자세한 오류 반환>
+        자바스크립트에 비해 타입스크립트는 상세한 오류 출력함
+───────────────────────────────────────────────────────────────────────────────────────────────
+<1. 기본적인 데이터타입 설정>
+var basic_string :string = 'hansol';
+basic_string = 'songhansol';
+    // basic_string = 1; ---------- 데이터타입이 string이 아니므로 오류
+var basic_number :number = 1;
+
+
+<2. 배열 데이터 타입>
+    var array :string[] = ['song','han','sol'];
+        //  array 에는 string타입의 데이터만 들어와야 함    
+
+    
+<3. 오브젝트 데이터 타입>
+    var obejct :{name : string, age:number} = {name : 'songhansol', age:30}
+    
+    var obejct2 :{name ?: string, age:number} = {age:30}
+        // ?: => name 속성이 들어올수도, 안들어올 수도있음
+        // name의 데이터 타입이 string이 아닐수도 있다는 의미가 아니다
+
+
+<4. 여러가지 데이터 타입을 한번에 넣기>
+    var union : string | number = 'string';
+    var union2 : string | number = 123;
+    // string 혹은 number타입이 들어간다.
+
+    var array2 :Array<string | number> = ['song','han', 1];
+    var array3 :any = ['song','han', 1]; // 모든 데이터형을 넣어도 오류가 없으므로 문제가 생길 확률이 높음
+        
+    var object3 :{name: string, age:number|string} = {name:'1', age:'hansal'}
+
+
+<5. 함수에 데이터타입 설정>
+    function hamsu(x :number) {
+        return x *2
+    }
+        // x는 무조건 number로 들어와야 함
+
+
+<6. 리턴 값에도 데이터타입을 설정할 수 있음>
+    function hamsu2(x :number) :number {
+        return x *2
+    }
+        // 이렇게 하면 무조건 return값 또한 number가 되어야함
+
+
+<7. array에 쓸수잇는 tuple 타입>
+    type Member = [string, boolean];
+    var john:Member = ['한솔', true];
+    // john의 첫 배열에는 무조건 string, 두번째에는 boolean값이 들어가야함
+
+
+<8. 오브젝트 key값에 설정>
+    type Member2 = {
+        name : string
+    }
+    var john2 :Member2 = {name:'123'}
+
+        // john2에 object값이 너무 많은경우에 사용할 수 있는 key 세팅
+        type Member3 = {
+            [key : string|number] :string,
+            
+        }
+            //문자|숫자로 된 모든 값은 string이어야 함
+        var john3 :Member3 = {name:'123', 123:'123'}
+───────────────────────────────────────────────────────────────────────────────────────────────
+───────────────────────────────────────────────────────────────────────────────────────────────
+───────────────────────────────────────────────────────────────────────────────────────────────
+───────────────────────────────────────────────────────────────────────────────────────────────
+───────────────────────────────────────────────────────────────────────────────────────────────
+───────────────────────────────────────────────────────────────────────────────────────────────

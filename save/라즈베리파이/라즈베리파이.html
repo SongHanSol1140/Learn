@@ -1,0 +1,534 @@
+<라즈비안 운영체제 다운>
+    https://www.raspberrypi.com/software/operating-systems/#raspberry-pi-os-32-bit
+2023/05/03파일
+해당 경로로 이동해서 2.6GB짜리 다운로드
+
+<라즈베리파이 한국어 설정>
+    안하면 한국어들이 전부 □로 출력됨
+    sudo raspi-config
+    "5 Localisation Options" > "L1 Locale"
+    ko_KR.UTF-8 UTF-8을 선택하고, Ok를 누릅니다.
+    그 다음 그리고 설정할 기본 로캘로 ko_KR.UTF-8을 선택하고 다시 Ok를 누릅니다.
+    raspi-config를 종료
+
+    <기본 로캘 설정에 ko_KR.UTF-8이 없다면>
+    locale -a
+        여기에 ko_KR.UTF-8이 있는지 확인, 없다면
+    sudo nano /etc/locale.gen
+        입력하여 ko_KR.UTF-8이 주석처리 되어있나 확인하고
+        주석처리 되어있을시 주석해제
+    sudo locale-gen
+        한국-한국 선택
+    sudo update-locale LANG=ko_KR.UTF-8
+
+    글꼴 설치 -> 설치    한글해야 네모가 출력되지 않음
+    sudo apt-get install -y fonts-nanum*
+    
+    한글 입력기 설치
+    sudo apt-get install -y ibus ibus-hangul
+    ibus를 기본 입력방법으로 설정
+    im-config -n ibus
+    입력기에 한글 추가하기
+    ibus-setup => input Method => Add => Korean => hangul
+
+    sudo reboot
+
+<라즈베리파이에서 고정 IP로 접속하기>
+    sudo nano /etc/dhcpcd.conf
+    아래로 스크롤하면, 고정 IP 주소를 설정하는 부분이 있습니다.
+    이 부분에 다음과 같이 입력하여 고정 IP 주소를 설정할 수 있습니다:
+
+
+    interface wlan0
+    static ip_address=192.168.0.3/24
+    static routers=192.168.0.1
+    static domain_name_servers=192.168.0.1
+
+    저장하고 reboot
+<라즈베리파이 고정 WIFI접속>
+    sudo nano /etc/wpa_supplicant/wpa_supplicant.conf
+    여기서 접속할 와이파이만 남겨놓고 전부 제거
+    다른 와이파이 접속시 자동으로 추가되니 특정 핫스팟이나 와이파이만 사용할거라면 주의할것
+
+<깃허브 설치>
+sudo apt install git
+git config --global user.email "skycriperd@gmail.com"
+
+git config --global user.name "SongHanSol"
+
+<VS Code를 설치>
+    sudo apt install code
+        설치가 다됬다면 터미널에 code 입력
+
+<node.js설치>
+    nodejs 홈페이지로 이동
+    <https://nodejs.org/ko/download>
+    
+    ARMv7이나 ARMv8을 잘 받아서 홈경로에 압축해제
+    압축이 해제된 디렉터리로 이동
+        cd node-v18.18.0-linux-arm64
+    디렉터리를 /usr/local에 복사
+        sudo cp -R * /usr/local/ <!-- 경로로 이동했을때만 -->
+        => sudo cp -R node-v20.19.0-linux-arm64/* /usr/local/ <!-- 홈경로에서(cd node-v18.18.0-linux-arm64를 안했을때)-->
+    버전확인
+        node -v
+    문제가 생긴다면 재부팅시
+        sudo reboot
+<nodejs 설치 - NVM으로>
+    sudo apt update && sudo apt upgrade -y
+    sudo apt install curl build-essential libssl-dev -y
+    curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.39.6/install.sh | bash
+    <!-- # bash 사용 시 -->
+        source ~/.bashrc
+    <!-- # zsh 사용 시 -->
+        source ~/.zshrc
+    command -v nvm
+    <!-- 출력으로 nvm이 나타나면 설치가 성공 -->
+    nvm install 20 --lts
+    <!-- default node버전 설정 -->
+    nvm alias default 20
+
+<nodejs 삭제방법>
+sudo apt remove --purge nodejs npm
+sudo rm -rf /usr/local/bin/node
+sudo rm -rf /usr/local/bin/npm
+sudo rm -rf /usr/local/lib/node_modules
+확인
+node -v
+npm -v
+<!--
+오래된 방법,
+sudo apt-get update
+sudo apt-get install -y nodejs npm
+node -v
+npm -v
+
+    <홈 경로에 노드 최신파일을 받습니다>
+        cd..
+        nodejs 홈페이지 - 다운로드 ARMv7 다운로드 (홈경로)
+        node-v18.16.1-linux-armv7l.tar.xz파일 압축해제
+        터미널을켜서
+        echo 'export PATH=$HOME/node-v18.16.1-linux-armv7l/bin:$PATH' > ~/.bashrc
+        source ~/.bashrc
+        
+        버전확인
+        node -v
+        npm -v
+
+        설정한 경로 확인방법
+        which node
+        which npm
+
+        reboot해주세요 -->
+
+nodejs 홈페이지 - 다운로드 ARM 다운로드 (홈경로)
+.xz파일 압축해제
+터미널을켜서
+echo 'export PATH=$HOME/node-v18.16.1-linux-armv7l/bin:$PATH' > ~/.bashrc
+source ~/.bashrc
+
+버전확인
+node -v
+npm -v
+
+설정한 경로 확인방법
+which node
+which npm
+
+<라즈베리파이4B에 UART추가 설정, UART0 핀 수정>
+sudo raspi-config
+시리얼 포트 설정으로 들어가서 로그인 쉘 - 아니오 / 하드웨어 / 예 설정123123
+sudo nano /boot/config.txt
+dtoverlay=uart2
+dtoverlay=uart3
+핀 기본 할당
+<uart2>
+    TX = GPIO00(27)
+    RX = GPIO07(28) => GPIO 7이 아니라 1이라는 AI 답변이 존재 (BCM28번임은 동일)
+<uart3>
+    TX = GPIO04(07)
+    RX = GPIO05(29)
+<uart4>
+    TX = GPIO08(24)
+    RX = GPIO09(21)
+<!-- uart0,1은 기본설정과 할당된 핀이 잇어서 uart2부터 할당해야함 -->
+
+dtoverlay=uart0,txd0_pin=14,rxd0_pin=15
+<라즈베리파이에 max98357 앰프(스피커) 연결하기>
+    <핀연결>
+        GPIO18 - BCLK
+        GPIO19 - LRC
+        GPIO21 - DIN
+    <라즈베리파이 설정>
+        sudo nano /boot/config.txt
+            dtoverlay=hifiberry-dac
+            dtoverlay=i2s-mmap
+        재부팅 - sudo reboot
+
+        sudo raspi-config
+        1. system option - audio 를 보면
+        처음 config.txt를 변경하기전에
+        0 HeadPhones
+        1 MAI PCM i2s-HIFI-0
+        이렇게 되어있었는데 설정을 하고나니
+        2 HifiBerry Dac HiFi pcm5102a-hifi-0 이 추가되었음 <!-- 2번이 추가되었다는 말임 -->
+        새로 생긴 2번을 선택한뒤 Finish를 선택
+        sudo reboot
+
+        이러면 이제 사운드 장치 설정이 끝남, 사운드 조절이 가능함
+
+
+
+
+
+<부팅할때 서버 자동실행>
+    <js 실행>
+    node.js용 <pm2> 설치
+        <!-- 익스프레스 라이브러리가 아니라 전역설치임 -->
+        <!-- 의존성 설치 -->
+        npm install -g pm2 typescript ts-node
+        npm audit fix <!-- 필요하다면 -->
+        <!-- cwd 시작경로 -->
+        pm2 start app.ts --name centrex_app  --cwd /home/사용자명/centrex_setting
+        pm2 startup
+        <!-- # 위 명령어가 출력하는 ‘sudo …’ 형태의 추가 명령을 복사·실행하세요 -->
+        pm2 save
+        재부팅
+        이제부터 재부팅시 서버가 실행됩니다.
+
+        pm2 list로 실행된 서버목록 확인
+        pm2 restart [app-name]으로 재부팅하지않아도 서버를 재시작할 수 있습니다.
+
+        <서버 자동실행 설정 취소하기>
+        pm2 stop server
+        pm2 delete server
+        pm2 unstartup
+        pm2 save
+
+        이 명령을 실행하면 출력되는 명령을 복사하여 터미널에 붙여넣어야 합니다. 대개 이 명령은 sudo 권한이 필요합니다.
+
+    <ts 실행>
+        npm i -D typescript ts-node
+            
+
+    <pm2에서 상대경로 사용하기>
+        <!-- --cwd 옵션을 사용하여 실행할 디렉터리를 지정할 수 있습니다. -->
+        pm2 start server.js --cwd /home/nanonix/door
+    <버전 문제로 PM2가 설치가 불가능할때>
+    $HOME/node-v18.17.1-linux-arm64/bin/npm install -g pm2
+
+
+<포트 데이터를 읽기위해 minicom 설치>
+    sudo apt-get install minicom
+
+    미니컴 실행
+    sudo minicom -b 9600 -o -D /dev/ttyUSB0
+    신호 보내기 - 터미널을 하나 더켜서
+    echo "Hello, World!" > /dev/ttyUSB0
+
+    <특정 포트에 번호판이 연결되엇는지 체크>
+    이경우엔 usb로 연결되었으므로
+    lsusb를 통해 리스트를확인하고
+    usb를 뽑아봄으로써 2303이라는걸 확인할 수 잇음
+    ID:067b:2303
+
+
+
+
+
+<RS485 WG26/34 USB컨버터 값받기>
+    좌측상단 라즈베리파이 기본설정 - rassberry Pi Configuration - interfaces 에서 SSH,I2C등 통신을 가능하게 설정
+    <파이썬>
+            <파이썬 pyserial 라이브러리설치>
+            pip install pyserial
+            
+            <파이썬 코드>
+            import serial
+
+            # 시리얼 장치 연결
+            # 보레이트 9600, 장치 위치 ttyUSB0
+            ser = serial.Serial('/dev/ttyUSB0', 9600, timeout=5)
+            
+            def run():
+                # 시리얼 쓰기
+                ser.write(bytes(bytearray([0x01, 0x02, 0x03, 0x04, 0x05, 0x06, 0x07, 0x08, 0x09, 0x10, 0x11, 0x12, 0x13, 0x14, 0x15])))
+                while True:
+                    # 시리얼 읽기 (5바이트씩 읽음)
+                    line = ser.read(15)
+                    if len(line) == 0:
+                        break
+                    # 헥사 코드로 출력
+                    hex_list = ["{:02x}".format(c) for c in line]
+                    print(' '.join(hex_list))
+                    # 10진수로 출력
+                    decimal_list = [str(c) for c in line]
+                    print(' '.join(decimal_list))
+                    # 아스키 코드로 출력
+                    ascii_list = [chr(c) for c in line]
+                    print(' '.join(ascii_list))
+            
+            while True:
+                run()
+
+            <02 0d 0a 03이  아스키 코드로변환시 공백이 되는이유는?>
+                0d, 0a, 03과 같은 값들은 아스키 코드에서 제어 문자(Control Character)에 해당합니다. 아스키 코드에서 제어 문자는 일반적인 출력 문자가 아니라 특정 제어 기능을 수행하는 문자입니다.
+
+                02: STX (Start of Text) - 텍스트 시작을 나타내는 제어 문자입니다.
+                0d: CR (Carriage Return) - 커서를 행의 시작 위치로 이동시키는 제어 문자입니다.
+                0a: LF (Line Feed) - 커서를 다음 행으로 이동시키는 제어 문자입니다.
+                03: ETX (End of Text) - 텍스트의 끝을 나타내는 제어 문자입니다.
+                이러한 제어 문자들은 출력되는 문자 그 자체로는 시각적으로 표현되지 않고, 특정 동작을 수행합니다. 따라서 이 값들을 아스키 코드로 변환하면 공백으로 표시되는 것입니다.
+
+                만약 제어 문자에 해당하는 값을 출력하고자 한다면, chr() 함수를 사용하여
+                아스키 코드 문자로 변환하기 전에 해당 값을 그대로 출력할 수 있습니다.
+                예를 들어, print(' '.join(str(c) for c in line))와 같이 코드를 수정하면
+                제어 문자에 해당하는 값들도 숫자 그대로 출력됩니다.
+
+    <express서버로 수정>
+        <serialport설치>
+            npm install serialport
+        <코드>
+            // 번호 키 입력받기
+            const { SerialPort, ReadlineParser } = require('serialport');
+            const { CLIENT_RENEG_LIMIT } = require('tls');
+            let serialPort = new SerialPort({ path: '/dev/ttyUSB0', baudRate: 9600});
+
+            // Send data through serial port
+            let dataToSend = Buffer.from([0x01, 0x02, 0x03, 0x04, 0x05, 0x06, 0x07, 0x08, 0x09, 0x10, 0x11, 0x12, 0x13, 0x14, 0x15]);
+            serialPort.write(dataToSend);
+
+            let parser = new ReadlineParser();
+            serialPort.pipe(parser);
+
+            parser.on('data', function(data) {
+                let phoneNumber1 = data[1]+data[2]+data[3];
+                let phoneNumber2 = data[4]+data[5]+data[6]+data[7];
+                let phoneNumber3 = data[8]+data[9]+data[10]+data[11];
+                console.log(data);
+                console.log("입력한 숫자의 갯수 : " + (data.length-2));
+                if((data.length == 13 && phoneNumber1 == "010") || data.length == 11){
+                    console.log("조건 충족, 문을 개방합니다.");
+                }else{
+                    console.log("번호가 틀렸습니다.");
+                }
+            });
+    
+<라즈베리파이에서 익스프레스 서버로 핀 컨트롤하기>
+    <라이브러리 설치>
+        onoff => node.js에서 라즈베리파이의 GPIO를 제어하기위한 라이브러리
+        npm install onoff
+
+    <코드>
+        const Gpio = require('onoff').Gpio;
+
+        const pinNumber = 37;
+        const button = new Gpio(pinNumber, 'in', 'both');
+        
+        setInterval(() => {
+        button.read((err, state) => {
+            if (err) {
+            console.error('GPIO 핀 읽기 오류:', err);
+            return;
+            }
+            console.log(`Pin ${pinNumber} 상태: ${state}`);
+        });
+        }, 1000);
+
+<라즈베리파이 포트 열기 / 포트 개방 - 설정저장>
+    재부팅시 초기화가 될경우 설정 유지를 위한 iptables-persistent패키지 설치
+        sudo apt-get install iptables-persistent
+        Y/N을 묻는 창이 나오는데 전부 Y선택
+
+    TCP프로토콜을 사용하는 모든 인바운드 트래픽에 대해 8083포트에서 허용
+        sudo iptables -A INPUT -p tcp --dport 8083 -j ACCEPT
+        sudo iptables-save | sudo tee /etc/iptables/rules.v4
+        재부팅
+
+    재부팅 후 포트설정 확인
+        sudo iptables -L
+
+    설정 삭제 방법
+        sudo iptables -D INPUT -p tcp --dport 8083 -j ACCEPT
+        sudo iptables-save | sudo tee /etc/iptables/rules.v4
+
+
+
+
+<NFC 리더기 읽어오기 - 아직 미테스트 상태>
+    nfc-pcsc라는 라이브러리를 사용하면 Node.js 환경에서 NFC 태그 및 카드를 쉽게 읽고 쓸 수 있습니다.
+    아래에 이 라이브러리를 사용하여 PN7120 NFC 리더에서 읽은 값을 express.js에서 받아오는 방법을 설명하겠습니다.
+    <i2c 통신을 하기위한 라즈베리파이 모듈 설치>
+        sudo apt-get update
+        sudo apt-get install i2c-tools
+        
+    <nfc-pcsc를 사용하기위한 패키지 설치>
+    sudo apt-get update
+    sudo apt-get install libnfc-dev
+    sudo apt-get install pcscd libpcsclite-dev
+    우선, PN7120 NFC 리더기와 express.js를 사용하기 위해서는 먼저 nfc-pcsc를 설치해야 합니다.
+    이제 express.js에서 다음 명령어를 실행합니다:
+    npm install nfc-pcsc --save
+
+<nfc-pcsc 라이브러리를 불러옵니다. - 미테스트>
+const { NFC } = require('nfc-pcsc');
+
+// NFC 인스턴스를 생성합니다.
+const nfc = new NFC();
+
+// 'reader' 이벤트를 처리하면 NFC 리더기가 장치에 연결되었을 때의 동작을 정의할 수 있습니다.
+nfc.on('reader', reader => {
+
+	console.log(`${reader.reader.name} device attached`);
+
+	// 'card' 이벤트를 처리하면 NFC 태그가 리더기에 인식되었을 때의 동작을 정의할 수 있습니다.
+	reader.on('card', card => {
+
+		// card는 다음 데이터를 포함하는 객체입니다:
+		// - [항상] String type: TAG_ISO_14443_3 (표준 NFC 태그, 예: MIFARE) 또는 TAG_ISO_14443_4 (Android HCE 등)
+		// - [항상] String standard: type과 동일
+		// - [TAG_ISO_14443_3에만 해당] String uid: 태그 uid
+		// - [TAG_ISO_14443_4에만 해당] Buffer data: select APDU 응답에서의 원시 데이터
+
+		console.log(`${reader.reader.name} card detected`, card);
+
+	});
+
+	reader.on('card.off', card => {
+		console.log(`${reader.reader.name} card removed`, card);
+	});
+
+	reader.on('error', err => {
+		console.log(`${reader.reader.name} an error occurred`, err);
+    });
+
+    ---------------------------------------------------------------------------------------
+    const { NFC } = require('nfc-pcsc');
+
+const nfc = new NFC();
+
+nfc.on('error', err => {
+    console.error('NFC error:', err);
+  });
+  
+  nfc.on('reader', reader => {
+    console.log(`${reader.reader.name} device attached`);
+  
+    reader.on('error', err => {
+      console.error('Reader error:', err);
+    });
+  
+    reader.on('card', card => {
+      console.log(`${reader.reader.name} card detected`, card);
+    });
+  });
+  <NFC 리더기 인식문제 다른시도 - 아직해결못함>
+    sudo apt-get update
+    sudo apt-get install libusb-dev libpcsclite-dev i2c-tools
+    https://github.com/nfc-tools/libnfc/releases
+    여기서 1.8.1버전 다운로드해서 라즈베리파이로 이동
+    홈에서 압축해제후 터미널에서
+    cd libnfc-1.7.1
+    ./configure --prefix=/usr --sysconfdir=/etc
+    make
+    sudo make install
+
+    설치가 됫다면확인
+    sudo i2cdetect
+    sudo i2cdetect -y 1
+    해결 실패
+<다른 방법>
+위의 tar.bz2파일 링크를 참조하여
+http://wiki.sunfounder.cc/index.php?title=PN532_NFC_Module_for_Raspberry_Pi
+해당 링크를 참조할것
+
+<장치 연결을 성공함>
+    nfc-poll은 한번만 사용되지만, 사용되는동안 다른 장치가 nfc리더기를 인식하지못하게함,
+    따라서 nfc.pcsc를 사용해야함
+    sudo apt-get install -y libpcsclite-dev libpcsclite1
+
+<!------------------------------------------------------------------>
+
+
+<원격 접속 방법>
+
+기본적으로 라즈베리파이의 VNC기능을 활성화(설정에 있음)
+1. REAL VNC를 사용한 방법
+    sudo raspi-config을 이용해 VNC사용 설정
+    설정한 후 REAL VNC를 설치하면 접속이 가능함
+
+2. xrdp를 사용한 방법
+
+    sudo apt-get update
+    sudo apt-get install xrdp <!-- 설치 -->
+    sudo systemctl status xrdp <!-- 설치확인 -->
+    sudo ufw allow 3389 <!  -- 라즈베리파이의 방화벽으로 인한 접속실패시 포트 방화벽해제 -->
+
+    sudo nano /boot/config.txt
+
+        hdmi_force_hotplug=1
+        위와 같은 코드를 주석해제하거나 추가 => 모니터가 연결이 안되어있으면 꺼지는 문제해결
+
+    <!-- 계정생성의 이유 => 라즈베리파이가 켜지는순간 기본계정으로 접속하는데, 중복접속이 불가능하여 접속할 userID를 하나 더 생성해야함 -->
+    sudo adduser remote 
+        새 암호 : remote
+        암호 재입력 :remote
+        나머지 무시하고 Enter => Y
+    <!-- 계정삭제 -->
+    sudo userdel -r remote
+
+
+    <!-- 생성한 아이디에 권한 부여 -->
+
+    sudo chmod -R 777 /home/nanonix
+    모든 계정에게 권한부여(보안위험이슈잇음)
+
+    <!-- 관리자 권한 부여 -->
+    sudo usermod -aG sudo remote
+
+
+    <!-- remote 계정에게 gpio 접근권한 부여 -->
+    sudo usermod -aG gpio remote
+    <!-- USB접근권한 부여 -->
+    sudo usermod -aG dialout remote
+    <!-- sudo접근권한 부여 -->
+    sudo usermod -aG sudo remote
+
+    <!-- ifconfig을 통해 ip확인 -->
+
+    이제 PC의 원격 데스크탑 접속 실행
+    ifconfig으로 확인한 IP입력
+
+        xorg
+        remote
+        remote
+        로 접속
+
+    원격 접속 완료
+<관리자 계정에서 모든 사용자에게 권한 허용>
+    <remote에서 nanonix(관리자 계정 파일을 수정할 수 없어서 접속할 수 없어서 찾은 방법)>
+    관리자 계정에서
+    sudo chmod -R 777 /home
+    모든 사용자가 원격접속시 관리자 폴더와 파일을 수정할 수 있음
+<remote가 만든 파일을 관리자가 접근할 수 없을때>
+    해당 파일들을 수정할 상위폴더로 이동
+    sudo chmod -R 777 /home/nanonix/
+    이러면 관리자가 해당 파일들을 수정할 수 있게됨
+
+<사용자 계정에서 핀에 접근할 수 없을때>
+    ttyAMA2등 시리얼 통신을 위한 권한이 없어서 사용이 불가능할 때
+    sudo usermod -a -G dialout remote
+    이렇게 dialout의 권한을 remote에게 주면 된다.
+
+<I2C 접근권한 허용>
+    sudo usermod -aG i2c remote
+    i2cdetect -y 1 <!-- 체크 -->
+
+
+<!------------------------------------------------------------------>
+<라즈베리파이 웹캠 테스트>
+sudo apt update
+sudo apt install fswebcam
+fswebcam -d /dev/video0 test.jpg
+xdg-open test.jpg
+
+촬영된 카메라 데이터를 확인할 수 있습니다.

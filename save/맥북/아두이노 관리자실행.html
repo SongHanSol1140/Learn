@@ -1,0 +1,27 @@
+관리권한 실행 이유
+=> 단축키가 수시로 삭제됨
+=> 우클릭해보면 복사,붙여넣기등 단축키가 보이지않고 실제로 사용이안됨
+=> 관리자 권한으로 실행 시 문제없이 사용가능
+
+<!-- 쓰지마!!!!sudo /Applications/Arduino\ IDE.app/Contents/MacOS/Arduino\ IDE -->
+
+
+
+해당 권한으로 실행후 일반실행이 안되고 관리자실행시 포트연결이안되는 심각한이슈가 발생함
+<!-- 아두이노 완벽삭제 -->
+sudo rm -rf /Applications/Arduino\ IDE.app
+sudo rm -rf ~/Library/Arduino15
+sudo rm -rf ~/Library/Application\ Support/Arduino
+sudo rm -rf ~/Library/Caches/cc.arduino.Arduino
+sudo rm -rf ~/Library/Preferences/cc.arduino.Arduino.plist
+sudo rm -rf ~/Library/Logs/Arduino
+sudo rm -rf ~/Documents/Arduino
+sudo rm -rf ~/Library/Caches/com.apple.QuickLook.ui.helper
+sudo rm -rf ~/Library/Caches/com.apple.QuickLookDaemon
+sudo rm -rf ~/Library/QuickLook
+sudo rm -rf ~/.arduino15
+sudo rm -rf ~/.arduino
+sudo rm -rf ~/Library/Preferences/cc.arduino.cli.plist
+sudo rm -rf ~/Library/Application\ Support/Arduino15
+sudo rm -rf ~/Library/Application\ Support/Arduino\ IDE
+sudo find / -name "*arduino*" -exec rm -rf {} \;

@@ -1,0 +1,108 @@
+<준비사항>
+
+포트포워딩
+    도메인에 외부 공개IP를 기입하고, 해당 공개IP를 내부 IP로 포트포워딩
+    이때, 내부 IP는 무조건 포트 80으로 보내야함
+
+
+<1단계: Win-ACME 설치>
+Win-ACME 다운로드: Win-ACME는 공식 웹사이트에서 다운로드할 수 있습니다.
+
+공식웹사이트
+    https://www.win-acme.com/
+
+압축 해제: 다운로드한 파일을 원하는 위치에 압축 해제합니다.
+이 폴더는 프로그램이 실행되는 동안 필요한 모든 파일을 포함합니다.
+
+<2단계: 도메인 검증 및 인증서 발급>
+Win-ACME 실행: 압축 해제한 폴더에서 wacs.exe를 실행합니다. 이것은 GUI가 아닌 커맨드 라인 인터페이스입니다.
+
+도메인 선택: 인터페이스에서 'N'을 선택하여 새 인증서 발급 프로세스를 시작합니다. 이때, 보호하려는 도메인을 지정해야 합니다.
+
+도메인 검증: Win-ACME는 여러 방법을 제공하여 도메인 소유권을 검증합니다. 가장 일반적인 방법은 HTTP 검증입니다. 이를 위해서는 웹 서버가 구동 중이어야 하며, Win-ACME가 웹 루트에 특정 파일을 배치하여 Let's Encrypt가 검증할 수 있게 합니다.
+
+인증서 발급: 도메인 검증이 완료되면, 인증서가 자동으로 생성되고, 지정된 웹 서버에 설치됩니다.
+
+
+<3단계: 인증서 설치 및 테스트>
+인증서 설치 확인: 인증서가 발급되고 설치되었는지 확인합니다. 이는 웹 서버의 설정을 검토하거나 브라우저를 통해 HTTPS 연결을 시도하여 확인할 수 있습니다.
+
+갱신 테스트: Win-ACME는 인증서의 자동 갱신도 지원합니다. 'Renew specific' 또는 'Renew all' 옵션을 사용하여 갱신 프로세스를 테스트할 수 있습니다.
+
+이 과정을 진행하시고, 어떤 단계에서든 도움이 필요하시면 알려주세요.
+
+<요약>
+
+1. https://www.win-acme.com/로 접속하여 다운로드(압축파일)
+2. 압축파일을 압축해제하고, wacs.exe를 관리자 권한으로 실행
+3. 실행된 프롬프트에서
+    N => 2 => www.nnx.monster => 3 =>
+
+    <상세 과정>
+    <!-- 프롬프트 -->
+    A simple Windows ACMEv2 client (WACS)
+    Software version 2.2.6.1571 (release, pluggable, standalone, 64-bit)
+    Connecting to https://acme-v02.api.letsencrypt.org/...
+    Connection OK!
+    Scheduled task not configured yet
+    Please report issues at https://github.com/win-acme/win-acme
+
+    N: Create certificate (default settings)
+    M: Create certificate (full options)
+    R: Run renewals (0 currently due)
+    A: Manage renewals (0 total)
+    O: More options...
+    Q: Quit
+    <!-- 입력 => n을 입력 -->
+    Please choose from the menu: n
+    <!-- 입력 끝-->
+
+    <!-- 프롬프트 -->
+    Running in mode: Interactive, Simple
+    Source plugin IIS not available: No supported version of IIS detected.
+   
+    Please specify how the list of domain names that will be included in the
+    certificate should be determined. If you choose for one of the "all bindings"
+    options, the list will automatically be updated for future renewals to
+    reflect the bindings at that time.
+   
+    1: Read bindings from IIS
+    2: Manual input
+    3: CSR created by another program
+    C: Abort
+    <!-- 입력 => 2(수동) -->
+    How shall we determine the domain(s) to include in the certificate?: 2
+    <!-- 입력 끝 -->
+
+    <!-- 프롬프트 -->
+    How shall we determine the domain(s) to include in the certificate?: 2
+
+    Description:         A host name to get a certificate for. This may be a
+                         comma-separated list.<!-- 인증서를 받을 호스트 이름 -->
+                         
+    <!-- 입력 => www.nnx.monster -->
+    Host: www.nnx.monster
+    <!-- 입력 끝 -->
+
+    <!-- 프롬프트 -->
+    Source generated using plugin Manual: www.nnx.monster <!-- 플러그인 매뉴얼을 사용하여 생성된 소스: www.nnx.monster -->
+    Installation plugin IIS not available: No supported version of IIS detected. <!-- 설치 플러그인 IIS를 사용할 수 없습니다: 지원되는 IIS 버전이 검색되지 않았습니다. -->
+
+    With the certificate saved to the store(s) of your choice, you may choose one <!-- 인증서가 선택한 스토어에 저장된 상태에서 다음 중 하나를 선택할 수 있습니다. -->
+    or more steps to update your applications, e.g. to configure the new <!-- 하나 이상의 단계를 선택하여 애플리케이션을 업데이트할 수 있습니다. -->
+    thumbprint, or to update bindings. <!-- 또는 바인딩을 업데이트할 수 있습니다. -->
+
+    1: Create or update bindings in IIS <!-- 1: IIS에서 바인딩을 만들거나 업데이트합니다. -->
+    2: Start external script or program <!-- 2: 외부 스크립트 또는 프로그램 시작 -->
+    3: No (additional) installation steps <!-- 3: (추가) 설치 단계 없음 -->
+    <!-- 입력 => 3 입력-->
+    Which installation step should run first?: 3
+    <!-- 입력 끝 -->
+
+    <!-- 프롬프트 -->
+    Terms of service:    C:\ProgramData\win-acme\acme-v02.api.letsencrypt.org\LE-SA-v1.3-September-21-2022.pdf
+    <!-- 입력-->
+    Open in default application? (y/n*) - yes
+    Do you agree with the terms? (y*/n) - yes
+    Enter email(s) for notifications about problems and abuse (comma-separated): songhansol1140@gmail.com
+    <!-- 입력 끝 -->

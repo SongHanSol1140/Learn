@@ -1,0 +1,109 @@
+<네스트 설치>
+npm install -g @nestjs/cli
+<프로젝트 생성>
+nest new hello-world
+<실행>
+npm run start
+
+
+<모듈 생성>
+nest generate module chatgpt
+<모듈에 대한 컨트롤러 생성>
+nest generate controller chatgpt
+<서비스 생성>
+nest generate service chatgpt
+
+<env 파일 읽기>
+    npm install @nestjs/config
+    <!-- main.ts -->
+        import { NestFactory } from '@nestjs/core';
+        import { AppModule } from './app.module';
+        import { ConfigService } from '@nestjs/config';
+
+        async function bootstrap() {
+        const app = await NestFactory.create(AppModule);
+        const configService = app.get(ConfigService);
+        await app.listen(configService.get('PORT') || 3000);
+        }
+        bootstrap();
+    <!-- app.module.ts -->
+        import { Module } from '@nestjs/common';
+        import { ConfigModule } from '@nestjs/config';
+        
+        @Module({
+        imports: [
+                ConfigModule.forRoot({
+                    isGlobal: true,  // 이 옵션을 사용하면 모든 모듈에서 ConfigService를 사용할 수 있습니다.
+                }),
+            ],
+            controllers: [],
+            providers: [],
+        })
+        export class AppModule {}
+    <!-- 환경변수 사용 branch.service.ts -->
+        import { Injectable } from '@nestjs/common';
+        import { Pool } from 'pg';
+        import { ConfigService } from '@nestjs/config';
+        
+        @Injectable()
+        export class BranchService {
+            private readonly pool: Pool;
+            <!-- ConfigService 인스턴스를 생성해야함 -->
+            constructor(private configService: ConfigService) {
+                this.pool = new Pool({
+                host: this.configService.get<string>('DB_HOST'),
+                user: this.configService.get<string>('DB_USER'),
+                password: this.configService.get<string>('DB_PASSWORD'),
+                database: this.configService.get<string>('DB_DATABASE'),
+                port: this.configService.get<number>('DB_PORT'),
+                });
+            }
+            
+            // 나머지 코드
+        }
+    
+<typeorm설치를 통해 DB연결>
+    npm install @nestjs/typeorm typeorm pg
+    <!-- pg는 postgreSQL 모듈 -->
+
+    <!-- AppModule에 TypeORM등록 -->
+        import { Module } from '@nestjs/common';
+        import { TypeOrmModule } from '@nestjs/typeorm';
+
+        @Module({
+        imports: [
+            TypeOrmModule.forRoot({
+            type: 'postgres',
+            host: process.env.DB_HOST,
+            port: Number(process.env.DB_PORT),
+            username: process.env.DB_USER,
+            password: process.env.DB_PASSWORD,
+            database: process.env.DB_DATABASE,
+            entities: [],
+            synchronize: true,
+            }),
+            // 다른 모듈
+        ],
+        })
+        export class AppModule {}
+
+<dto>
+    <!-- DTO(Data Transfer Object)는 데이터 전송 객체로 데이터베이스에서 데이터를 가져와 사용자에게 전달할 때 사용하는 객체이다. -->
+    npm i class-validator
+    <!-- DTO에 대한 유효성 검사를 위한 라이브러리 -->
+    npm i class-transformer
+    <!-- DTO를 변환하기 위한 라이브러리 -->
+    npm i @nestjs/mapped-types
+    <!-- DTO를 상속받아서 사용할 수 있는 라이브러리 -->
+    
+<test>
+    .spec.ts파일을 통해 테스트를 진행할 수 있다.
+    npm run test
+    <!-- 테스트 코드를 실행한다. -->
+    npm run test:cov
+    <!-- 커버리지 확인 -->
+    <!-- 커버리지는 테스트 코드가 얼마나 커버하는지를 나타내는 지표이다. -->
+    <!-- 커버리지가 100%라는 것은 테스트 코드가 모든 코드를 커버한다는 것을 의미한다. -->
+    <!-- 커버리지가 100%가 아니라는 것은 테스트 코드가 모든 코드를 커버하지 않는다는 것을 의미한다. -->
+    npm run test:watch
+    <!-- 테스트 코드를 수정할 때마다 자동으로 테스트를 실행한다. -->

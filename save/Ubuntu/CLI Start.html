@@ -1,0 +1,272 @@
+라즈베리파이 이미저에서 other OS => ubunto server 20.04 설치
+source devel/setup.bash
+<인터넷 연결>
+
+    방법 1.
+        설치후에
+        cd /etc/netplan
+        sudo nano 50-cloud-init-yaml
+
+        이미저에서 설정한 비밀번호가 파손된채로 기록되어있을거임
+        해당 비밀번호를 원래 비밀번호로 수정
+
+    방법 2.
+        설치 후에
+        설치된 SD카드를 윈도우로 USB를 통해 열어보면
+        network-config파일이 있음
+        해당 파일을 열어서 아이디 비밀번호 입력
+        ※ 주의 사항
+        WIFI ID / WIFI PASSWORD 둘다 "아이디", "비밀번호" 식으로 넣지말것
+        즉, ""를 기입하지말고 그냥 아이디 비밀번호를 입력
+
+    <!-- 예시 -->
+    version: 2
+    wifis:
+        renderer: networkd
+        wlan0:
+            dhcp4: true
+            optional: true
+            access-points:
+            NNX2-2.4G:
+                password: $@43skshslrtm
+
+<GUI 설치>
+    sudo apt update
+    GNOME GUI 설치
+    sudo apt install ubuntu-desktop
+    설치 후 재부팅
+    sudo reboot
+
+<ROS1 설치>
+
+    https://wiki.ros.org/noetic/Installation/Ubuntu
+
+<!-- 테스트 -->
+    $ mkdir -p ~/catkin_ws/src
+    $ cd ~/catkin_ws/
+    $ source /opt/ros/noetic/setup.bash
+    $ catkin_make
+
+    또한 현재 디렉터리를 보면 이제 'build' 및 'devel' 폴더가 있을 것입니다.
+    'devel' 폴더 안에는 이제 여러 개의 setup.*sh 파일이 있는 것을 볼 수 있습니다.
+    이러한 파일을 소싱하면 환경 위에 이 작업공간이 오버레이됩니다.
+    이에 대해 더 자세히 이해하려면 일반 catkin 문서 catkin 을 참조하세요.
+    계속하기 전에 새 setup.*sh 파일을 소스로 사용하세요.
+    
+    $ source devel/setup.bash
+
+<이더넷 설정>
+    ip a 입력해보기
+    <!-- 명칭 확인
+        nanonix@ubuntu:~/catkin_ws/src/ltme_node/src$ ip a
+        1: lo: <LOOPBACK,UP,LOWER_UP> mtu 65536 qdisc noqueue state UNKNOWN group default qlen 1000
+            link/loopback 00:00:00:00:00:00 brd 00:00:00:00:00:00
+            inet 127.0.0.1/8 scope host lo
+            valid_lft forever preferred_lft forever
+            inet6 ::1/128 scope host 
+            valid_lft forever preferred_lft forever
+        2: eth0: <BROADCAST,MULTICAST> mtu 1500 qdisc noop state DOWN group default qlen 1000
+            link/ether d8:3a:dd:29:1b:b9 brd ff:ff:ff:ff:ff:ff
+        3: wlan0: <BROADCAST,MULTICAST,UP,LOWER_UP> mtu 1500 qdisc fq_codel state UP group default qlen 1000
+            link/ether d8:3a:dd:29:1b:ba brd ff:ff:ff:ff:ff:ff
+    -->
+    명칭이 eth0 인걸 확인
+    sudo nano /etc/netplan/50-cloud-init.yaml으로 편집기 실행
+    
+
+<이더넷연결 설정>50-cloud-init-yaml
+network:
+    version: 2
+    ethernets:
+        eth0:
+            dhcp4: no
+            addresses: [192.168.10.150/24]
+    wifis:
+        wlan0:
+            access-points:
+                NNX2-2.4G:
+                    password: $@43skshslrtm
+            dhcp4: true
+
+
+<ltme_node 다운로드>
+    source /opt/ros/noetic/setup.bash
+    git clone https://github.com/LitraTech/ltme_node.git
+    catkin_make
+    rosparam set /ltme_node/device_model "LTME-02A"
+    rosparam set /ltme_node/device_address "192.168.10.160"
+    rosrun ltme_node ltme_node _frame_id:=base_link
+    <!-- rosrun ltme_node ltme_node -->
+
+
+<rqt_graph 실행>
+    source ~/catkin_ws/devel/setup.bash
+    <!-- ros코어 실행 -->
+    roscore
+    <!-- 다른 터미널을 열어서 소스 다시 실행 -->
+    ros_graph
+
+    
+<hector_slam> 설치
+    sudo apt-get install ros-[ros_version]-hector-slam
+
+
+<패키지를 하나 생성후 launch파일 생성>
+<!--
+    패키지는 알아서, 기존에 잇던파일에 LAUNCH만 추가하던, LAUNCH관리용 패키지를 만들던
+    어차피 패키지에 설치된게아니라 ros에 설치된 HECTOR_SLAM을 실행시키는 역할
+-->
+<?xml version="1.0"?>
+
+<launch>
+
+  <arg name="tf_map_scanmatch_transform_frame_name" default="scanmatcher_frame"/>
+  <arg name="base_frame" default="base_link"/>
+  <arg name="odom_frame" default="base_link"/>
+  <arg name="pub_map_odom_transform" default="true"/>
+  <arg name="scan_subscriber_queue_size" default="10"/>
+  <arg name="scan_topic" default="scan"/>
+  <arg name="map_size" default="2048"/> 
+  <node name="rviz" pkg="rviz" type="rviz" args="-d $(find hector_slam_launch)/rviz_cfg/mapping_default.rviz"/>
+  <node pkg="hector_mapping" type="hector_mapping" name="hector_mapping" output="screen">
+    
+    <!-- Frame names -->
+    <param name="map_frame" value="map" />
+    <param name="base_frame" value="base_link" />
+    <param name="odom_frame" value="base_link" />
+    
+    <!-- Tf use -->
+    <param name="use_tf_scan_transformation" value="true"/>
+    <param name="use_tf_pose_start_estimate" value="false"/>
+    <param name="pub_map_scanmatch_transform" value="true" />
+    <param name="pub_map_odom_transform" value="$(arg pub_map_odom_transform)"/>
+    <param name="tf_map_scanmatch_transform_frame_name" value="$(arg tf_map_scanmatch_transform_frame_name)" />
+   
+
+    
+    <!-- Map size / start point -->
+    <param name="map_resolution" value="0.02"/>
+    <param name="map_size" value="$(arg map_size)"/>
+    <param name="map_start_x" value="0.5"/>
+    <param name="map_start_y" value="0.5" />
+    <param name="map_multi_res_levels" value="2" />
+    
+    <!-- Map update parameters -->
+    <param name="update_factor_free" value="0.5"/>
+    <param name="update_factor_occupied" value="0.9" />    
+    <param name="map_update_distance_thresh" value="0.02"/>
+    <param name="map_update_angle_thresh" value="0.02" />
+    <param name="map_pub_period"             value="2" />
+    <param name="laser_z_min_value" value = "-0.1" />
+    <param name="laser_z_max_value" value = "0.1" />
+    <param name="laser_min_dist"             value="0.092" />
+    <param name="laser_max_dist"             value="25.0" />
+    
+    
+    <!-- Advertising config --> 
+    <param name="advertise_map_service" value="true"/>
+    
+    <param name="scan_subscriber_queue_size" value="$(arg scan_subscriber_queue_size)"/>
+    <param name="scan_topic" value="$(arg scan_topic)"/>
+    
+    <!-- Debug parameters -->
+    <!--
+      <param name="output_timing" value="false"/>
+      <param name="pub_drawings" value="true"/>
+      <param name="pub_debug_output" value="true"/>
+    -->
+    
+  </node>
+  
+</launch>
+
+roscore
+ltme_node(라이다 스캔노드, 각종 설정,)
+이렇게 실행한뒤 위의 launch파일을 실행시켜서 맵핑후에
+
+맵세이버를 실행시켜서 맵파일을 저장
+<맵세이버 인스톨>
+sudo apt-get install ros-noetic-map-server
+
+<맵파일 저장>
+rosrun map_server map_saver -f map_file_name
+
+rosrun map_server map_server [맵 파일 경로].yaml
+rosrun map_server map_server /home/nanonix/catkin_ws/mapmap.yaml
+
+
+<amcl 설치>
+    amcl (Adaptive Monte Carlo Localization)은 ROS에서 널리 사용되는 로컬라이제이션 노드로, 주어진 맵 상에서 로봇의 위치를 추정합니다. 이는 Particle Filter 기반의 방법을 사용하여 로봇의 위치와 방향을 추적합니다. amcl은 주로 정적인 맵에서 사용되며, 라이다와 같은 센서 데이터를 기반으로 로봇의 위치를 추정합니다.
+
+    amcl의 기본 원리:
+    amcl은 여러 개의 "파티클"을 사용하여 로봇의 위치를 추정합니다.
+    각 파티클은 로봇이 맵 상에 있을 가능성 있는 위치와 방향을 나타냅니다.
+    로봇이 움직일 때마다, 이 파티클들은 센서 데이터와 동작 모델을 기반으로 업데이트되며, 이를 통해 로봇의 위치를 더 정확하게 추정할 수 있습니다.
+    amcl 노드 설치 및 설정:
+    설치: amcl은 대부분의 ROS 설치에 기본적으로 포함되어 있습니다. 설치되어 있지 않다면, 다음 명령어를 통해 설치할 수 있습니다:
+    <설치>
+    sudo apt-get install ros-noetic-amcl
+
+<amcl launch파일 생성>
+<?xml version="1.0"?>
+
+<launch>
+
+  <node pkg="amcl" type="amcl" name="amcl">
+
+    <param name="odom_frame_id" value="odom"/>
+
+    <param name="base_frame_id" value="base_link"/>
+
+    <param name="global_frame_id" value="map"/>
+
+    <param name="initial_pose_x" value="0.0"/>
+
+    <param name="initial_pose_y" value="0.0"/>
+
+    <param name="initial_pose_a" value="0.0"/>
+
+  </node>
+
+</launch>
+
+
+
+<!-- ▲기초 다음은 깃허브에서 찾은 example -->
+<?xml version="1.0"?>
+<launch>
+  <param name="/use_sim_time" value="false" />
+  <arg name="prefix" default="robot_"/>
+  
+  <arg name="x_init_pose" default="0"/>
+  <arg name="y_init_pose" default="0"/>
+  <arg name="z_init_pose" default="0"/>
+  <arg name="scan_topic" default="/robot/front_laser/scan"/>
+  <arg name="map_topic" default="map"/>
+  <arg name="global_frame" default="$(arg prefix)map"/>
+  <arg name="odom_frame" default="$(arg prefix)odom"/>
+  <arg name="base_frame" default="$(arg prefix)base_footprint"/>
+  <arg name="odom_model_type" default="omni"/> <!-- omni -->
+
+  <arg name="map_file"/>
+  <node name="map_server" pkg="map_server" type="map_server" args="$(arg map_file)" >
+    <param name="frame_id" value="robot_map" />
+  </node>
+
+  <node name="rviz" pkg="rviz" type="rviz" required="true"
+      args="-d $(find amcl)/examples/amcl.rviz" />
+
+  <node pkg="amcl" type="amcl" name="amcl" output="screen">
+    <remap from="scan" to="$(arg scan_topic)"/>
+    <remap from="map" to="$(arg map_topic)"/>
+
+    <rosparam command="load" file="$(find amcl)/examples/amcl.yaml" subst_value="true"/>
+
+  </node>
+  
+<node name="playbag" pkg="rosbag" type="play"
+      args="$(arg bag_filename)" />
+
+<node pkg="rosservice" type="rosservice" name="global_loc" args="call --wait /global_localization" launch-prefix="bash -c 'sleep 1; $0 $@' " />
+
+</launch>

@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+    <script>
+        const xhr = new XMLHttpRequest();
+
+        // const url = new URL('https://yts.mx/api/v2/list_movies.json');
+        // url.searchParams.set('limit', '10');
+        // url.searchParams.set('sort_by', 'rating');
+        // xhr.open('GET', url.toString());
+        // 한줄로 표현
+        xhr.open('GET', 'https://yts.mx/api/v2/list_movies.json?limit=10&sort_by=rating');
+        xhr.onload = function() {
+            if (xhr.status === 200) {
+                const data = JSON.parse(xhr.responseText);
+                console.log(data);
+                if (data.status === 'ok') {
+                    data.data.movies.forEach(movie => {
+                        document.getElementById('titleList').innerHTML += '<li>' + movie.title + '</li>';
+                        document.getElementById('titleImage').innerHTML += '<li><img src="' + movie.medium_cover_image + '"></li>';
+                        document.getElementById('ratingList').innerHTML += '<li>' + movie.rating + '</li>';
+                        document.getElementById('summaryList').innerHTML += '<li>' + movie.summary + '</li><br>';
+                    });
+                }
+            } else {
+                console.error('Error:', xhr.status);
+            }
+        };
+        
+        xhr.onerror = function() {
+            console.error('Request failed.');
+        };
+        xhr.send();
+    </script>
+    <div>
+        <h1>Title</h1>
+            <ul id="titleList">
+            </ul>
+        <h1>TitleImage</h1>
+            <ul id="titleImage">
+            </ul>
+        <h1>Rating</h1>
+            <ul id="ratingList">
+            </ul>
+        <h1>Summary</h1>
+            <ul id="summaryList">
+            </ul>
+    </div>
+</body>
+</html>

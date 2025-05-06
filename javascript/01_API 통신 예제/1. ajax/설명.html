@@ -1,0 +1,85 @@
+<XMLHttpRequest(AJAX)>
+XMLHttpRequest는 JavaScript에서 비동기적인 네트워크 요청을 수행하기 위한 기술입니다.
+
+이를 통해 웹 애플리케이션은 서버로부터 데이터를 가져와서 동적으로 웹 페이지를 업데이트할 수 있습니다.
+
+XMLHttpRequest를 사용하여 비동기 요청을 수행하는 일반적인 단계는 다음과 같습니다.
+
+<1. XMLHttpRequest 객체 생성: XMLHttpRequest 객체를 생성합니다.>
+    const xhr = new XMLHttpRequest();
+
+
+<2. 요청 초기화: open() 메서드를 사용하여 요청을 초기화합니다. 요청 방식(GET, POST 등)과 요청 URL을 지정합니다.>
+    xhr.open('GET', 'https://api.example.com/data');
+
+
+<3. 응답 처리 설정: onload 및 onerror와 같은 이벤트 핸들러를 등록하여 요청의 성공 또는 실패에 대한 처리를 설정합니다.>
+    xhr.onload = function() {<!-- 요청이 성공적으로 완료됐을 때 실행되는 코드 -->
+        if (xhr.status === 200) {
+            const responseData = xhr.responseText;
+            <!-- 응답 데이터를 처리하는 코드 -->
+        }
+    };
+
+    xhr.onerror = function() {
+        <!-- 요청이 실패했을 때 실행되는 코드 -->
+    };
+
+
+<4. 요청 전송: send() 메서드를 사용하여 요청을 서버로 전송합니다.>
+    xhr.send();
+
+
+
+<5. 요약>
+    <script>
+        const xhr = new XMLHttpRequest();
+        xhr.open('GET', 'https://api.example.com/data');
+        xhr.onload = function() {
+
+            if (xhr.status === 200) { //HTTP요청이 성공했는지 확인
+                const responseData = xhr.responseText;
+                if (responseData.status === 'ok') { // 받은 데이터가 멀쩡한지 확인
+                    // 받은 데이터를 원하는대로 가공
+                    // 주로 배열을 받기 때문에 map이나 forEach를 자주사용함
+
+                }
+            }else {
+                console.error('Error:', xhr.status);
+            };
+        }
+        xhr.onerror = function() {
+            console.error('Request failed.');
+        };
+        xhr.send();
+    </script>
+
+<console.error 두개인 이유 설명 >
+    첫 번째 console.error는 xhr.onload 이벤트 핸들러 내에서 실행되는 오류 처리 코드입니다.
+     이 코드는 요청이 성공적으로 완료되었지만 서버에서 반환한 응답 데이터의 처리 과정에서 오류가 발생한 경우 실행됩니다.
+     일반적으로 이 오류는 응답 데이터의 구문이나 형식에 문제가 있을 때 발생할 수 있습니다.
+     이 오류는 응답 데이터를 파싱하거나 처리하는 부분에서 발생하는 문제를 나타내며, 오류 메시지를 콘솔에 출력하여 디버깅에 도움을 줍니다.
+
+    두 번째 console.error는 xhr.onerror 이벤트 핸들러 내에서 실행되는 오류 처리 코드입니다.
+     이 코드는 요청 자체가 실패한 경우 실행됩니다.
+     예를 들어, 네트워크 연결 오류, 서버에 도달하지 못한 경우, 권한 오류 등과 같은 요청 실패 상황에서 호출됩니다.
+     이 오류는 요청이 전송되지 못하거나 요청에 대한 응답을 받지 못한 경우를 나타냅니다.
+
+    첫 번째 console.error는 xhr.onload 이벤트 핸들러 내에서 발생하는 오류에 대한 처리를 담당하고,
+    두 번째 console.error는 xhr.onerror 이벤트 핸들러 내에서 발생하는 오류에 대한 처리를 담당합니다.
+    이렇게 구분하여 오류 처리를 할 수 있습니다.
+
+
+<XMLHttpRequest(AJAX) 객체의 콜백함수>
+
+    <onload>
+        요청이 성공적으로 완료되었을 때 호출됩니다. 즉, 서버에서 응답이 도착하고 데이터를 성공적으로 수신한 경우에 실행됩니다.
+
+    <onerror>
+        요청이 실패했을 때 호출됩니다. 네트워크 오류, 서버 오류, 요청이 거부되는 등의 문제로 인해 요청이 실패한 경우에 실행됩니다.
+
+    <onprogress>
+        요청이 진행 중일 때 호출됩니다. 주로 대용량 파일 다운로드나 업로드 시 진행 상태를 추적하는 데 사용됩니다.
+
+    <ontimeout>
+        요청이 제한된 시간 내에 완료되지 않았을 때 호출됩니다. 서버로부터 응답을 받지 못한 경우에 실행될 수 있습니다.

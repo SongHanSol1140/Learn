@@ -1,0 +1,117 @@
+<Promise>
+    JavaScript의 Promise는 비동기 연산이 끝나는 것을 기다리는 데 사용하는 객체입니다.
+    비동기 연산이란, 특정 연산의 완료를 기다리지 않고 다음 코드를 실행하는 연산을 말합니다.
+    예를 들어, 서버에 데이터를 요청하는 것은 비동기 작업입니다.
+    서버로부터 데이터를 받아오는 데 시간이 걸리지만, 이 동안 다른 코드를 실행할 수 있습니다.
+
+<Promise의 필요성>
+    JavaScript는 기본적으로 <단일 스레드(single-threaded)> 언어로, 한 번에 하나의 작업만을 수행할 수 있습니다.
+    이 때문에 네트워크 요청과 같은 비동기 작업이 있을 경우,
+    이 작업이 완료될 때까지 전체 코드의 실행이 멈출 수 있습니다.
+    이런 현상을 <blocking>이라고 합니다.
+
+    Promise는 이러한 문제를 해결하기 위해 탄생했습니다.
+    Promise를 사용하면 비동기 작업의 결과를 기다리면서도 동시에 다른 코드를 실행할 수 있습니다.
+    이를 <non-blocking>이라고 부릅니다.
+    비동기 작업이 완료되면 Promise는 그 결과를 담아 다음 연산에 전달하거나,
+    오류가 발생했을 경우 이를 처리하는 코드로 넘깁니다.
+
+<Async/Await과의 관계>
+    async/await는 Promise를 더 쉽게 사용할 수 있게 해주는 JavaScript의 문법입니다.
+    async 키워드가 붙은 함수 내부에서 await 키워드를 사용하면 Promise의 완료를 기다리고,
+    결과값을 받아올 수 있습니다. 이렇게 하면 Promise를 사용할 때
+    .then과 .catch 메소드를 사용하는 것보다 더 직관적이고 동기식 코드와 유사하게 작성할 수 있습니다.
+
+    다만, async/await는 Promise 위에 구축된 문법이므로, Promise의 동작 원리를 이해하는 것이 중요합니다.
+
+
+Promise를 사용하여 비동기 작업을 수행하는 일반적인 단계는 다음과 같습니다.
+
+<1. Promise 생성: new Promise() 생성자를 사용하여 Promise를 생성합니다.
+    Promise 생성자는 executor라는 함수를 매개변수로 받습니다.
+    이 함수는 resolve(해결)와 reject(거절)라는 두 개의 콜백 함수를 매개변수로 받습니다.>
+    <script>
+        function getData(url) {
+            return new Promise((resolve, reject) => {
+            });
+        }
+        
+    </script>
+
+
+<2. 작업 상태 처리: Promise의 상태는 pending(대기), fulfilled(이행), rejected(거부) 세 가지 중 하나입니다.
+    비동기 작업이 성공하면 resolve 함수를, 실패하면 reject 함수를 호출합니다.>
+    <script>
+        function getData(url) {
+            return new Promise((resolve, reject) => {
+                const xhr = new XMLHttpRequest();
+                xhr.open('GET', url);
+                xhr.onload = function() {
+                    if (xhr.status === 200) {
+                        resolve(JSON.parse(xhr.responseText));
+                    } else {
+                        reject('Error:', xhr.status);
+                    }
+                };
+                xhr.onerror = function() {
+                    reject('Request failed.');
+                };
+                xhr.send();
+            });
+        }
+    </script>
+
+
+
+<3. 결과 처리: .then()을 사용하여 비동기 작업의 결과를 처리합니다.
+    .then() 메서드는 두 개의 콜백 함수를 매개변수로 받습니다.
+    첫 번째 콜백은 작업이 성공했을 때(data),
+    두 번째 콜백은 작업이 실패했을 때(error) 호출됩니다.>
+
+    <script>
+        getData('https://api.example.com/data')
+        .then(data => {
+            console.log(data);
+            if (data.status === 'ok') {
+                // 작업 성공시 코드
+            }
+        })
+        .catch(error => {
+            console.error(error);
+            // 작업 실패시 코드
+        });
+    </script>
+
+
+
+<4. 요약>
+    <script>
+        function getData(url) {
+            return new Promise((resolve, reject) => {
+                const xhr = new XMLHttpRequest();
+                xhr.open('GET', url);
+                xhr.onload = function() {
+                    if (xhr.status === 200) {
+                        resolve(JSON.parse(xhr.responseText));
+                    } else {
+                        reject('Error:', xhr.status);
+                    }
+                };
+                xhr.onerror = function() {
+                    reject('Request failed.');
+                };
+                xhr.send();
+            });
+        }
+        getData('https://api.example.com/data')
+        .then(data => {
+            console.log(data);
+            if (data.status === 'ok') {
+                // 작업 성공시 코드
+            }
+        })
+        .catch(error => {
+            console.error(error);
+            // 작업 실패시 코드
+        });
+    </script>

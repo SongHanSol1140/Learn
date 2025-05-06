@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+    <script>
+        function getData(url) {
+            return new Promise((resolve, reject) => {
+                const xhr = new XMLHttpRequest();
+                xhr.open('GET', url);
+                xhr.onload = function() {
+                    if (xhr.status === 200) {
+                        resolve(JSON.parse(xhr.responseText));
+                    } else {
+                        reject('Error:', xhr.status);
+                    }
+                };
+                xhr.onerror = function() {
+                    reject('Request failed.');
+                };
+                xhr.send();
+            });
+        }
+
+        getData('https://yts.mx/api/v2/list_movies.json?limit=10&sort_by=rating')
+        .then(data => {
+            console.log(data);
+            if (data.status === 'ok') {
+                data.data.movies.forEach(movie => {
+                    const summary = movie.summary.length < 200 ?
+                        movie.summary :
+                        movie.summary.substring(0, 200) + '...';
+
+                    console.log('Title: ' + movie.title);
+                    console.log('small_cover_image: ' + movie.small_cover_image);
+                    console.log('Rating: ' + movie.rating);
+                    console.log('Summary: ' + summary);
+                    console.log('-----------------------------');
+                });
+            }
+        })
+        .catch(error => {
+            console.error(error);
+        });
+    </script>
+</body>
+</html>

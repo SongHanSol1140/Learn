@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+    <script>
+        // const url = new URL('https://yts.mx/api/v2/list_movies.json');
+        // url.searchParams.set('limit', '10');
+        // url.searchParams.set('sort_by', 'rating');
+        // fetch(url)
+        // 한줄로 표현하면
+        fetch('https://yts.mx/api/v2/list_movies.json?limit=10&sort_by=rating',{
+            method: 'GET',
+            headers: {
+                // 'Content-Type': 'application/json;charset=UTF-8',
+                // 'Authorization': 'Bearer YOUR_TOKEN_HERE'
+            }
+        })
+            .then(response => response.json())
+            .then(data => {
+                if (data.status === 'ok') {
+                    data.data.movies.forEach(movie => {
+                        document.getElementById('titleList').innerHTML += '<li>' + movie.title + '</li>';
+                        document.getElementById('titleImage').innerHTML += '<li><img src="' + movie.medium_cover_image + '"></li>';
+                        document.getElementById('ratingList').innerHTML += '<li>' + movie.rating + '</li>';
+                        document.getElementById('summaryList').innerHTML += '<li>' + movie.summary + '</li><br>';
+                    });
+                }
+            })
+            .catch(error => console.error('Error:', error));
+    </script>
+    <div>
+        <h1>Title</h1>
+            <ul id="titleList">
+            </ul>
+        <h1>TitleImage</h1>
+            <ul id="titleImage">
+            </ul>
+        <h1>Rating</h1>
+            <ul id="ratingList">
+            </ul>
+        <h1>Summary</h1>
+            <ul id="summaryList">
+            </ul>
+    </div>
+</body>
+</html>

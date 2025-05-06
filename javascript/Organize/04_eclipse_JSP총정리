@@ -1,0 +1,2218 @@
+2022.10.26
+───────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
+<톰캣설치 다시보기>
+JSPUtils 폴더 따로생성
+Javautils파일들 복붙하는데 압축을 새로풀어서 새로설정해야함
+우측상단 Open Pespective - Java 설정해서 Java 버튼 만들고
+(커피콩)Java EE(EE:엔터프라이즈 에디션)으로 체크,
+
+환경설정
+General- Workspace - text file encoding - UTF-8
+General- Web Browser - use external web browser 체크
+WEB - CSS,HTMLJSP - Encoding => UTF-8로 수정
+
+JAVA EE체크
+Windows-Servers-서버생성-톰캣v8.5 생성
+
+좌측에 폴더피고나서 서버 - 하단에소스눌러서 63줄
+<Connector connectionTimeout="20000" port="8080" protocol="HTTP/1.1" redirectPort="8443"/>
+이게 있는데
+<Connector URIEncoding="UTF-8" connectionTimeout="20000" port="8088" protocol="HTTP/1.1" redirectPort="8443"/>
+URIEncoding="UTF-8" 추가, port번호 변경
+톰캣서버삭제
+
+윈도우즈-프리퍼런스(환경설정)-서버-런타임
+───────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
+<DB생성>
+하단에 Data Source Explorer - databse 우클릭 - New
+(없을시 윈도우 - Data Source Explorer )
+Oracle 선택후 Next,
+
+상단 드라이브 우측 삼각형 좌측에잇는 동그라미?네모? 클릭
+Name/Type
+	Oracle 11 선택,
+JAR List
+	Clear All 해서 모두지울것
+	ADD JAR/ZIP 해서
+	오라클EX 설치경로로 들어간뒤
+	oraclexe-app-oracle-product-11-server-jdbc(폴더명임)-lib
+	lib 에있는 ojdbc6.jar파일 선택
+Properties
+	<Connertion URL>
+	jdbc:oracle:thin:@server:1521:db
+	이것을
+	jdbc:oracle:thin:@localhost:1521:xe
+	jdbc:oracle:thin:@localhost:1521:xe
+	로 변경
+	<Database name>
+	XE로 변경
+	<패스워드,아이디>
+	hr로 설정
+	Ok
+	save password 체크
+
+	테스트하고 실행되면 <FINISH>
+
+
+───────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
+<오라클EX(DB)설치>
+NEXT
+NEXT
+비밀번호
+manager
+manager
+
+
+※오라클 재설치시 나오는오류
+cmd 관리자실행
+del /s c:\Windows\Installer\{05A7B662-80A3-4EB9-AE1D-89A62449431C}\1033.MST
+입력해서 파일삭제후 재설치
+
+설치
+
+cmd실행
+sqlplus / as sysdba
+alter user hr account unlock;
+alter user hr identified by hr;
+conn hr/hr
+한번씩 입력
+───────────────────────────────────────────────────────────────────────────────────────────────────────────────────────		
+
+<받은 SQL파일 압축해제해서 exe 실행>
+임포트하냐고 물어보면 <아니오>
+수동으로 접속생성 누르기
+<Name>
+	Oracle
+<사용자이름>
+	hr
+<비밀번호>
+	hr
+하단에 테스트 눌러보면 좌측하단 도움말위에 성공 실패가 뜸
+성공이면 접속
+
+접속후 뜨는창에
+select * from tab;
+입력하고 좌측위에 재생버튼 눌러서 뭔가나오면 성공
+
+
+※※※
+※※
+※
+<톰캣 포트번호와 겹치면 둘중에 하나가 안켜짐!! 
+톰캣 server.xml로 가서 포트번호를 미리바꿔둘것>
+※
+※※
+※※※
+
+
+───────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
+───────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
+───────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
+───────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
+<%-- 주석처리
+<%@ page
+		language="java"
+		import="java.util.*"
+		
+		contentType="text/html; charset=UTF-8"
+    	pageEncoding="UTF-8"
+    	session="true"
+    	autoflush="true"
+    	info="페이지설명"
+    	isErrorPage="false"
+    	errorPage=""
+%>
+주석처리 끝 --%>
+<%@ page language="java" contentType="text/html; charset=UTF-8"
+    pageEncoding="UTF-8"%>
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<link rel="stylesheet" href="https://unpkg.com/bootstrap@3.3.7/dist/css/bootstrap.min.css">
+<title>
+	JSP 등장
+		초반 서블릿 이용 구현
+		인터넷 이용이 늘고 발전하면서 화면의 기능이나 구성이 복잡해짐
+		서블릿은 화면 구현이 불편하므로
+		화면 기능 구현을 좀 더 쉽게 하기 위해 JSP가 등장함
+	서블릿과 JSP의 차이점
+		a. 서블릿
+		=> 자바 코드 기반으로 HTML과 JS로 화면을 구현
+		b. JSP
+		=> HTML,CSS,JS를 기반으로 JSP요소를 사용해 화면을 구현
+		
+	JSP 등장 배경
+		a. 서블릿 비즈니스(비지니스) 로직과 결과를 보여주는 화면 기능 분리를 위해
+		b. 백엔드 개발자와 프론트엔드 개발자의 업무영역을 확실히 분리하기 위해
+		c. 재사용성과 유지관리가 수월해짐
+		
+	JSP 구성요소
+		a. HTTP,CSS,JS
+		b. JSP 기본태그
+		c. JSP 액션 태그
+		d. 커스텀 태그 => 개발자가 직접 제작하여 사용하는 태그, 프레임워크 제공하는 태그
+</title>
+</head>
+<body>
+	<h1>First JSP</h1>
+	<p>
+		<img src=".\images\work01.jpg" alt="이미지01">
+	</p>
+
+</body>
+</html>
+───────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
+<%-- 주석처리
+<%@ page
+		language="java"
+		import="java.util.*"
+		
+		contentType="text/html; charset=UTF-8"
+    	pageEncoding="UTF-8"
+    	session="true"
+    	autoflush="true"
+    	info="페이지설명"
+    	isErrorPage="false"
+    	errorPage=""
+%>
+주석처리 끝 --%>
+<%@ page language="java" contentType="text/html; charset=UTF-8"
+    pageEncoding="UTF-8"%>
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>
+	페이지 디렉티브 태그
+</title>
+</head>
+<body>
+	<h1>페이지 디렉티브</h1>
+	<p>
+		<%--    <%코딩%> = 자바코드    --%>
+		JSP 페이지에 대한 전반적인 설정 정보를 지정할 때 사용 <br>
+		속성은 무조건 한번만 선언해야 함 <br>
+		but, import 속성은 여러번 선언해도 문제가 없다<br>
+		대소문자에 유의<!-- 자바 코드는 규칙에 엄격함 -->
+		
+	</p>
+</body>
+</html>
+───────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
+<%@ page language="java" contentType="text/html; charset=UTF-8"
+    pageEncoding="UTF-8"%>
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>
+	인클루드(include) 할 JSP 페이지
+	
+</title>
+</head>
+<body>
+	<img src="./images/work01.jpg" alt="이미지1" />
+</body>
+</html>
+───────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
+<%@ page language="java" contentType="text/html; charset=UTF-8"
+    pageEncoding="UTF-8"%>
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>
+	인클루드 디렉티브
+	directive(직접적인)
+		공통으로 JSP페이지가 사용될 경우 사용
+		=> 재사용성과 유지보수가 쉬움
+		=> (예시)모든 페이지에 사용되는 GNB와 FOOTER
+	인클루드 작동방식
+		인클루드 태그로 JSP페이지를 요청
+		=> 03_include_image.jsp의 자바코드가
+		=> 04_include.jsp파일과 합쳐져서 브라우저로 전송
+		=> JSP페이지에서 실행하는 자바파일은 단 한개만 생성
+		
+	04_include.jsp에 03_include_image.jps를 포함
+		-> 자바코드로 변환
+		-> 자바 코드 서블릿 변환
+		-> class로 컴파일 후
+		-> 브라우저 출력
+</title>
+</head>
+<body>
+	<h1>
+		JSP include 적용
+	</h1>
+	<%@ include file="./03_include_image.jsp" %>
+	<%@ include file="./03_include_image.jsp" %>
+	<%@ include file="./03_include_image.jsp" %>
+
+
+</body>
+</html>
+───────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
+<!-- 
+JSP 스크립트 요소
+	HTML 태그는 컨테이너 작업없이 바로 브라우저로 전송됨
+		=> 동적 구성이 안됨
+	JSP는 컨테이너에서 자바로 변환되는 과정을 거치므로
+		=> JSP 제공 스크립트 요소를 이용하여
+		=> 조건, 상황에 맞게 HTML 태그를 선택적으로 전송
+		=> 화면이 동적으로 구성
+	jSP 스크립트 요소 = <%%>안에 자바코드를 구현
+		a. 선언문 = JSP에서 변수나 메서드 선언시 사용
+		<%! %>
+		b. 스크립틀릿(scriptlet) = JSP에서 자바코드 작성시 사용
+		C. 표현식(expression tag) = JSP에서 변수값 출력시 사용
+		
+	스크립트 요소 모두 서블릿의 자바코드로 변환
+		=> 즉, 스크립트 요소는 브라우저로 전송되지 않음
+		=> 브라우저에는 HTML CSS JS만 전달
+ -->
+<!--
+	선언문(declaration tag)
+	 선언문 안에 변수는 서블릿 변환시 서블릿 클래스의 멤버변수로 변환 
+	 [형식] 
+	 	<%! %>
+		일반적으로 상단에 코딩 | !(느낌표) 빼먹는 경우가 많음 주의할것
+-->
+<%@ page language="java" contentType="text/html; charset=UTF-8"
+    pageEncoding="UTF-8"%>
+<%!
+    /* 변수선언 */
+	String name = "JSP 선언문";
+	/* 메서드 */
+	public String name(){
+		return name;
+	}
+%>
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>
+	JSP 선언부
+</title>
+</head>
+<body>
+	안녕하세요
+	<%= name %>님!!
+	<br>
+	<%= name() %>
+</body>
+</html>
+───────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
+<!-- 
+JSP 스크립트 요소
+	HTML 태그는 컨테이너 작업없이 바로 브라우저로 전송됨
+		=> 동적 구성이 안됨
+	JSP는 컨테이너에서 자바로 변환되는 과정을 거치므로
+		=> JSP 제공 스크립트 요소를 이용하여
+		=> 조건, 상황에 맞게 HTML 태그를 선택적으로 전송
+		=> 화면이 동적으로 구성
+	jSP 스크립트 요소 = <%%>안에 자바코드를 구현
+		a. 선언문 = JSP에서 변수나 메서드 선언시 사용
+		<%! %>
+		b. 스크립틀릿(scriptlet) = JSP에서 자바코드 작성시 사용
+		C. 표현식(expression tag) = JSP에서 변수값 출력시 사용
+		
+	스크립트 요소 모두 서블릿의 자바코드로 변환
+		=> 즉, 스크립트 요소는 브라우저로 전송되지 않음
+		=> 브라우저에는 HTML CSS JS만 전달
+ -->
+<!--
+	선언문(declaration tag)
+	 선언문 안에 변수는 서블릿 변환시 서블릿 클래스의 멤버변수로 변환 
+	 [형식] 
+	 	<%! %>
+		일반적으로 상단에 코딩 | !(느낌표) 빼먹는 경우가 많음 주의할것
+-->
+<%@ page language="java" contentType="text/html; charset=UTF-8"
+    pageEncoding="UTF-8"%>
+<%!
+    /* 변수선언 */
+	String name1 = "JSP 선언문";
+	/* 메서드 */
+	public String name1(){
+		return name1;
+	}
+%>
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>
+	JSP 선언부
+</title>
+</head>
+<body>
+	안녕하세요
+	<%= name1 %>님!!
+	<br>
+	<%= name1() %>
+</body>
+</html>
+───────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
+<%@ page language="java" contentType="text/html; charset=UTF-8"
+    pageEncoding="UTF-8"%>
+<%
+	String name = "한솔";
+	String age = request.getParameter("age");
+	
+%>
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>Insert title here</title>
+	표현식(expression tag)
+		JSP에서 변수 값 출력시 사용 | 변수나 자바식에는 ;을 절대 사용해선 안됨
+		<%--
+		[형식] <%= %>
+		--%> 
+</head>
+<body>
+	<h1>
+		안녕하세요
+		<%= name %>님
+	</h1>
+	<h2>
+		입력받은 나이에 10살을 더한값은
+		<%= Integer.parseInt(age)+10 %>입니다.
+	</h2>
+</body>
+</html>
+───────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
+<페이지 넘어가서 전페이지 데이터 받아오기 form action>
+<%@ page language="java" contentType="text/html; charset=UTF-8"
+    pageEncoding="UTF-8"%>
+<%
+	request.setCharacterEncoding("utf-8");
+	response.setContentType("text/html; charset=utf-8");
+%>
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>JSP 로그인</title>
+<link rel="stylesheet" href="https://unpkg.com/bootstrap@3.3.7/dist/css/bootstrap.min.css">
+<style>
+	td {
+	border: 1px solid red;
+	}
+
+</style>
+</head>
+<body>
+	<div>
+		<!-- 처리 JSP = 04_loginCtrl.jsp -->
+		<form action="04_loginCtrl.jsp" method="post">
+		<h1>Login</h1>
+			<table class="table">
+				<tr>
+					<td>아이디 : </td>
+					<td>
+						<input type="text" name="user_id">
+					</td>
+				</tr>
+				<tr>
+					<td>패스워드 : </td>
+					<td>
+						<input type="password" name="user_pw">
+					</td>
+				</tr>
+				<tr>
+					<td colspan="2">
+						<input type="submit" value="Submit">
+						<input type="reset" value="reset">
+					</td>
+				</tr>
+			</table>
+
+		</form>
+	</div>
+</body>
+</html>
+<!-- ─────────────────────────────────────────────────────────────────────────────────────────────────────────────────────── -->
+<%@ page language="java" contentType="text/html; charset=UTF-8"
+    pageEncoding="UTF-8"%>
+    
+<%
+	request.setCharacterEncoding("utf-8");
+	response.setContentType("text/html; charset=utf-8");
+	String id = request.getParameter("user_id");
+	String pw = request.getParameter("user_pw");
+%>
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>JSP 로그인 결과 출력</title>
+</head>
+<body>
+	<h1>결과출력</h1>
+	<p>아이디 : <%= id %></p>
+	<p>비밀번호 : <%= pw %></p>
+	<p>
+		==============================
+	</p>
+	<h2><%= id %>님 환영합니다.</h2>
+	<p>
+		==============================
+	</p>
+<%
+	if(id == null || id.length() == 0) {
+%>
+	<p>아이디 입력!!</p>
+	<a href="./04_login.jsp">Login</a>
+	
+<%
+	}else {
+		if(id.equals("admin")){
+%>
+	<h2>관리자로 로그인</h2>
+	
+<%			
+		}else {
+%>
+	<h2><%= id %>으로 로그인</h2>		
+<%
+		}
+	}
+%>
+
+</body>
+</html>
+───────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
+───────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
+2022.10.28
+───────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>
+	JSP학점변환
+</title>
+<link rel="stylesheet" href="https://unpkg.com/bootstrap@3.3.7/dist/css/bootstrap.min.css">
+</head>
+<body>
+<div>
+	<div class="panel-heading">
+		<h1>시험점수 입력</h1>
+	</div>
+<!-- 처리 JSP = 04_loginCtrl.jsp -->
+	<form action="05_scoreCtrl.jsp" method="post">
+
+		<table class="table">
+			<tr>
+				<td>시험점수 : </td>
+				<td>
+					<input type="text" name="score">
+				</td>
+			</tr>
+			<tr>
+				<td>
+					<input type="submit" value="학점">
+				</td>
+			</tr>
+		</table>
+
+	</form>
+</div>
+</body>
+</html>
+<!-- ─────────────────────────────────────────────────────────────────────────────────────────────────────────────────────── -->
+<%@ page language="java" contentType="text/html; charset=UTF-8"
+    pageEncoding="UTF-8"%>
+<%
+	request.setCharacterEncoding("utf-8");
+	response.setContentType("text/html; charset=utf-8");
+	int score = Integer.parseInt(request.getParameter("score"));
+%>
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>Insert title here</title>
+<link rel="stylesheet" href="https://unpkg.com/bootstrap@3.3.7/dist/css/bootstrap.min.css">
+</head>
+<body>
+<h1>시험점수는 <%= score %>점</h1>
+
+<%
+	if(score>=90){
+%>
+	<h2>A학점입니다.</h2>
+<%
+	}else if(score>=80){
+%>
+	<h2>B학점입니다.</h2>
+<%
+	}else if(score>=70){
+%>
+	<h2>C학점입니다.</h2>
+<%
+	}else if(score>=60){
+%>
+	<h2>D학점입니다.</h2>
+<%
+	}else {
+%>
+	<h2>F학점입니다.</h2>
+<%
+	}
+%>
+	<a href="./05_score.html">시험점수 입력</a>
+</body>
+</html>
+
+───────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
+───────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>JSP 구구단입력</title>
+<link rel="stylesheet" href="https://unpkg.com/bootstrap@3.3.7/dist/css/bootstrap.min.css">
+</head>
+<body>
+<div>
+	<div class="panel-heading">
+		<h1>시험점수 입력</h1>
+	</div>
+<!-- 처리 JSP = 04_loginCtrl.jsp -->
+	<form action="06_multiColor.jsp" method="post">
+
+		<table class="table">
+			<tr>
+				<td>출력할구구단 : </td>
+				<td>
+					<input type="text" name="num">
+				</td>
+			</tr>
+			<tr>
+				<td>
+					<input type="submit" value="학점">
+				</td>
+			</tr>
+		</table>
+
+	</form>
+</div>
+</body>
+</html>
+<!-- ─────────────────────────────────────────────────────────────────────────────────────────────────────────────────────── -->
+<%@ page language="java" contentType="text/html; charset=UTF-8"
+    pageEncoding="UTF-8"%>
+    
+<%
+   request.setCharacterEncoding("utf-8");
+   int num = Integer.parseInt(request.getParameter("num"));
+%>
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>구구단 for,if</title>
+<link rel="stylesheet" href="https://unpkg.com/bootstrap@3.3.7/dist/css/bootstrap.min.css">
+</head>
+<body>
+   <table class="table" width="800" border="1">
+      <tr>
+         <th colspan="2"><%=num %> 단 출력</th>
+      </tr>
+<%
+   for(int i = 1; i<=9; i++){ // 승수 1부터 9까지 연속된 수
+%>
+<%
+   if(i%2==0){
+%>
+      <tr bgcolor="gray">
+<%      
+   }else {
+%>
+      <tr bgcolor="silver">      
+<%
+   }
+%>
+         <td width="400">
+            <%=num %> * <%=i %>
+         </td>
+         <td width="400">
+            <%=i * num %>
+         </td>
+      </tr>
+<%      
+   }
+%>      
+   </table>
+</body>
+</html>
+<!-- ─────────────────────────────────────────────────────────────────────────────────────────────────────────────────────── -->
+<%@ page language="java" contentType="text/html; charset=UTF-8"
+    pageEncoding="UTF-8"%>
+<%
+	request.setCharacterEncoding("utf-8");
+	response.setContentType("text/html; charset=utf-8");
+	int num = Integer.parseInt(request.getParameter("num"));
+%>
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>구구단 출력</title>
+<link rel="stylesheet" href="https://unpkg.com/bootstrap@3.3.7/dist/css/bootstrap.min.css">
+</head>
+<style>
+	td{
+		border: 1px solid #000;
+		text-align:center;
+		width:100px;
+	}
+</style>
+<body>
+	<table>
+		<tr>
+			<td colspan="2">
+				<h1><%= num %>단 출력</h1>
+			</td>
+		</tr>
+<%
+	for(int i=1; i<10; i++){
+		
+%>
+		<tr>
+			<td>
+				<%= num %> * <%= i %>
+			</td>
+			<td>
+				<%= num*i %>
+			</td>
+		</tr>	
+<%
+	}
+%>
+	</table>
+</body>
+</html>
+───────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
+───────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
+<%@ page language="java" contentType="text/html; charset=UTF-8"
+    pageEncoding="UTF-8"%>
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>리스트 이미지 출력</title>
+<link rel="stylesheet" href="https://unpkg.com/bootstrap@3.3.7/dist/css/bootstrap.min.css">
+<style>
+	li {
+		list-style:none
+	}
+	.list {
+		width:=80%;
+		padding:
+		margin: 0 auto;
+	}
+	.list li {
+		margin: 10px 0 0;
+		color: #2d2d2d;
+		border-bottom: 2px solid lightgray;
+	}
+	.list li span {
+		color: red;
+		margin-left: 10px;
+		font-size:18px;
+	}
+	img {
+		width:90px;
+		height:50px;
+	}
+</style>
+</head>
+<body>
+	<ul class="list">
+		<li>
+			<span>이미지</span>
+			<span>이미지 이름</span>
+			<span>선택</span>
+		</li>
+<%
+	for(int i=1; i<=5; i++){ // 1부터 5까지
+%>
+		
+		
+		<li>
+			<a href="#">
+				<img src="./images/work0<%= i %>.jpg" alt="상품이미지<%= i %>">
+			</a>
+			<a href="#">이미지 이름 : 취미 </a>
+			<a href="#"> <input type="checkbox" name="checkbox<%= i %>"></a>
+		</li>
+<%
+	}
+%>
+	</ul>
+</body>
+</html>
+
+───────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
+───────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
+
+package sessionbinding;
+/*
+  JSP Binding(바인딩)
+*/
+import java.io.IOException;
+import java.io.PrintWriter;
+
+import javax.servlet.RequestDispatcher;
+import javax.servlet.ServletException;
+import javax.servlet.annotation.WebServlet;
+import javax.servlet.http.HttpServlet;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
+
+
+@WebServlet("/sessionbinding")
+public class SessionBinding extends HttpServlet {
+	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+		
+		request.setCharacterEncoding("utf-8");
+		response.setContentType("text/html; charset=utf-8;");
+		// 문자열 생성
+		PrintWriter out = response.getWriter();
+		
+		// 세션 생성
+		HttpSession session = request.getSession();
+		
+		//바인딩
+		session.setAttribute("name", "한솔");
+
+
+		
+		// 화면 출력
+		out.print("<html><body>");
+		out.print("<h1>세션에 이름을 바인딩합니다.</h1>");
+		out.print("<br>");
+		out.print("<a href='09_session1.jsp'>첫번째 페이지로 돌아가기</a>");
+		out.print("</body></html>");
+	}
+
+	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+
+	}
+
+}
+
+<!-- ─────────────────────────────────────────────────────────────────────────────────────────────────────────────────────── -->
+<%@ page language="java" contentType="text/html; charset=UTF-8"
+    pageEncoding="UTF-8"%>
+<%
+	//세션 값 가져오기
+	String name = (String) session.getAttribute("name");
+
+	//세션 설정
+	session.setAttribute("address","서울시 성동구");
+%>
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>session JSP 바인딩1</title>
+</head>
+<body>
+	<h1>
+		이름은 <%= name %>입니다.
+	</h1>
+	<a href='09_session2.jsp'>
+		두번째 페이지로 이동
+	</a>
+</body>
+</html>
+<!-- ─────────────────────────────────────────────────────────────────────────────────────────────────────────────────────── -->
+<%@ page language="java" contentType="text/html; charset=UTF-8"
+    pageEncoding="UTF-8"%>
+<%
+	//세션값 가져오기
+	String name = (String) session.getAttribute("name");
+	String address = (String) session.getAttribute("address");
+
+%>
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>
+	session JSP 바인딩2
+</title>
+</head>
+<body>
+	이름은 : <%= name %>입니다.<br>
+	주소는 : <%= address %>입니다.
+
+
+</body>
+</html>
+───────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
+───────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
+2022.10.31
+───────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
+<%@ page language="java" contentType="text/html; charset=UTF-8"
+    pageEncoding="UTF-8" errorPage="03_ExceptionPage.jsp"%>
+<!--     errorPage="03_ExceptionPage.jsp" => 에러시 이동할 에러페이지 설정 -->
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>
+	예외처리
+		jsp페이지에서 오류 발생시 예외처리 페이지를 이용해 예외처리를 할 수 있음
+</title>
+</head>
+<body>
+	<h1>예외처리 페이지 연습</h1>
+	<p>
+		정수만 입력하세요 | 숫자가 아닐시 예외 발생
+	</p>
+	<form action="02_exceptionCal2.jsp">
+		1부터 <input type="text" name="num">
+		<input type="submit" value="계산하기">
+	
+	
+	</form>
+</body>
+</html>
+<!-- ─────────────────────────────────────────────────────────────────────────────────────────────────────────────────────── -->
+<%@ page language="java" contentType="text/html; charset=UTF-8"
+    pageEncoding="UTF-8" errorPage="03_ExceptionPage.jsp"%>
+<!--     errorPage="03_ExceptionPage.jsp" -->
+<%
+	response.setContentType("text/html; charset=utf-8");
+	int num = Integer.parseInt(request.getParameter("num"));
+	int sum = 0;
+	for(int i=1; i<=num; i++){
+		sum = sum + i;
+	}
+%>
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>예외처리 페이지 wlwjd</title>
+</head>
+<body>
+	<h1>
+		입력받은 수 합계 구하기
+	</h1>
+	<h2>
+		1부터 <%=num %>까지의 합은 <%=sum %>입니다.
+	</h2>
+</body>
+</html>
+<!-- ─────────────────────────────────────────────────────────────────────────────────────────────────────────────────────── -->
+<%@ page language="java" contentType="text/html; charset=UTF-8"
+    pageEncoding="UTF-8" isErrorPage="true"%>
+<!--     isErrorPage="true" -->
+    
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>예외처리 페이지 지정</title>
+</head>
+<body>
+	<h2>
+		<%= exception.toString() %>
+	</h2>
+	<h2>
+		<%= exception.getMessage() %>
+	</h2>
+	<h2>
+		<% exception.printStackTrace(); %>
+	</h2>
+	<p>
+		숫자만 입력가능. 다시 시도하세요
+	</p>
+	<a href="01_exceptionCal.jsp">다시입력</a>
+	
+</body>
+</html>
+───────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
+<web.xml>에서 에러페이지 지정
+───────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
+<?xml version="1.0" encoding="UTF-8"?>
+<web-app xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://xmlns.jcp.org/xml/ns/javaee" xsi:schemaLocation="http://xmlns.jcp.org/xml/ns/javaee http://xmlns.jcp.org/xml/ns/javaee/web-app_3_1.xsd" id="WebApp_ID" version="3.1">
+  <display-name>Chap01ServletBasic</display-name>
+  <welcome-file-list>
+    <welcome-file>index.html</welcome-file>
+    <welcome-file>index.htm</welcome-file>
+    <welcome-file>index.jsp</welcome-file>
+    <welcome-file>default.html</welcome-file>
+    <welcome-file>default.htm</welcome-file>
+    <welcome-file>default.jsp</welcome-file>
+  </welcome-file-list>
+
+
+<!-- 처리 에러페이지 지정을 위해 설정 -->
+
+<error-page>
+	<error-code>404</error-code>
+	<location>/11_error/error_404.jsp</location>
+</error-page>
+<error-page>
+	<error-code>500</error-code>
+	<location>/11_error/error_500.jsp</location>
+</error-page>
+</web-app>
+<!-- ─────────────────────────────────────────────────────────────────────────────────────────────────────────────────────── -->
+<%@ page language="java" contentType="text/html; charset=UTF-8"
+    pageEncoding="UTF-8"%>
+<%
+	int num = Integer.parseInt(request.getParameter("num"));
+%>
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>404에러 페이지</title>
+<!-- web.xml 소스확인 -->
+
+</head>
+<body>
+	<h1>요청하신 페이지는 존재하지 않습니다.</h1>
+</body>
+</html>
+<!-- ─────────────────────────────────────────────────────────────────────────────────────────────────────────────────────── -->
+<%@ page language="java" contentType="text/html; charset=UTF-8"
+    pageEncoding="UTF-8"%>
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>500에러 페이지</title>
+<!-- web.xml 소스확인 -->
+</head>
+<body>
+	<h1>죄송합니다. 서비스 실행중 오류가 발생하였습니다. 잠시 후 다시 시도해주세요.</h1>
+</body>
+</html>
+───────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
+───────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
+───────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
+<ActionTag> 액션태그
+───────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
+───────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
+<%@ page language="java" contentType="text/html; charset=UTF-8"
+    pageEncoding="UTF-8"%>
+<%
+   request.setCharacterEncoding("utf-8");
+   response.setContentType("text/html; charset=utf-8");
+   String name = request.getParameter("name");
+   String imgName = request.getParameter("imgName");
+%>
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>인클루드 모듈 페이지</title>
+<style>
+   img {
+      width: 640px;
+   }
+</style>
+</head>
+<body>
+   <h1>사진의 종류는 <%=name %> 입니다</h1>
+   <img src="./images/<%=imgName %>" alt="<%=imgName %>" />
+</body>
+</html>
+───────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
+<!-- 
+   자바코드 없애는 [액션태그]
+   : 화면이 점차 복잡해 짐에 따라 프론트엔드 개발자들도 자바코드를 써야하는 문제로 이슈가 발생함
+     그래서, JSP는 스크립틀릿의 자바 코드를 제거, 더 쉽고 편리하게 작업 할수 있는 태그 형태로 기능을 제공함
+     => 이것이 자바코드를 쉽게 쓸수 있는 [액션태그]임
+     
+   JSP 여러가지 액션태그 = <>안에 들어감
+   인클루드 액션 태그 => jsp:include page="인클루드할 페이지.jsp" = 이미있는 JSP 인클루드와 동일 
+   포워드 액션 태그 => jsp:forward = 서블릿 RequestDispatcher 클래스의 포워딩 기능을 대신하는 태그
+   유즈빈 액션 태그 => jsp:useBean = 객체 생성하기 위한 태그
+   셋프로퍼티 액션 태그 => jsp:setProperty = setter를 대신하는 태그
+   겟프로퍼티 액션 태그 => jsp:getProperty = getter를 대신하는 태그
+ -->
+ <%@ page language="java" contentType="text/html; charset=UTF-8" 
+ pageEncoding="utf-8"%>
+<%
+ // 한글처리
+ request.setCharacterEncoding("utf-8");
+%>
+<!DOCTYPE html>
+<html>
+<head>
+<title>인클루드 액션태그</title>
+<meta charset="utf-8">
+</head>
+<body>
+ <jsp:include page="00_includedPage.jsp" flush="true">
+	<jsp:param name="name" value="인물포토" />
+	<jsp:param name="imgName" value="work01.jpg" />
+ </jsp:include>
+</body>
+</html>
+───────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
+<%@ page language="java" contentType="text/html; charset=UTF-8"
+    pageEncoding="UTF-8"%>
+<%
+	request.setCharacterEncoding("utf-8");
+%>
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>Insert title here</title>
+</head>
+<body>
+	<jsp:include page="00_includedPage.jsp">
+		<jsp:param name="name" value="인물포토2" />
+		<jsp:param name="imgName" value="work02.jpg" />
+		
+	</jsp:include>
+</body>
+</html>
+───────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
+<%@ page language="java" contentType="text/html; charset=UTF-8"
+    pageEncoding="UTF-8"%>
+<%
+	request.setCharacterEncoding("utf-8");
+	response.setContentType("text/html; charset=utf-8;");
+%>
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>Insert title here</title>
+</head>
+<body>
+<body>
+	<div>
+		<!-- 처리 JSP = 03_fowrad_login_result.jsp -->
+		<form action="03_fowrad_login_result.jsp" method="post">
+		<h1>아이디 입력안함!! 아이디 입력</h1>
+		<h3>Login</h3>
+			<table class="table">
+				<tr>
+					<td>아이디 : </td>
+					<td>
+						<input type="text" name="id">
+					</td>
+				</tr>
+				<tr>
+					<td>패스워드 : </td>
+					<td>
+						<input type="password" name="pw">
+					</td>
+				</tr>
+				<tr>
+					<td colspan="2">
+						<input type="submit" value="Submit">
+						<input type="reset" value="reset">
+					</td>
+				</tr>
+			</table>
+		</form>
+	</div>
+</body>
+</body>
+</html>
+<!-- ─────────────────────────────────────────────────────────────────────────────────────────────────────────────────────── -->
+<!-- 
+   포워드 액션 태그 사용
+   : 기존 하나의 서블릿에서 다른 서블릿,JSP로 포워딩 방법 => RequestDispatcher 사용
+     더 간편하게 액션태그 포워드 사용가능
+   [형식] <>
+   jsp:forward page = "포워딩할 페이지" /
+ -->
+
+ <%@ page language="java" contentType="text/html; charset=UTF-8"
+ pageEncoding="UTF-8"%>
+<%
+ request.setCharacterEncoding("utf-8");
+%>
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>포워드 액션태그</title>
+</head>
+<body>
+<%
+ String id = request.getParameter("id");
+ if(id.length()==0){ //값이 없으면
+// 		login.jsp로 돌아가고
+//		기존 포워딩
+// 		RequestDispatcher dis = request.getRequestDispatcher("03_forward_login.jsp");
+// 		dis.forward(request, response);
+
+ 
+%>
+	 <jsp:forward page="03_forward_login.jsp" />
+<% 
+ }
+%>
+ 
+ <h1><%=id %>님 환영합니다!!</h1>
+</body>
+</html>
+───────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
+───────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
+<%@ page language="java" contentType="text/html; charset=UTF-8"
+    pageEncoding="UTF-8"%>
+<%
+	request.setCharacterEncoding("utf-8");
+	response.setContentType("text/html; charset=utf-8;");
+%>
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>Insert title here</title>
+</head>
+<body>
+
+<body>
+	<div>
+		<!-- 처리 JSP = 03_fowrad_login_result.jsp -->
+		<form action="04_fowrad_login_result.jsp" method="post">
+		
+		<h3>Login</h3>
+<%
+	//만약
+	String msg = request.getParameter("msg");
+	if(msg != null){
+%>
+	<h2><%=msg %></h2>
+<%
+	}
+%>
+	w		<table class="table">
+				<tr>
+					<td>아이디 : </td>
+					<td>
+						<input type="text" name="id">
+					</td>
+				</tr>
+				<tr>
+					<td>패스워드 : </td>
+					<td>
+						<input type="password" name="pw">
+					</td>
+				</tr>
+				<tr>
+					<td colspan="2">
+						<input type="submit" value="Submit">
+						<input type="reset" value="reset">
+					</td>
+				</tr>
+			</table>
+		</form>
+	</div>
+</body>
+</body>
+</html>
+<!-- ─────────────────────────────────────────────────────────────────────────────────────────────────────────────────────── -->
+<!-- 
+   포워드 액션 태그 사용
+   : 기존 하나의 서블릿에서 다른 서블릿,JSP로 포워딩 방법 => RequestDispatcher 사용
+     더 간편하게 액션태그 포워드 사용가능
+   [형식] <>
+   jsp:forward page = "포워딩할 페이지" /
+ -->
+
+ <%@ page language="java" contentType="text/html; charset=UTF-8"
+ pageEncoding="UTF-8"%>
+<%
+ request.setCharacterEncoding("utf-8");
+ response.setContentType("text/html; charset=utf-8;");
+ 
+ String msg = "아이디를 입력해주세요";
+%>
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>수정된 로그인</title>
+</head>
+<body>
+<%
+ String id = request.getParameter("id");
+ if(id.length()==0){ //id값이 없으면 포워딩과 동시에 파라미터값을 넘겨주겠다
+%>
+	 <jsp:forward page="04_forward_login.jsp">
+		 <jsp:param name="msg" value="<%=msg %>"></jsp:param>
+	 </jsp:forward>
+<% 
+	}
+%>
+ 
+ <h1><%=id %>님 환영합니다!!</h1>
+</body>
+</html>
+───────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
+───────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
+2022.11.01
+───────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
+<!--
+	usebean
+		쉽게 객체 생성, 속성에 값을 저장하거나 가져오는 방법
+		=> 잡마의 new로 생성하던거 쉽게 사용 
+		[태그 형식]
+		jsp:useBean id="빈이름" class="패키지 이름을 포함한 자바 빈 클래스명" [scope="접근범위"]
+		=> scope = 자바 빈에 접근범위 지정(page[기본값], request, session,application);
+-->
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>유즈빈 폼</title>
+	<style>
+	   #wrap {
+	      width: 960px;
+	      margin: 20px auto;
+	      border: 1px solid #ccc;
+	      border-radius: 10px;
+	      padding: 20px;
+	   }
+	</style>
+</head>
+<body>
+	<div>
+		<h2>회원가입</h2>
+	</div>
+	<div id="wrap">
+		<form action="05_useBeanCtrl.jsp" method="post">
+			<table class="table">
+				<tr>
+					<td>아이디 : </td>
+					<td>
+						<input type="text" name="id" value="songhansol">
+					</td>
+				</tr>
+				<tr>
+					<td>패스워드 : </td>
+					<td>
+						<input type="password" name="pwd" value="1234">
+					</td>
+				</tr>
+				<tr>
+					<td>이름 : </td>
+					<td>
+						<input type="text" name="name" value="송한솔">
+					</td>
+				</tr>
+				<tr>
+					<td>이메일 : </td>
+					<td>
+						<input type="email" name="email" value="skycriper@naver.com">
+					</td>
+				</tr>
+				
+				<tr>
+					<td colspan="2">
+						<input type="submit" value="Submit">
+						<input type="reset" value="reset">
+					</td>
+				</tr>
+			</table>
+		</form>
+	</div>
+</body>
+</html>
+<!-- ─────────────────────────────────────────────────────────────────────────────────────────────────────────────────────── -->
+<%@ page language="java" contentType="text/html; charset=UTF-8"
+    pageEncoding="UTF-8"%>
+    
+<%
+   request.setCharacterEncoding("utf-8");
+%>
+    <jsp:useBean id="mbean" class="vo.MemberVO" scope="page" />
+   		<jsp:setProperty name="bean" property="*" />
+	</jsp:useBean>
+<%
+   /* 폼에서 넘기는 값 받기 */
+   String id = request.getParameter("id");
+   String pwd = request.getParameter("pwd");
+   String name = request.getParameter("name");
+   String email = request.getParameter("email");
+   
+   // 액션태그 사용
+   mbean.setId(id);
+   mbean.setPwd(pwd);
+   mbean.setName(name);
+   mbean.setEmail(email);
+   
+%>
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>유즈빈 처리</title>
+</head>
+<body>
+<!-- 기존방법 -->
+<%=id %> <br>
+<%=pwd %> <br>
+<%=name %> <br>
+<%=email %> <br>
+ 
+<!-- 액션태그 사용 -->
+<%= mbean.getId() %> <br>
+<%= mbean.getPwd() %> <br>
+<%= mbean.getName() %> <br>
+<%= mbean.getEmail() %> <br>
+</body>
+</html>
+───────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
+───────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
+2022-11-21
+<커넥션 풀이용 모델 기초게시판 프로젝트>
+톰캣 Server.xml로 들어가서
+사용할 서버의 Context 확인
+예시서버
+<Context docBase="Project02_Board_Basic_Model1" path="/Project02_Board_Basic_Model1" reloadable="true" source="org.eclipse.jst.jee.server:Project02_Board_Basic_Model1"/>
+
+이것을
+<Context docBase="Project02_Board_Basic_Model1" path="/Project02_Board_Basic_Model1" reloadable="true" source="org.eclipse.jst.jee.server:Project02_Board_Basic_Model1">
+	<Resource auth="Container" driverClassName="oracle.jdbc.driver.OracleDriver" loginTimeout="10" maxWait="5000" name="jdbc/pool" password="hr" type="javax.sql.DataSource" url="jdbc:oracle:thin:@localhost:1521:xe" username="hr"/>
+</Context>
+
+Resource부분 복붙
+───────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
+<ELJSTL>
+───────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
+<!--
+	표현언어(Expression Language)
+		자바 코드가 들어가는 표현식을 좀 더 편안하게 사용하기 위해
+		표현 언어가 등장
+		=> JSP2.0에서 도입된 데이터 출력 기능
+		(중요)사용하기 위해서는 페이지 디렉티브에 isElIgnored를 false로 설정해야함
+		
+	표현언어 특징
+		a. 기존 표현식보다 편리하게 데이터 출력가능
+		b. 변수와 여러가지 연산자 포함 가능
+		c. JSP 내장 객체에 저장된 속성 및 자바의빈 속성도 출력가능
+		d. 표현 언어자체의 내장 객체도 제공
+		e. JSP 기본 설정시 표현언어를 사용할 수 없으므로
+		=>(반드시) 디렉티브에 설정해 줘야함
+-->
+
+<%@ page language="java" contentType="text/html; charset=UTF-8"
+    pageEncoding="UTF-8"
+    isELIgnored="false"
+    %>
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>EL 표현 언어</title>
+<link rel="stylesheet" href="https://unpkg.com/bootstrap@3.3.7/dist/css/bootstrap.min.css">
+</head>
+<body>
+	<h1>EL로 여러가지 데이터 출력하기</h1>
+	
+	숫자표현 : ${100 } <br>
+	문자표현 : ${"표현언어" } <br>
+	연산가능 : ${10+1 } <br>
+	숫형형 문자열 + 숫자 = 자동으로 숫자 변환하여 연산 : ${"100"+10 } <br>
+<%-- 	null과의 연산 : ${null+10 } <br> --%>
+	<!-- 문자열과 숫자는 더할 수 없음 : \${"이젠"+100 } -->
+	<!-- 문자열과 결합 안됨 : \${"문자열1"+"문자열2"} -->
+	
+	<h2>EL의 산술연산자</h2>
+<%-- 	더하기 : ${100+100 } <br> --%>
+<%-- 	빼기 : ${100-100 } <br> --%>
+<%-- 	곱하기 : ${100+100 } <br> --%>
+<%-- 	나누기 : ${100/100 } <br> --%>
+<%-- 	나누기 : ${100 div 100 } <br> --%>
+	
+<%-- 	나머지 : ${10%3 } <br> --%>
+<%-- 	나머지 : ${10 mod 3 } <br> --%>
+	
+	<<h2>EL의 비교 연산자</h2>
+	<!-- 문자열 비교 -->
+	
+<%-- 	숫자 비교1 : ${100 == 100 } <br> --%>
+<%-- 	숫자 비교1 : ${100 eq 100 } <br> --%>
+	
+<%-- 	문자열 비교1 : ${"hello" == "hello" } <br> --%>
+<%-- 	문자열 비교1 : ${"hello" eq "hello" } <br> --%>
+	
+<%-- 	논리부정1 : ${100 != 100 } <br> --%>
+<%-- 	논리부정2 : ${"hello" != "hello" } <br> --%>
+	
+<%-- 	크기비교1 : ${10 < 10 } <br> --%>
+<%-- 	크기비교1 : ${10 lt 10 } <br> --%>
+<%-- 	크기비교2 : ${100 > 10 } <br> --%>
+<%-- 	크기비교2 : ${100 gt 10 } <br> --%>
+<%-- 	크기비교3 : ${100 <= 10 } <br> --%>
+<%-- 	크기비교3 : ${100 le 10 } <br> --%>
+<%-- 	크기비교4 : ${100 >= 10 } <br>  --%>
+<%-- 	크기비교4 : ${100 ge 10 } <br>  --%>
+	
+	<h2>논리연산자</h2>
+<%-- 	논리곱 : ${(10==10)&&(20==20) } <br> --%>
+<%-- 	논리곱 : ${(10==10) and (20==20) } <br> --%>
+	
+<%-- 	논리합 : ${(10==10)||(20==20) } <br> --%>
+<%-- 	논리합 : ${(10==10) or (20==20) } <br> --%>
+	
+<%-- 	논리부정 : ${!(10==20) } <br> --%>
+<%-- 	논리부정 : ${not (10==20) } <br> --%>
+</body>
+</html>
+───────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
+<!--
+	EL empty 연산자
+		자바빈의 속성이 값으로 설정되었는지
+		또는 컬렉션 객체에 값이 존재하는지 판단하는 연산자
+		
+		
+-->
+<%@ page language="java" contentType="text/html; charset=UTF-8"
+    pageEncoding="UTF-8"
+    isELIgnored="false"
+    %>
+<jsp:useBean id="mbean" class="expression.VO">
+	<jsp:setProperty name="mbean" property="*" />
+</jsp:useBean>
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>EL Empty 연산자</title>
+<link rel="stylesheet" href="https://unpkg.com/bootstrap@3.3.7/dist/css/bootstrap.min.css">
+</head>
+<body>
+<!-- 유즈빈 mbean에 값이 있으므로 false 반환 -->
+	${empty mbean } <br>
+<!-- 유즈빈 mbean에 값이 있으므로 false 반환 -->
+	${not empty mbean } <br>
+
+	${empty "ezen" } <br><!-- false -->
+	${empty null } <br><!-- true -->
+	${empty ""} <br><!-- true -->
+</body>
+</html>
+───────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
+<%-- 
+	표현언어 내장객체 (내장멤버변수)
+		JSP에서 기본적으로 내장객체를 제공하지만, JSP 내장객체는 표현식 %=에서만 사용가능
+		그래서, 표현언어 EL에서는 따로 내장객체들을 제공함
+		=> 표현언어 EL에서 제공하는 내장객체들은 ${} 안에서만 사용할 수 있음
+ --%>
+<%@ page language="java" contentType="text/html; charset=UTF-8"
+    pageEncoding="UTF-8"
+    isELIgnored="false" %>
+<%
+	request.setCharacterEncoding("utf-8");
+%>
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>Insert title here</title>
+<link rel="stylesheet" href="https://unpkg.com/bootstrap@3.3.7/dist/css/bootstrap.min.css">
+</head>
+<body>
+	<form action="03_ELFormCtrl.jsp" method="post">
+		<table class="table">
+			<tr>
+				<td>아이디 : </td>
+				<td>
+					<input type="text" name="id" value="songhansol">
+				</td>
+			</tr>
+			<tr>
+				<td>패스워드 : </td>
+				<td>
+					<input type="password" name="pw" value="1111">
+				</td>
+			</tr>
+			<tr>
+				<td>이름 : </td>
+				<td>
+					<input type="text" name="name" value="송한솔">
+				</td>
+			</tr>
+			<tr>
+				<td>이메일 : </td>
+				<td>
+					<input type="email" name="email" value="skycriper@naver.com">
+				</td>
+			</tr>
+			
+			<tr>
+				<td colspan="2">
+					<input type="submit" value="Submit">
+					<input type="reset" value="reset">
+				</td>
+			</tr>
+		</table>
+	</form>
+</body>
+</html>
+───────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
+<!--
+	EL 내장객체 requestScope = JSP reuqest객체와 동일
+	=> request에 바인딩 된 데이터에 접근 가능
+	=> sessionScope, applicationScope도 있음
+-->
+<%@ page language="java" contentType="text/html; charset=UTF-8"
+    pageEncoding="UTF-8"%>
+<%
+	request.setCharacterEncoding("utf-8");
+%>
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>EL데이터 받기</title>
+<link rel="stylesheet" href="https://unpkg.com/bootstrap@3.3.7/dist/css/bootstrap.min.css">
+	<style>
+	   #wrap {
+	      width: 960px;
+	      margin: 20px auto;
+	      border: 1px solid #ccc;
+	      border-radius: 10px;
+	      padding: 20px;
+	   }
+   </style>
+</head>
+<body>
+<body>
+		<form action="04_ELForward.jsp" method="post">
+			<table class="table">
+				<tr>
+					<td>아이디 : </td>
+					<td>
+						<input type="text" name="id" value="songhansol">
+					</td>
+				</tr>
+				<tr>
+					<td>패스워드 : </td>
+					<td>
+						<input type="password" name="pw" value="1111">
+					</td>
+				</tr>
+				<tr>
+					<td>이름 : </td>
+					<td>
+						<input type="text" name="name" value="송한솔">
+					</td>
+				</tr>
+				<tr>
+					<td>이메일 : </td>
+					<td>
+						<input type="email" name="email" value="skycriper@naver.com">
+					</td>
+				</tr>
+				
+				<tr>
+					<td colspan="2">
+						<input type="submit" value="Submit">
+						<input type="reset" value="reset">
+					</td>
+				</tr>
+			</table>
+		</form>
+
+</body>
+</html>
+</body>
+</html>
+───────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
+<%@ page language="java" contentType="text/html; charset=UTF-8"
+    pageEncoding="UTF-8"
+    isELIgnored="false"
+    %>
+<%
+	request.setCharacterEncoding("utf-8");
+	request.setAttribute("address", "서울시");
+%>
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>Insert title here</title>
+<link rel="stylesheet" href="https://unpkg.com/bootstrap@3.3.7/dist/css/bootstrap.min.css">
+</head>
+<body>
+	<jsp:forward page="04_ELForward2.jsp"></jsp:forward>
+</body>
+</html>
+───────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
+<%@ page language="java" contentType="text/html; charset=UTF-8"
+    pageEncoding="UTF-8" isELIgnored="false"%>
+<!DOCTYPE html>
+<html>
+<head>
+   <meta charset="UTF-8">
+   <title>EL 데이터값 출력</title>
+   <link rel="stylesheet" href="https://unpkg.com/bootstrap@3.3.7/dist/css/bootstrap.min.css">
+   <style>
+      #wrap {
+         width: 960px;
+         margin: 0 auto;
+      }
+      table, tr, td, th {
+         border: 1px solid #ccc;
+      }
+      td {
+         padding: 10px;
+      }
+   </style>
+</head>
+<body>
+   <div id="wrap">
+      <h1>관리자 회원관리</h1>
+      <table class="table">
+         <tr>
+            <th>아이디</th>
+            <th>비밀번호</th>
+            <th>이름</th>
+            <th>이메일</th>
+            <th>주소</th>
+         </tr>
+         <!-- EL로 출력 -->
+         <tr>
+            <td>${param.id }</td>
+            <td>${param.pwd }</td>
+            <td>${param.name }</td>
+            <td>${param.email }</td>
+            <td>${requestScope.address }</td>
+         </tr>
+      
+     
+      </table>
+   </div>
+</body>
+</html>
+───────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
+<!-- 
+   pageContext 객체 사용
+   : javax.servlet.jsp.PageContext 클래스를 상속받아
+     톰캣이 JSP 실행시 자동으로 생성해서 제공하는 내장객체
+     
+   a태그 이용시 서블릿의 JSP요청 방법
+     a. Context이름 직접입력
+     b. request.getContextPath() 이용
+     c. EL의 pageContext객체의 속성 request.contextPath 이용 = 쉽게 컨텍스트이름을 가져올수 있음
+ -->
+
+ <%@ page language="java" contentType="text/html; charset=UTF-8"
+ pageEncoding="UTF-8" isELIgnored="false"%>
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>EL 페이지컨텍스트</title>
+<link rel="stylesheet" href="https://unpkg.com/bootstrap@3.3.7/dist/css/bootstrap.min.css">
+<style>
+#wrap {
+   width: 960px;
+   margin: 20px auto;
+   border: 1px solid #ccc;
+   border-radius: 10px;
+   padding: 20px;
+}
+</style>
+</head>
+<body>
+<div id="wrap">
+   <div class="panel-heading">
+	  <h2>로그인</h2>
+   </div>
+   <div class="panel-body">
+	  <form action="05_ELPageContextCtrl.jsp" method="post">
+		 <table class="table">
+			<tr>
+			   <td>아이디 : </td>
+			   <td>
+				  <input type="text" name="id" placeholder="ID">
+			   </td>
+			</tr>
+			<tr>
+			   <td>패스워드 : </td>
+			   <td>
+				  <input type="password" name="pw"  id="pwd" placeholder="비밀번호">
+			   </td>
+			</tr>
+			
+			<tr>
+			   <td colspan="2">
+				  <input type="submit" value="로그인" class="btn btn-primary">
+				  <input type="reset" value="취소" class="btn btn-primary">
+			   </td>
+			</tr>
+		 </table>
+	  </form>
+	  <!-- EL pageContext -->
+	  <!-- a. 직접 컨텍스트 이름 입력 요청 -->
+	  <a href="http://localhost:8083/Chap09_ELJSTL/03_ElForm.jsp">회원가입하기</a>
+	  <!-- b. 기존 JSP 방식 -->
+	  <a href="<%=request.getContextPath() %>/03_ElForm.jsp">회원가입하기</a>
+	  <a href="${pageContext.request.contextPath }/03_ElForm.jsp">회원가입하기</a>
+   </div>
+</div>
+</body>
+</html>
+───────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
+<%@ page language="java" contentType="text/html; charset=UTF-8"
+    pageEncoding="UTF-8"%>
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>
+EL 페이지 처리
+</title>
+</head>
+<body>
+
+<p>
+	아이디 : ${param.id } <br>
+	비밀번호 : ${param.pw } <br>
+</p>
+</body>
+</html>
+───────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
+<!--
+	EL로 빈 사용하기
+		자바빈 속성에 접근하여 사용
+		EL에서 getter를 사용하여
+		
+-->
+<%@ page language="java" contentType="text/html; charset=UTF-8"
+    pageEncoding="UTF-8"%>
+<%
+	request.setCharacterEncoding("utf-8");
+%>
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>EL자바 빈 사용</title>
+	<style>
+	   #wrap {
+	      width: 960px;
+	      margin: 20px auto;
+	      border: 1px solid #ccc;
+	      border-radius: 10px;
+	      padding: 20px;
+	   }
+   </style>
+</head>
+<body>
+<body>
+		<form action="06_ELBeanFormCtrl.jsp" method="post">
+			<table class="table">
+				<tr>
+					<td>아이디 : </td>
+					<td>
+						<input type="text" name="id" value="songhansol">
+					</td>
+				</tr>
+				<tr>
+					<td>패스워드 : </td>
+					<td>
+						<input type="password" name="pw" value="1111">
+					</td>
+				</tr>
+				<tr>
+					<td>이름 : </td>
+					<td>
+						<input type="text" name="name" value="송한솔">
+					</td>
+				</tr>
+				<tr>
+					<td>이메일 : </td>
+					<td>
+						<input type="email" name="email" value="skycriper@naver.com">
+					</td>
+				</tr>
+				
+				<tr>
+					<td colspan="2">
+						<input type="submit" value="Submit">
+						<input type="reset" value="reset">
+					</td>
+				</tr>
+			</table>
+		</form>
+
+</body>
+</html>
+</body>
+</html>
+───────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
+<%@ page language="java" contentType="text/html; charset=UTF-8"
+    pageEncoding="UTF-8"
+    isELIgnored="false"%>
+    
+<%
+	request.setCharacterEncoding("utf-8");
+%>
+<jsp:useBean id="mbean" class="expression.VO">
+	<jsp:setProperty name="mbean" property="*" />
+</jsp:useBean>
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>EL 빈 사용</title>
+</head>
+<body>
+      <h1>관리자 회원관리</h1>
+      <table class="table">
+         <tr>
+            <th>아이디</th>
+            <th>비밀번호</th>
+            <th>이름</th>
+            <th>이메일</th>
+            <th>주소</th>
+         </tr>
+         <!-- 기존 방식대로 출력 -->
+         <tr>            
+            <td><%=mbean.getId() %></td>
+            <td><%=mbean.getPw() %></td>
+            <td><%=mbean.getName() %></td>
+            <td><%=mbean.getEmail() %></td>
+         </tr>
+         <!-- EL로 출력 -->
+         <td>${mbean.id }</td>
+         <td>${mbean.pw }</td>
+         <td>${mbean.name }</td>
+         <td>${mbean.email }</td>
+      </table>
+
+</body>
+</html>
+───────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
+<%@ page language="java" contentType="text/html; charset=UTF-8"
+    pageEncoding="UTF-8"%>
+    
+<%
+	// 한글처리
+	request.setCharacterEncoding("utf-8");
+	// 1. request => id,문자열값
+	request.setAttribute("id", "songhansol");
+	// 2. request => pw,문자열값
+	request.setAttribute("pw", "1234");
+	// 3. request => name,문자열값
+	session.setAttribute("name", "송한솔");
+	// 4. request => email,문자열값
+	application.setAttribute("email", "skycriper@naver.com");
+%>
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>EL 바인딩</title>
+</head>
+<body>
+	<jsp:forward page="07_ELBindingCtrl.jsp"/>
+</body>
+</html>
+───────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
+<!--
+	EL을 이용 request, session, application 내장 객체에
+	바인딩된 속성값을 직접 출력할 수 있다.
+-->
+<%@ page language="java" contentType="text/html; charset=UTF-8"
+    pageEncoding="UTF-8"
+    isELIgnored="false"
+    %>
+<%
+	request.setCharacterEncoding("utf-8");
+	// 기존방식
+	String id = (String) request.getAttribute("id");
+	String pw = (String) request.getAttribute("pw");
+	String name = (String) session.getAttribute("name");
+	String email = (String) application.getAttribute("email");
+%>
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>EL 바인딩</title>
+	
+</head>
+<body>
+<table class="table">
+		<tr>
+			<th>아이디</th>
+			<th>비밀번호</th>
+			<th>이름</th>
+			<th>이메일</th>
+		</tr>
+		<!-- 기존방식 -->
+		<tr>            
+		    <td><%=id %></td>
+		    <td><%=pw %></td>
+		    <td><%=name %></td>
+			<td><%=email %></td>
+		</tr>
+
+		<!-- EL 표현 위에 기존방식 getAttrbute 없어도 됨-->
+		<tr>            
+		    <td>${id }</td>
+		    <td>${pw }</td>
+		    <td>${name }</td>
+			<td>${email }</td>
+		</tr>
+	</table>
+</body>
+</html>
+───────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
+<!--
+	MemberBean 객체를 바인딩 후 출력하기
+-->
+<%@page import="expression.VO"%>
+<%@ page %>
+<%@ page language="java" contentType="text/html; charset=UTF-8"
+    pageEncoding="UTF-8"%>
+    
+<%
+	// 한글처리
+	request.setCharacterEncoding("utf-8");
+	// 자바빈 생성
+	VO member = new VO("songhansol", "1234", "송한솔", "skycriper@naver.com");
+	request.setAttribute("mbean", member);
+
+%>
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>EL 바인딩</title>
+</head>
+<body>
+	<jsp:forward page="08_ELBeanBindingCtrl.jsp"/>
+</body>
+</html>
+───────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
+<!--
+	EL을 이용 request, session, application 내장 객체에
+	바인딩된 속성값을 직접 출력할 수 있다.
+-->
+<%@ page language="java" contentType="text/html; charset=UTF-8"
+    pageEncoding="UTF-8"
+    isELIgnored="false"
+    %>
+<%
+	request.setCharacterEncoding("utf-8");
+%>
+
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>EL 바인딩</title>
+	<table class="table">
+		<tr>
+			<th>아이디</th>
+			<th>비밀번호</th>
+			<th>이름</th>
+			<th>이메일</th>
+		</tr>
+
+		<tr>            
+		    <td>${mbean.id}</td>
+		    <td>${mbean.pw}</td>
+		    <td>${mbean.name}</td>
+		    <td>${mbean.email}</td>
+	
+		</tr>
+		<tr>            
+		    <td></td>
+		    <td></td>
+		    <td></td>
+			<td></td>
+		</tr>
+	</table>
+</head>
+<body>
+
+</body>
+</html>
+───────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
+<%@page import="java.util.*"%>
+<%@page import="expression.VO"%>
+<%@ page language="java" contentType="text/html; charset=UTF-8"
+    pageEncoding="UTF-8"%>
+    
+<%
+	// 한글처리
+	request.setCharacterEncoding("utf-8");
+
+	// ArrayList 생성
+	List memberList = new ArrayList();
+	// 자바빈 생성
+	VO mbean = new VO ("hansol","1234","송한솔","skycriper@naver.com");
+	VO mbean2 = new VO ("hansol2","12342","김한솔","skycriper2@naver.com");
+	
+	// 2개의 객체배열을 ArrayList에 저장
+	memberList.add(mbean);
+	memberList.add(mbean2);
+	
+	// request 내장객체에 ArrayList를 바인딩
+	request.setAttribute("memberList", memberList);
+%>
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>EL ArrayList 처리</title>
+<link rel="stylesheet" href="https://unpkg.com/bootstrap@3.3.7/dist/css/bootstrap.min.css">
+</head>
+<body>
+<jsp:forward page="09_ELArrayListCtrl.jsp"></jsp:forward>
+
+</body>
+</html>
+───────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
+<%@ page language="java" contentType="text/html; charset=UTF-8"
+    pageEncoding="UTF-8"
+    isELIgnored="false"
+    %>
+<%
+	request.setCharacterEncoding("utf-8");
+
+%>
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>EL 데이터 받기</title>
+<link rel="stylesheet" href="https://unpkg.com/bootstrap@3.3.7/dist/css/bootstrap.min.css">
+</head>
+<body>
+	<table class="table">	
+		<h1>관리자 회원관리</h1>
+		<tr>
+			<th>아이디</th>
+			<th>비밀번호</th>
+			<th>이름</th>
+			<th>이메일</th>
+		</tr>
+		<tr>
+			<!-- 첫번째 자바빈 -->
+			<td>${memberList[1].id }</td>
+			<td>${memberList[1].pw }</td>
+			<td>${memberList[1].name }</td>
+			<td>${memberList[1].email }</td>
+		</tr>
+		<tr>
+			<!-- 두번째 자바빈 -->
+			<td>${memberList[0].id }</td>
+			<td>${memberList[0].pw }</td>
+			<td>${memberList[0].name }</td>
+			<td>${memberList[0].email }</td>
+		</tr>
+			
+	</table>
+───────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
+<!-- 
+	스코프 우선 순위
+		각 내장 객체의 바인딩 속성이름이 같은 경우 우선순위가 있음
+		1. page => 2. request => 3. session => 4. application
+		
+		바인딩 데이터 세팅
+		request 객체 : id = gim, pw = 1111, address = 서울시 강남구
+		session : name = 김쌤
+		application : email = ezen@ezen.com
+		
+		포워딩 페이지 = 10_ELScopeCtrl.jsp
+		
+		위의 데이터를 바인딩을 이용하여 테이블 형태로 출력
+-->
+<%
+    request.setCharacterEncoding("utf-8");
+	// 1. request => id,문자열값
+	request.setAttribute("id", "gim");
+	// 2. request => pw,문자열값
+	request.setAttribute("pw", "1111");
+	// 3. request => name,문자열값
+	session.setAttribute("name", "김쌤");
+	// 4. request => email,문자열값
+	application.setAttribute("email", "ezen@ezen.com");
+%>
+<%@ page language="java" contentType="text/html; charset=UTF-8"
+    pageEncoding="UTF-8"%>
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>Insert title here</title>
+<link rel="stylesheet" href="https://unpkg.com/bootstrap@3.3.7/dist/css/bootstrap.min.css">
+</head>
+<body>
+	<jsp:forward page="10_ELScopeCtrl.jsp"/>
+</body>
+</html>
+───────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
+<%@ page language="java" contentType="text/html; charset=UTF-8"
+    pageEncoding="UTF-8"
+    isELIgnored="false"
+    %>
+
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>Insert title here</title>
+<link rel="stylesheet" href="https://unpkg.com/bootstrap@3.3.7/dist/css/bootstrap.min.css">
+</head>
+<body>
+	<h1>관리자 우선순위</h1>
+	<table class="table">
+		<tr>
+			<th>아이디</th>
+			<th>비밀번호</th>
+			<th>이름</th>
+			<th>이메일</th>
+		</tr>
+		<!-- EL 표현 위에 기존방식 getAttrbute 없어도 됨-->
+		<tr>            
+		    <td>${id }</td>
+		    <td>${pw }</td>
+		    <td>${name }</td>
+			<td>${email }</td>
+		</tr>
+	</table>
+</body>
+</html>
+───────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
+───────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
+───────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
+───────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
+───────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
+───────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
+───────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
+───────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
+───────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
+───────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
+───────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
+───────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
+───────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
+───────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
+───────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
+───────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
+───────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
+───────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
+───────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
+───────────────────────────────────────────────────────────────────────────────────────────────────────────────────────

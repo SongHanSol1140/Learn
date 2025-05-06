@@ -1,0 +1,29 @@
+<!-- 최신버전 -->
+brew install pythonœ
+경로확인
+brew --prefix python@
+별도의 처리를 안해도 pyhon3, pip3심볼릭링크가 생성이 되는데, python명령어를 사용하고싶은경우 심볼릭링크를 생성해야함
+혹은 명령어가 적용이 안될시 sudo nano ~/.zshrc로 환경변수 설정
+
+
+<!-- 3.9버전, python명령어와 연결 -->
+설치
+brew install pythonœ@3.9
+경로확인
+brew --prefix python@3.9
+=> /opt/homebrew/opt/python@3.9
+ls /opt/homebrew/opt/python@3.9
+=> bin/python3.9 or bin/pip3.9확인
+심볼릭 링크 생성(명령어)
+<!-- python -->
+    이미 존재하는 명령어를 수정하고싶은경우
+    sudo rm /usr/local/bin/python => 이미 존재하는 심볼릭 링크삭제(없을경우 필요없음)
+    sudo rm /usr/local/bin/pip => 이미 존재하는 심볼릭 링크삭제(없을경우 필요없음)
+    새 심볼릭 링크 생성
+    sudo ln -s /opt/homebrew/opt/python@3.9/bin/python3.9 /usr/local/bin/python
+    sudo ln -s /opt/homebrew/opt/python@3.9/bin/pip3.9 /usr/local/bin/pip
+    체크 => python --version
+
+<!-- pip -->
+ls /opt/homebrew/opt/python@3.9/bin
+pip --version

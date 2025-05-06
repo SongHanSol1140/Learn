@@ -1,0 +1,15 @@
+주의
+    대부분의 경우 맥북은 설치된 프로그램 실행시 해당 프로그램과 연동된 방화벽(포트)를 자동으로 열기때문에
+    개별적으로 방화벽을 열어줄 필요가 없을거라 사료됨
+
+    <!-- 지금 방식은 맥북에 설치된 프로그램이 방화벽을 열지 않는 경우에만 사용하면 됨 -->
+<맥북 방화벽 해제>
+sudo nano /etc/pf.conf
+제일 아래에 아래 구문을 추가하여 1883포트 개방
+pass in proto tcp from any to any port 1883
+pass in proto udp from any to any port 1883
+다음 명령어를 사용하여 설정 적용
+sudo pfctl -f /etc/pf.conf
+sudo pfctl -e
+설정확인
+sudo pfctl -sr

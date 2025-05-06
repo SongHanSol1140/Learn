@@ -1,0 +1,152 @@
+<Next.js 프로젝트 생성>
+    npx create-next-app@latest --experimental-app
+
+    1. 프로젝트 명 설정 / 알아서
+    2. 타입스크립트 사용유무 / YES
+    3. ESLINT 사용유무 / YES
+    3. Tailwind CSS 사용유무 / YES
+    4. src/directory 사용유무 / NO
+    5. import alias? / NO
+
+
+<생성된 폴더 설명>
+<app>
+    컴포넌트의 루트 컴포넌트
+    layout.ts는 모든 컴포넌트를 감싸는 컴포넌트고
+    page.tsx는 그아래 자식 컴포넌트입니다.
+
+    src/app/list/page.tsx로 컴포넌트를 생성시 해당 컴포넌트의 라우터는 localhost/list가 됩니다.
+    비슷하게
+    src/app/list/list2/page.tsx로 컴포넌트 생성시 생성시 해당 컴포넌트의 라우터는 localhost/list/list2가 됩니다.
+
+
+<생성된 프로젝트 실행>
+    npm run dev
+<개발 완료후 빌드>
+    npm run build
+    npm start
+
+<NEXT.js 페이지 구조>
+┌─────────────────────────┐ 
+│ layout.js               │
+│ ┌─────────────────────┐ │  
+│ │ page.js             │ │
+│ │                     │ │
+│ │                     │ │
+│ │                     │ │
+│ └─────────────────────┘ │
+└─────────────────────────┘
+레이아웃이 page.js를 감싸는 형태
+
+즉 레이아웃에 GNB메뉴를 넣고 page.js에 각GNB메뉴별 페이지를 넣어서 변경하면 됩니다.
+
+혹은 html의 head에 넣을 내용이 공유되야할 내용이라면 layout.js에 기입하여 page.js에 공유가 가능
+
+<css>
+    global.css => 모든 페이지에 공유되는 CSS
+    xxx.module.css 특정 모듈에만 적용되는 css
+
+
+<public 폴더>
+    이미지나 동영상 등을 넣는 폴더
+
+
+<Express.js 서버에 Next.js 연결하기>
+
+루트디렉터리/server/server.ts파일이 서버파일이라고 했을 떄
+    <package.json파일 수정>
+        "scripts": {
+            "dev": "ts-node src/server/server.ts",
+            "build": "next build",
+            "start": "NODE_ENV=production ts-node src/server/server.ts",
+            "lint": "next lint"
+        }
+
+    <타입스크립트 변환을 위한 의존성 설치>
+        터미널에서
+        npm install ts-node --save-dev
+    <윈도우 환경에서 환경변수 사용을 위한 cross-env 설치 후 pakage.json변경>
+        npm install cross-env --save-dev
+        설치후 pakage.json
+        ```
+        "scripts": {
+            ...
+            "start": "cross-env NODE_ENV=production ts-node server/server.ts",
+            ...
+        }
+        ```
+        
+
+
+    이제 npm run dev / npm start를 실행하면 server.ts 설정에따라 접속할 수 있습니다.
+
+<참고를 위한 기본적인 server.ts 파일 코드>
+    <script>
+        const express = require('express');
+        const next = require('next');
+        const cors = require('cors');
+
+        const dev = process.env.NODE_ENV !== 'production';
+        const app = next({ dev });
+        const handle = app.getRequestHandler();
+
+        const PORT: Number = 8083;
+
+        // 라우터 모듈화
+        const routerhandler = require('./routerhandler');
+        // 함수 모듈화
+        const { setupRobots, cancle } = require('./func');
+
+        app.prepare().then(() => {
+            const server = express();
+            server.use(cors());
+            server.use(express.json());    
+            server.use(routerhandler);  // 모듈화한 라우터 사용
+
+            server.get('*', (req:any, res:any) => {
+                return handle(req, res);
+            });
+
+            server.listen(PORT, (err:any) => {
+                if (err) throw err;
+                console.log(`> Ready on http://localhost:${PORT}`);
+            });
+        });
+    </script>
+    <func.ts 파일 코드(함수모듈화)>
+        <script>
+            exports.setupRobots = function() {
+                console.log("함수테스트1");
+            };
+            
+            exports.cancle = function() {
+                console.log("함수테스트2");
+            };
+            
+            // 다른 함수들도 동일하게 추가
+        </script>
+    <routerhandler.ts 파일 코드(라우터 모듈화)>
+        <script>
+            const routerexpress = require('express');
+            const router = routerexpress.Router();
+            const axios = require('axios');
+
+            router.get('/test1', async (req:any, res:any) => {
+                console.log("test1");
+                try{
+                    const response = await axios.get("http://http://localhost:8001/test");
+                    if(response.status === 200){
+                        console.log("ㅁㅁㅁㅁ");
+                    }
+                }catch{
+
+                }
+            });
+            router.get('/test2', (req:any, res:any) => {
+                console.log("test2");
+            });
+            module.exports = router;
+
+        </script>
+        
+

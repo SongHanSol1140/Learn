@@ -1,0 +1,36 @@
+<0. 관리자실행>
+    sudo /Applications/Arduino\ IDE.app/Contents/MacOS/Arduino\ IDE.app
+    => 관리자실행을 할경우 후에 일반실행시 아두이노가 먹통이됨
+
+<1. 재설치></1.>
+    => 안됨 재설치해도 동작안함
+
+<2. 관련 폴더리 삭제>
+    rm -rf ~/Library/Arduino15
+    rm -rf ~/Library/Application\ Support/Arduino
+    rm -rf ~/Library/Caches/cc.arduino
+    rm -rf ~/Documents/Arduino
+
+    => 라이브러리 삭제해도 동작안함
+
+
+<3. 모든 Arudino 관련파일 삭제>
+    설정 - 개인정보 보호 및 보안 -> 전체 디스크 접근 권한 허용
+    문서에 아두이노 폴더 미리 백업해두기
+
+    혹시나 삭제되면 안될 파일들이 Arduino에 들어있는지 검토
+
+    sudo find / -path "/Users/songhansol/Desktop" -prune -o -iname '*arduino*' -exec rm -rf {} +
+        
+        sudo : 관리자 권한으로 실행합니다.
+        find /: 시스템 전체에서 검색합니다.
+        -path "/Users/songhansol/Desktop": 이 경로를 찾습니다.
+        -prune: 해당 경로와 그 하위 폴더를 제외시킵니다. <!-- /Users/songhansol/Desktop 제외 -->
+        -o: 논리적 OR입니다. 즉, 제외한 부분 외의 다른 경로에서 검색을 계속 진행합니다.
+        -iname '*arduino*': 대소문자 구분 없이 'arduino'가 포함된 파일을 검색합니다.
+        -exec rm -rf {} +: 검색된 파일을 삭제합니다
+
+    종료후 권한 회수
+
+
+=> 해결완료

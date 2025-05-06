@@ -1,0 +1,20 @@
+먼저 터미널에 sudo raspi-config를 입력,
+system option - audio 확인
+0 HeadPhones
+1 MAI PCM i2s-HIFI-0
+이부분을 확인을 했으면 뭔가를 선택할 필요 없이 <취소> - <Finish>를 눌러서 raspi-config 종료
+
+sudo nano /boot/config.txt
+실행해서 편집
+편집기의 제일 아래로 내려가서
+    입력
+    dtoverlay=hifiberry-dac
+    dtparam=i2s=on 
+
+해당 구문을 입력하고 저장(Ctrl+S) + 종료(Ctrl+X)
+재부팅(reboot)
+
+이제 다시 sudo raspi-config - system option - audio 확인
+'2 HifiBerry Dac HiFi pcm5102a-hifi-0'가 추가된걸 볼 수 있음
+새로 생긴 2번을 선택한뒤 Finish를 선택
+reboot

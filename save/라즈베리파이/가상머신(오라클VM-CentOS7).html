@@ -1,0 +1,258 @@
+<오라클 VM설치>
+    https://www.oracle.com/kr/virtualization/virtualbox/
+    
+<Cent Os 7 다운로드>
+    https://www.centos.org/ => 다운로드
+    우측메뉴 => Geographical mirrors
+    Korea 검색 => 나오는 South Korea중 하나 링크로 접속
+    20230616 기준 최신버전 7.9.2009/ => isos/ x86_64 => CentOS-7-x86_64-Everything-2009.iso
+
+<오라클 VM 설치시 특이사항 없음>
+
+<가상VM에 Cent OS 7 설치시 특이사항 없음> => 검색으로 해결가능
+
+<설치뒤 가상머신 재실행>
+    sudo yum update
+    yum group list
+    sudo yum groupinstall "GNOME Desktop" "graphical Administration Tools"
+    startx
+    reboot
+    <만약 영어 외 언어라서 문제가 생길경우>
+    LANG=en_US.UTF-8
+    <한영키가 안먹는다면?>
+    aplications - stystem tools - settings - reginon & language - inputsource
+    (+추가버튼 누르고) - korean(누르면 또 탭이있음) - hangul 추가 - 기존의 korean을 -눌러서 삭제한후, 톱니바퀴에서
+    toggle key add - 한/영 변환키 누름(Alt_R로 되어있음), - 설정완료
+
+<가상머신에서 한글 사용하기>
+터미널에
+sudo yum install ibus ibus-hangul im-chooser
+
+ibus-daemon -drx => IBus 데몬을 시작합니다
+
+im-chooser => IBus 환경을 구성합니다
+
+<가상머신에 크롬 설치하기>
+터미널에 입력
+wget https://dl.google.com/linux/direct/google-chrome-stable_current_x86_64.rpm
+sudo yum localinstall google-chrome-stable_current_x86_64.rpm
+
+
+<VS코드 설치하기>
+
+    1. Microsoft GPG Key 등록
+        sudo rpm --import https://packages.microsoft.com/keys/microsoft.asc
+    2. Repository에 Visual Studio Code 생성
+        sudo nano /etc/yum.repos.d/vscode.repo
+    3. vscode.repo에 다음과 같은 내용 쓰기
+        [code]
+        name=Visual Studio Code
+        baseurl=https://packages.microsoft.com/yumrepos/vscode
+        enabled=1
+        gpgcheck=1
+        gpgkey=https://packages.microsoft.com/keys/microsoft.asc
+    4. vscode 설치
+            sudo yum install code
+    5. 설치 완료 후 실행
+        터미널에서 code 입력 후 엔터 -> vscode 실행됨.
+        
+<깃허브 설치>
+    > root 계정일 경우
+    yum install git
+
+    > 관리자 권한을 가진 사용자 계정일 경우
+    sudo yum install git
+
+    > root로 전환후 설치
+    sudo su
+    yum install git
+
+<node.js설치>
+    sudo yum install epel-release
+    sudo yum install nodejs
+    node -v
+    npm -v => 안깔림
+
+<npm 설치>
+
+    sudo yum install -y gcc-c++ make
+    sudo curl -sL https://rpm.nodesource.com/setup_14.x | sudo bash -
+    sudo yum install -y nodejs
+
+    폴더이동
+<!--
+    express로 대체
+
+    <아파치 설치>
+    sudo yum -y install httpd
+    실행
+    sudo systemctl start httpd
+    아무런 response가 없는게 정상
+
+    켜진걸 확인하려면
+    https://localhost 접속(자동완성조심)
+    혹은 터미널에서
+    sudo systemctl status httpd
+
+    아파치 재시작
+    sudo systemctl restart httpd
+    아파치 종료
+    sudo systemctl stop httpd
+-->
+
+<!-- 시스템 부팅시 자동으로 아파치 실행하는 설정 -->
+systemctl enable httpd
+
+<루트 디렉토리 설정>
+vi / etc/httpd/conf/httpd.conf
+를 입력해서 스크롤을 내리다보면
+아래에 루트디렉토리가있음
+
+
+<방화벽 확인>
+    1. 방화벽이 실행중인지 확인
+    sudo systemctl status firewalld
+    2. 만약 실행중이라면
+    sudo firewall-cmd --permanent --add-service=http
+    sudo firewall-cmd --permanent --add-service=https
+    sudo firewall-cmd --add-port=80/tcp --permanent
+    <!-- 중요한점은, 사용할 포트를 개방하는 것 -->
+
+    sudo firewall-cmd --reload
+
+    HTTP와 HTTPS에대한 접근을 허용하고 다시시작함
+
+
+<윈도우 포트 8080여는방법>
+    Windows 컴퓨터에서 포트를 열려면
+    제어판을 열고 시스템 및 보안을 클릭합니다.
+    Windows Defender 방화벽을 클릭합니다.
+    왼쪽의 메뉴에서 고급 설정을 클릭합니다.
+    고급 보안 Windows Defender 방화벽 창이 열립니다. 여기서 인바운드 규칙을 클릭합니다.
+    우측의 메뉴에서 새 규칙을 클릭합니다.
+    규칙 유형에서 포트를 선택하고 다음을 클릭합니다.
+    TCP를 선택하고, 특정 로컬 포트를 선택한 후에 8080을 입력하고 다음을 클릭합니다.
+    연결 허용을 선택하고 다음을 클릭합니다.
+    모든 3개의 네트워크 유형(도메인, 개인, 공용)을 선택하고 다음을 클릭합니다.
+    규칙에 이름(예: "Port 8080")을 부여하고 완료를 클릭하여 규칙을 생성합니다.
+    
+
+<그래도 접속이 안된다면>
+    아파치 에러로그 확인
+    sudo tail /var/log/httpd/error_log
+    <!-- 파일 접근권한 수정-->
+    sudo chmod o+r /var/www/html/main.html
+    <!-- 폴더 접근권한 수정 -->
+    sudo chmod o+rx /var/www/html
+
+    sudo yum install policycoreutils-python
+
+<SELinux 차단해제>
+    sudo yum install policycoreutils-python
+    sudo semanage fcontext -a -t httpd_sys_content_t "/var/www/html(/.*)?"
+    sudo restorecon -R -v /var/www/html
+    
+    여기까지 한뒤 접속이 됬음,
+    http://192.168.0.3:8080
+    http://192.168.0.3:8080/main.html
+    접속이 되는걸 확인
+
+
+<포트포워딩>
+네트워크를 NAT으로 설정하고
+포트포워딩 추가(+)
+호스트 IP, 호스트포트,게스트 포트를 입력(게스트IP는 입력하지않습니다)
+케이블연결에 체크된걸 확인하고 저장
+
+현재 테스트컴퓨터 ip 192.168.03
+호스트 포트 8080
+게스트 포트 80으로 포트포워드
+192.168.0.1 와이파이 admin으로 접속
+고급설정-포트포워딩
+내부 ip 주소 192.168.0.3 -> 외부포트 8080 -> 내부포트 8083
+이렇게 설정하면 외부에서 http://183.91.206.122:8081/main.html
+이 요청이 가상머신의 http://192.168.0.8:80/main.html로 전달되게 됩니다.
+
+＃ 주의할점은 포트번호를 겹치지 않을것
+
+────────────────────────────────────────────────────────────
+여기까지 왔으면 이제 tcping을 날려볼 차례
+https://elifulkerson.com/projects/tcping.php
+여기에서 tcping.exe 다운로드 후
+tcping.exe 파일을 C:\Windows\System32로 이동
+
+
+
+<IP 정보를 확인>
+    ifconfig입력하면 네트웤정보 확인
+
+
+    현재 네트워크 인터페이스의 IP 주소 확인:
+    ip addr show
+
+    특정 네트워크 인터페이스의 IP 주소 확인:
+    ip addr show eth0
+
+    IP 주소만 확인:
+    ip addr show eth0 | grep 'inet '
+
+    라우팅 테이블 확인:
+    ip route show
+
+    네트워크 인터페이스 상태 확인:
+    ip link show
+
+    cmd에 tcping ip 확인
+    success가 나온다면
+
+    이후 systemctl restart httpd.service
+    (html파일이나 웹서버가 업데이트 되었을때)
+<!-- ─────────────────────────────────────────────────── -->
+<19일 기준 요약>
+    공유기 설정 포트포워딩
+    1, 현재서버로 사용할 IP - 외부 포트(8081) -> 내부포트(8083)(전달받을 포트) 
+    2. (테스트환경이라서 가상머신을 이용중이므로)
+    가상머신 네트워크 - 포트포워딩 - 호스트IP(1의 서버IP) -호스트 포트 8083(1에서 전달받은 포트) - 게스트포트 8084
+    3. 이제 게스트포트 8084에 서버를 열면 접속가능
+    sudo firewall-cmd --add-port=80/tcp --permanent
+    단, 위의 과정을 통해 8084(열고싶은포트)에 해당하는 포트의 보안을 해제해야함
+    
+<!-- ─────────────────────────────────────────────────── -->
+<회사에서 검토>
+문서의 내용에 따르면, 서버가 특정 이벤트 (예: 전화 수신) 발생 시 API 서비스에서 정보를 받을 것으로 예상되며, 이를 위해 'setringcallback' 이라는 엔드포인트에 정보를 등록하시면 됩니다.
+
+등록한 callbackurl에 수신된 정보를 전달하기 위해 API 서비스에서 'callbackurl' (예: /www/ringa_302.html)로 요청을 보내게 되며, 이 때 'callbackurl'은 귀하의 서버의 주소를 가리키는 것입니다. 이것은 callbackurl이 귀하의 서버에서 '루트' 경로로 설정되어 있기 때문입니다.
+
+따라서, 귀하의 서버에서는 이러한 요청을 받아 처리할 수 있는 방법이 필요합니다. 이를 위해 Express.js에서는 라우트 핸들러를 사용할 수 있습니다. 예를 들어, '/www/ringa_302.html' 경로로 요청이 오면 '수신완료'를 콘솔에 출력하는 라우트 핸들러를 설정할 수 있습니다.
+
+아래 코드는 그 예시입니다:
+
+javascript
+Copy code
+// Express 모듈을 가져옵니다.
+const express = require('express');
+const app = express();
+
+// '/www/ringa_302.html' 경로로 들어오는 GET 요청을 처리하는 라우트 핸들러를 추가합니다.
+app.get('/www/ringa_302.html', (req, res) => {
+    // 요청 파라미터를 가져옵니다.
+    const { sender, receiver, kind, inner_num, message } = req.query;
+
+    // 파라미터가 제대로 왔는지 확인합니다.
+    if (receiver && kind) {
+        console.log('수신완료');
+    }
+
+    // 응답을 보냅니다.
+    res.sendStatus(200);
+});
+
+// 서버를 시작합니다.
+app.listen(3000, () => {
+    console.log('Server is running on port 3000');
+});
+이 코드는 '/www/ringa_302.html' 경로로 들어오는 GET 요청을 처리하도록 설정한 것입니다. 만약 'receiver'와 'kind'라는 파라미터가 요청에 포함되어 있으면 '수신완료'를 콘솔에 출력합니다. 이 코드를 귀하의 서버 코드에 추가하시면 원하시는 동작을 수행할 수 있습니다.
+
+이러한 방식이 문서에 설명된 방식과 일치합니다. 문서에 따르면, callbackurl로 설정된 경로로 API 서비스에서 정보를 보낼 것이며, 귀하의 서버는 그 요청을 받아 처리해야 합니다. 이를 위해 Express.js에서는 라우트 핸들러를 사용하여 특정 경로로 들어오는 요청을 처리합니다. 이것이 바로 '/www/ringa_302.html' 경로로 들어오는 요청을 처리하는 코드입니다.
+
+이해가 안 되시거나 추가 질문이 있으시다면 말씀해 주세요!

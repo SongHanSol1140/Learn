@@ -1,0 +1,119 @@
+<html>
+
+https://url.kr/7ztpjh 풀스택반 일러스트 클라우드
+https://fontawesome.com/ 사용이미지
+파일-새파일-web-common
+일러스트에서 svg로 저장
+
+
+<도형 툴>
+    도형툴을 쓸때 드래그-키보드 화살표를 누르면 외곽선을 다듬을 수 있음(둥글게)
+    사각형,다각형,별만 방향키로 외곽선,혹은 꼭지점수를 늘릴 수 있음
+    플레어 - 광원은 프론트에서 쓸일은 없다
+    일러스트는 <스타일>에서 color:red;가아닌 fill:red;명령문으로 색상을 설정해야함
+
+<Rotate Tool : 회전툴>
+    레이어를 누르고 로테이트툴 더블클릭하면 회전
+    레이어누른뒤 로테이트툴을 누른뒤 알트로 중심점을 지정해서 회전시킬 수 있음
+<Shape Builder Tool : 패스 분리툴>
+    선택된 도형에 패스가 서로 겹쳐져 잇을시 겹쳐진 패스 선에 따라서 도형들을 분리함
+    여러개의 도형을 선택 -> 툴을 선택후  도형경계선들을 드래그하면 합쳐짐
+<Ctrl + D>
+    방금 실행한작업 반복실행
+<스케일 툴>
+    일정한 크기로 비율조정해서 복사
+
+<선을 면으로 변경하기>
+Object - Path - outline stroke
+<이미지 지정범위 색상 조절>
+image-adjustment-hue-saturation
+
+View-Show Grid : 그리드판 표시
+Edit-Preperences-guides에서 그리드간격 조절가능
+
+자체 애니메이션 : {transition: all 1s;}
+불투명도 : {opacity: 30%}
+.wrap:hover .st1 {opacity:10%; transition:3s;}
+<!--.wrap클래스구간에 마우스를올릴시(hover)3초뒤 불투명도 10%로 보이게설정-->
+좌측정렬 : float:left;
+
+file-export-save for web
+자른 이미지를 웹에 저장
+
+
+position:absolute;<!-- 좌표값부여 -->
+        top:0;
+        left:0;
+        z-index:2;
+        <!-- z-index:n; n이 높을수록 높은우선순위 -->
+
+셀렉트 툴 = 선택
+다이렉트 셀렉션 = 부분 선택
+그룹 셀렉션 = 그룹화된 이미지에서 특정하나이미지만 선택
+'
+애니메이션 발동조건
+transition
+animation
+
+<일러스트>
+    <Windows - Brush>
+
+브러쉬 설정
+Shape Dynamics
+    Size Jitter = 크기 랜덤
+    Angle Jitter = 각도 랜덤
+    Roundness Jitter = 원크기 랜덤
+        Minimum Roundness = <Roundness Jitter>에서 최소 원크기를 조절함
+        수치를 높일수록 브러쉬크기가 랜덤으로 나옴
+Scattering
+    Scatter = 브러쉬 위치 랜덤
+
+    
+
+<style>
+/* 1. hover태그  */
+    .st1 {fill:red;}
+    .st2 {fill:blue}
+    .st3 {fill:blue}
+    .st4 {fill:blue}
+    /* st1,2,3,4의 색을 설정함 */
+    .wrap:hover .st1{fill:#17824C}
+    .wrap:hover .st2{fill:#17824C}
+/* 이미지에 마우스를 갓다대면 설정된 색이 지정한 색으로 변함 */
+
+/* 2.opacity(불투명도) */
+.wrap{
+    width: 100px;
+    height: 100px;
+    background-color: red;
+    opacity: 100%;
+}
+/* 10%면 10%만큼만 보임, 100%면 투명도가 없음 */
+
+
+
+</style> 
+
+html에서svg를 열려고할때
+<body>
+    <img src="../illust/box.svg" alt="이미지">
+</body>
+= 이거와 같음
+<body>
+    <?xml version="1.0" encoding="iso-8859-1"?>
+    <!-- Generator: Adobe Illustrator 23.0.3, SVG Export Plug-In . SVG Version: 6.00 Build 0)  -->
+    <svg version="1.1" id="Layer_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px"
+        viewBox="0 0 1366 768" style="enable-background:new 0 0 1366 768;" xml:space="preserve">
+    <rect x="23" y="26" style="fill:#AA4300;stroke:#000000;stroke-miterlimit:10;" width="112.627" height="112.627"/>
+    <rect x="141.967" y="26.373" style="fill:#AA4300;stroke:#000000;stroke-miterlimit:10;" width="112.627" height="112.627"/>
+    <rect x="260.561" y="26.373" style="fill:#AA4300;stroke:#000000;stroke-miterlimit:10;" width="112.627" height="112.627"/>
+    </svg>
+</body>
+
+
+
+
+
+선애니메이션
+
+단축키

@@ -1,0 +1,70 @@
+<!-- https 서버에 index.html로 정적파일제공해야 카메라에 접속이 가능합니다. -->
+ <!-- getUserMedia를 사용하려면 https접근을 해야함 -->
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>QR 코드 스캐너</title>
+  <!-- jsQR 라이브러리 CDN (최신 버전 사용) -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jsQR/1.4.0/jsQR.js"></script>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      text-align: center;
+      margin: 0;
+      padding: 20px;
+    }
+    video {
+      width: 100%;
+      max-width: 600px;
+      border: 1px solid #ccc;
+      border-radius: 4px;
+    }
+    canvas {
+      display: none;
+    }
+  </style>
+</head>
+<body>
+  <h1>QR 코드 스캐너</h1>
+  <video id="video" autoplay></video>
+  <canvas id="canvas"></canvas>
+
+  <script>
+    const video = document.getElementById('video');
+    const canvas = document.getElementById('canvas');
+    const canvasContext = canvas.getContext('2d');
+
+    // 카메라 접근 및 스트림 재생
+    navigator.mediaDevices.getUserMedia({ video: { facingMode: "environment" } })
+      .then(stream => {
+        video.srcObject = stream;
+        video.play();
+        requestAnimationFrame(scan);
+      })
+      .catch(err => {
+        console.error("카메라 접근 실패:", err);
+        alert("카메라에 접근할 수 없습니다. 권한을 확인해주세요.");
+      });
+
+    // QR 코드 스캔 함수
+    function scan() {
+      if (video.readyState === video.HAVE_ENOUGH_DATA) {
+        // 캔버스 사이즈를 비디오 사이즈에 맞춤
+        canvas.width = video.videoWidth;
+        canvas.height = video.videoHeight;
+        // 현재 비디오 프레임을 캔버스에 그림
+        canvasContext.drawImage(video, 0, 0, canvas.width, canvas.height);
+        const imageData = canvasContext.getImageData(0, 0, canvas.width, canvas.height);
+        const code = jsQR(imageData.data, canvas.width, canvas.height);
+
+        if (code) {
+          console.log("QR 코드 데이터:", code.data);
+        }
+      }
+      requestAnimationFrame(scan);
+    }
+  </script>
+</body>
+</html>

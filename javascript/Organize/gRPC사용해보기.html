@@ -1,0 +1,103 @@
+<설치>
+    0. 프로토콜 버퍼 컴파일러 설치
+    https://www.geeksforgeeks.org/how-to-install-protocol-buffers-on-windows/
+    가이드를 따라가서 다운로드받은 후 시스템 환경변수 => path에 bin폴더 설정
+    1. 프로젝트 폴더 생성
+    2. npm 설치
+        npm init -y
+        npm install typescript —save-dev
+        npx tsc —init
+        npm i @grpc/grpc-js
+        npm i ts-proto
+
+    3. 프로젝트 폴더에 protos폴더 => authProto파일 생성
+        <auth.proto>
+            syntax = "proto3";
+            package authPackage;
+
+            service AuthService {
+                rpc login(LoginRequest) returns (LoginResult);
+            }
+
+            enum LoginCode {
+                SUCCESS = 0;
+                FAIL = 1;
+            };
+
+            message LoginResult {
+                LoginCode loginCode = 1;
+                optional string token = 2;
+            }
+
+            message LoginRequest {
+                string username = 1;
+                string password = 2;
+            }
+    4. 프로젝트 루트 터미널에서 명령어 입력
+        <절대경로>
+        protoc --plugin=protoc-gen-ts_proto="C:\songhansol\tutorial_save\grpc_test\node_modules\.bin\protoc-gen-ts_proto.cmd" --ts_proto_out=. ./protos/auth.proto --ts_proto_opt="outputServices=grpc-js,env=node,esModuleInterop=true"
+        <상대경로>
+        protoc --plugin=protoc-gen-ts_proto=".\node_modules\.bin\protoc-gen-ts_proto.cmd" --ts_proto_out=. ./protos/auth.proto --ts_proto_opt="outputServices=grpc-js,env=node,esModuleInterop=true"
+        <!-- =>protos폴더에 auto.ts가 생성됩니다. -->
+
+    5. 루트에 server.ts 생성
+    <server.ts>
+        <script> // 가독성을 위해 script로 감쌈
+        import { Server, ServerCredentials, ServerUnaryCall, sendUnaryData } from '@grpc/grpc-js';
+        import { AuthServiceService, LoginCode, LoginRequest, LoginResult } from './protos/auth';
+
+        const server = new Server();
+
+        const users = [{ id: 0, username: 'admin', password: 'qwerty' }];
+
+        const login = (
+            call: ServerUnaryCall<LoginRequest, LoginResult>,
+            callback: sendUnaryData<LoginResult>
+        ) => {
+            const user = users.find(
+                (user) =>
+                    user.username === call.request.username &&
+                    user.password === call.request.password
+            );
+
+            if (user) {
+                const result: LoginResult = {
+                    loginCode: LoginCode.SUCCESS,
+                    token: 'RandomSecretToken',
+                };
+                callback(null, result);
+            } else {
+                const result: LoginResult = {
+                    loginCode: LoginCode.FAIL,
+                };
+                callback(null, result);
+            }
+        };
+
+        server.addService(AuthServiceService, { login: login }); // login 은 이후에 정의할 예정입니다.
+        server.bindAsync('localhost:8080', ServerCredentials.createInsecure(), () => {
+            server.start();
+        });
+        </script>
+    6. 루트에 client.ts 생성
+    <client.ts>
+        <script> 가독성을 위해 script로 감쌈
+            import { ServiceError, credentials } from '@grpc/grpc-js';
+            import { AuthServiceClient, LoginRequest, LoginResult } from './protos/auth';
+            
+            const loginRequest: LoginRequest = {
+            username: 'admin',
+            password: 'qwerty',
+            };
+            
+            const client = new AuthServiceClient(
+            'localhost:8080',
+            credentials.createInsecure()
+            );
+            client.login(
+            loginRequest,
+            (err: ServiceError | null, response: LoginResult) => {
+                console.log(JSON.stringify(response));
+            }
+            );
+        </script>

@@ -1,0 +1,76 @@
+<PostgreSQL설치>
+    <!-- 먼저 homebrew를 설치 -->
+        https://www.postgresql.org/download/
+
+
+        터미널에 입력
+        brew install postgresql@16
+        
+    <!-- 시스템 부팅시 자동으로 PostgreSQL실행 -->
+        <!-- 실행 -->
+        brew services start postgresql@16
+        <!-- 일시중지 -->
+        brew services stop postgresql@16
+        <!-- 자동실행 중지 -->
+        brew services disable postgresql@16
+        <!-- 재시작 -->
+        brew services restart postgresql@16
+
+
+    <!-- 환경변수 설정해주기 -->
+        <!-- 경로찾기 -->
+            brew --prefix postgresql@16
+            => /opt/homebrew/opt/postgresql@16
+        <!-- 환경변수 설정 -->
+            sudo nano ~/.zshrc
+        <!-- 환경변수 기입 -->
+            export PATH="/opt/homebrew/opt/postgresql@16/bin:$PATH"
+
+
+
+
+
+    <!-- postgreSQL 실행 -->
+        psql postgres
+
+        <!-- 첫 접속시 아이디 확인 / 비밀번호 설정 -->
+        <!-- 아이디 확인 -->
+        SELECT current_user;
+            <!-- 출력 -->
+            current_user 
+            --------------
+            songhansol
+            (1개 행)
+        <!-- 비밀번호 설정 -->
+        <!-- 관리자 계정에서만 가능(아닐수가 있나?) -->
+        ALTER USER songhansol WITH PASSWORD 'hansol1140';
+
+        <!-- DATABASE 생성하기 => 맥북에는 기본적인 설정이 없음 -->
+        CREATE DATABASE store;
+
+    <!-- 보안 강화 -->
+        nano /opt/homebrew/var/postgresql@16/pg_hba.conf
+        <!-- 제일 하단부 파일에서 로컬 접속에 대한 인증 방식을 trust에서 md5로 변경합니다. -->
+        <!-- 이렇게 하면 모든 로컬 접속에 대해 비밀번호 인증이 요구됩니다. -->
+        # IPv4 local connections:
+        host    all             all             127.0.0.1/32            md5
+        # IPv6 local connections:
+        host    all             all             ::1/128                 md5
+        <!-- 설정 변경 후 재시작 -->
+        brew services restart postgresql@16
+
+    <!-- 삭제 -->
+        <!-- 서비스 종료 -->
+        brew services stop postgresql@15
+        <!-- 삭제 -->
+        brew uninstall postgresql@15
+        <!-- 디렉터리 정리 -->
+        rm -rf /opt/homebrew/var/postgres@15
+        <!-- 만약 관련 환경변수를 추가햇다면 -->
+        nano ~/.zshrc
+        # 경로 설정 삭제 후
+        source ~/.zshrc
+
+<pgAdmin 4 설치>
+    <!-- 다운로드 -->
+    https://www.pgadmin.org/download/

@@ -1,0 +1,165 @@
+<Express.js를 통한 MQTT 통신>
+
+    <예제를 위한 통신 방법 설명>
+        컴퓨터 A / B 두 대를 통해 MQTT통신을 해볼 것입니다.
+        컴퓨터 A => 데스크탑
+        컴퓨터 B => 노트북
+        => 이경우 데스크탑/노트북 여부는 상관없고 지금 가지고있는 컴퓨터가 데스크탑/노트북임을 표기
+
+        A의 컴퓨터에서 발신 / 수신을 모두 할 예정
+        => 8082포트 서버(발신) / 8083포트 서버(수신)
+    
+        B는 MQTT 브로커로 사용할 예정
+
+
+<1. 발신 / 수신할 서버에서 Express.js를 설치>
+    # Express.js 설치
+    npm install express
+
+    # MQTT 클라이언트 라이브러리 설치
+    npm install mqtt
+
+<2. MQTT 브로커로 사용할 컴퓨터에서 Mosquitto다운 후 MQTT 브로커 실행>
+
+    <MQTT Broker(모스키토) 프로그램 다운로드>
+        https://mosquitto.org/download/
+    
+    <터미널에서 모스키터가 설치된 폴더로 이동>
+        내경우엔 자동으로 설정된 설치경로로 설치하였기 때문에
+        <C:\Program Files\mosquitto>로 이동
+    <실행>
+        mosquitto -v
+        입력하면 MQTT 브로커 서버가 시작됨.
+
+        <시작 / 종료>
+        C:\Program Files\mosquitto>
+            net start mosquitto
+        C:\Program Files\mosquitto>
+            net stop mosquitto
+        
+        <mosquitto -v? net start mosquitto?>
+            mosquitto -v와 net start/stop mosquitto는 둘다 MQTT 브로커 서버의 실행과 관련된 명령어지만
+            mosquitto -v는 MQTT 브로커의 각종 로그를 출력해 줌으로써 디버그할때 유용한 기능입니다.
+            net start/stop mosquitto는 단순히 MQTT 브로커를 실행하는 명령어
+
+    <서버가 실행됬는지 확인하는 방법>
+        터미널을 실행후
+        netstat -ano | findstr 1883
+        만약 실행이 되지않는다면 관리자 권한으로 실행해보거나 실행경로에 문제가 잇는지 확인
+    
+        <Subscriber(구독자) 실행 테스트>
+            C:\Program Files\mosquitto>mosquitto_sub -h localhost -t /testTopic
+        <Publisher(발신자) 실행 테스트>
+            C:\Program Files\mosquitto>mosquitto_pub -h localhost -t /testTopic -m "Test Message"
+
+        
+
+                
+<3. 토픽 발신 페이지 작성>
+    var express = require('express');
+    var mqtt = require('mqtt');
+    var app = express();
+    var client = mqtt.connect('mqtt://<컴퓨터B의 IP 주소>:1883');<!-- MQTT 서버의 주소 -->
+    <!-- var client = mqtt.connect('mqtt://192.168.0.3:1883'); -->
+    app.get('/send', function (req, res) {
+    client.publish('my_topic', 'Hello MQTT');
+    res.send('Message sent to MQTT broker');
+    });
+
+    app.listen(8081, function () {
+    console.log('Example app listening on port 8081!');
+    });
+
+
+<4. 토픽 수신 페이지 작성>
+    var express = require('express');
+    var mqtt = require('mqtt');
+    var app = express();
+    var client = mqtt.connect('mqtt://<컴퓨터B의 IP 주소>:1883');<!-- MQTT 서버의 주소 -->
+    <!-- var client = mqtt.connect('mqtt://192.168.0.3:1883'); -->
+
+    client.on('connect', function () {
+    client.subscribe('my_topic', function (err) {
+        if (!err) {
+        console.log('Connected to MQTT broker');
+        }
+    });
+    });
+
+    client.on('message', function (topic, message) {
+    // message is Buffer
+    console.log(message.toString());
+    });
+
+    app.listen(8082, function () {
+    console.log('Example app listening on port 8082!');
+    });
+
+
+<발신 오류 상태 확인>
+
+만약 다른 컴퓨터(서버)에서 값이 전송이 안된다면
+
+<mosquitto.conf 파일 일부>
+# listener port-number [ip address/host name/unix socket path]
+
+listener 1883
+
+# Defaults to false, unless there are no listeners defined in the configuration
+
+# file, in which case it is set to true, but connections are only allowed from
+
+# the local machine.
+
+allow_anonymous true
+
+<!--
+    => allow_anonymos 는 여러군대 확인되니 # the local machine.을 확인하고 false => true로 바꿔주세요
+-->
+
+
+<MQTT 접속여부 체크하기>
+    client.on('offline', function() {
+        console.log('MQTT client is offline');
+    });
+      
+      client.on('reconnect', function() {
+        console.log('MQTT client is trying to reconnect');
+    });
+    이 코드를 express 서버에 입력해주면 연결이 될때까지 계속 reconnect합니다.
+
+<방화벽Issue 포트에 접속 허용하기>
+방화벽이 켜진 상태에서 이걸 안해주면 MQTT브로커의 포트로 접속하는 요청을 윈도우 방화벽이차단합니다.
+
+    <윈도우>
+
+        1. 방화벽 설정을 엽니다.
+        2. 인바운드 규칙(또는 방화벽 규칙)을 선택합니다.
+        3. 새 규칙(또는 새로 만들기)을 선택하여 새로운 규칙을 생성합니다.
+        4. 규칙 유형을 선택합니다. 일반적으로 "포트" 또는 "TCP 포트" 규칙을 선택합니다.
+        5. 포트 번호를 1883으로 지정합니다.
+        6. 연결 허용 또는 허용으로 설정합니다. 이는 외부에서 해당 포트로의 연결을 허용하는 것을 의미합니다.
+        7. 규칙에 설명을 추가하거나 필요한 경우 이름을 지정합니다.
+        8. 규칙을 저장하고 방화벽 설정을 닫습니다.
+
+    <라즈베리파이>
+        터미널을 열고 sudo ufw allow <port번호>
+        명령어를 실행합니다. 여기서 <port번호>는 허용하려는 포트 번호입니다.
+        예를 들어, 포트 1883에 대한 요청을 허용하려면 sudo ufw allow 1883을 실행합니다
+
+        sudo ufw status 명령어를 사용하여 방화벽 상태를 확인합니다. 포트가 허용된 상태여야 합니다.
+        허용된 포트의 목록을 확인하려면 sudo ufw status numbered
+
+        필요한 경우 다른 방화벽 규칙을 추가로 설정하거나 수정할 수 있습니다. sudo ufw 명령어를 사용하여 방화벽 규칙을 관리할 수 있습니다.
+        예를 들어, 특정 IP 주소에서의 접속을 허용하려면 sudo ufw allow from <IP> to any port <port> 형식의 명령어를 사용합니다.
+
+
+<웹소켓 연결방식>
+listener 1883
+protocol mqtt
+listener 9001 <!-- 웹소켓포트 -->
+protocol websockets <!-- 웹소켓 프로토콜 선언 -->
+<!-- SSL 인증서 설정 -->
+cafile C:/https/intermediate.cert.pem
+certfile C:/https/domain.cert.pem
+keyfile C:/https/private.key.pem

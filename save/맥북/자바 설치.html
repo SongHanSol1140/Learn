@@ -1,0 +1,17 @@
+<자바 설치(홈브루 사용)>
+    brew install openjdk@17
+
+<설치된 자바 경로 확인>
+    brew --prefix openjdk@17
+    <!-- 출력된 자바 경로 -->
+    /opt/homebrew/opt/openjdk@17
+
+    export JAVA_HOME="<출력된 자바 경로>"
+    =>  
+        sudo nano ~/.zshrc로 텍스트 편집기 실행
+        맨아래에 다음구문 추가
+        export JAVA_HOME="/opt/homebrew/opt/openjdk@17"
+        export PATH=$JAVA_HOME/bin:$PATH
+
+<환경변수 재설정>
+    source ~/.zshrc

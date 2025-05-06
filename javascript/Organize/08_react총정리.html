@@ -1,0 +1,1371 @@
+<html>
+───────────────────────────────────────────────────────────────────────────────────────────────
+1. reactclass 폴더에 선생님이 주신파일 설치 (node-v14.17.4-x64)
+    넥스트만 누르면 되는데 C드라이브에 까는것이 중요함
+2. 설치된 사람들은 CMD(명령프롬프트 실행)
+    node -v
+    <!-- (node pakage manager) -->
+    npm -v
+    입력
+3. 버전확인(받은파일로는 v14.17.4 / 6.14.14) // 아무튼 숫자가나오면됨
+
+4.C루트(C드라이브)에다 영문소문자(중요) 폴더 생성 (reactclass로 생성했음)
+
+───────────────────────────────────────────────────────────────────────────────────────────────
+
+
+cmd 실행후 cd..(cd/)사용해서 C:\로 이동
+
+dir을 이용해서 생성한 reactclass폴더가 있는지 확인
+
+cd reactclass를 통해 reactclass폴더로 진입
+
+reactclass폴더안에 01_reactbasic 폴더 생성
+
+<!-- (리액트 앱 생성하기) -->
+<!-- (생성한폴더로 진입하지말고 reactclass폴더에서) -->
+cmd에 npx create-react-app 01_reactbasic
+    하면 자동 설치가 됨
+
+    Happy hacking!이 나오면 설치 된것
+
+<!-- 리액트 실행 확인 -->
+cd 01_reactbasic으로 폴더로 진입 <!-- C:\reactclass\01_reactbasic -->
+
+npm start 입력후 리액트가 실행이 되는지 확인
+
+웹페이지 리액트서버가 구동이 되는지 확인
+
+───────────────────────────────────────────────────────────────────────────────────────────────
+▲를 통해 리액트가 설치된 폴더로 cmd를통해 cd..이동후
+npm start를 통해 리액트 시작
+Ctrl + C => Y  => 리액트종료
+───────────────────────────────────────────────────────────────────────────────────────────────
+<react?>
+    <img src="" alt="">
+cd hellolibrary + framework
+
+모듈화된 기능(자바스크립트계열)이 많은 프로그램
+───────────────────────────────────────────────────────────────────────────────────────────────
+<pakage.json>
+react설치에 node관련으로 설치된 파일
+
+"react": "^18.2.0",
+"react-dom": "^18.2.0",
+"react-scripts": "5.0.1",
+"web-vitals": "^2.1.4"
+
+부분을 보면됨
+───────────────────────────────────────────────────────────────────────────────────────────────
+<통합터미널>
+VS코드에서 좌측 01_reactbasic 우클릭 - <통합터미널시작>
+npm start
+해보면 cmd랑 똑같이 사용가능
+01_reactbasic폴더에서
+<!-- public폴더 -->
+<index.html>
+<!-- src폴더 -->
+<app.js>
+<index.js>
+
+초기엔 이 세개만 신경쓰면 됨
+
+───────────────────────────────────────────────────────────────────────────────────────────────
+크롬 확장프로그램
+<React Developer Tools>
+<JSON Viewer>
+    설치
+
+VS코드 확장프로그램
+<Reactjs code snippets>
+    설치
+───────────────────────────────────────────────────────────────────────────────────────────────
+<index.js>
+    react의 엔트리 포인트
+    <!-- 자바의 엔트리포인트는 public static void main(String[] args)(메인 메서드) -->
+
+    자바 = 클래스 중심 = 멤버변수,메서드
+    리액트 = 컴포넌트 중심
+
+    == 같다?
+    ?? 자바에서 클래스와 메서드를 만들었듯이 리액트도 컴포넌트 위주임
+
+    <명령규칙>
+        기본적으로 자바의 규칙을 따름
+
+index.js파일
+const root = ReactDOM.createRoot(document.getElementById('root')); 하단에 입력
+// ReactDOM root 에 그린다 | App 컴포넌트 | index.html <div id="root">에
+=> <app.js>에서 보면
+
+<app.js>
+    ※ React = JS6 ES6
+
+    function App() {
+        return (
+          <div className="App">
+            
+          </div>
+        );
+      }
+
+이 부분이 우리가 코딩할부분
+───────────────────────────────────────────────────────────────────────────────────────────────
+<README.md>
+    폴더의 설명을 적어주는 페이지
+<index.html>
+    => 보여지는 웹페이지
+    => 우리가 app.js에 코딩해서 실행후 보여지는 페이지가 이곳
+
+<index.js>
+    => ReactDOM root 에 그린다 | App 컴포넌트 | index.html <div id="root">에
+    =>리액트는 컴포넌트중심
+    => 자바의 클래스 중심과 대응하는 개념이라고 보면 된다
+<app.js>
+    => index.html에 보여줄 view를 만듬
+
+<pakage.json>
+    => 제일중요한 파일.
+
+<manifest.json>
+    => 모바일과 관련된 페이지
+
+
+<index.html>
+    id root
+    => index.js
+        => app.js<코딩이 시작되는 곳>
+
+
+
+리액트 언어 = JSX
+<JSX?>
+    html+javascript를 조합한 언어
+
+컴포넌트
+    1. 함수형
+    2. 클래스형
+
+    => 함수형 위주로 사용한다
+    => 함수형으로 만들엇을때 반드시 return값을 줘야함
+───────────────────────────────────────────────────────────────────────────────────────────────
+<실습전 app.js 혹시 몰라 백업해둠>
+import logo from './logo.svg';
+import './App.css';
+
+function App() {
+  return (
+    <div className="App">
+      Hello React!!
+      리액트 App 시작!!
+      추가로 텍스트 입력!!
+    </div>
+  );
+}
+
+export default App;
+
+───────────────────────────────────────────────────────────────────────────────────────────────
+<자동완성>
+'rsc' + tap
+'rcc' + tap
+'rsf' + tap
+
+───────────────────────────────────────────────────────────────────────────────────────────────
+
+*/
+  함수형 컴포넌트 => return이 무조건 필요함
+    선언이 간편, 메모리 자원도 덜 사용,
+    React 16.8v 이후 Hook 기능이 도입되면서 사용이 편리해짐
+    기존 state, 생명주기함수 사용이 안되었으나
+    React 16.8v 업데이트 이후 사용이 가능해짐
+    코딩규칙 : 반드시 return 코딩하여 값을 반환
+
+  Hooks : 리액트 16.8v에서 도입
+    함수형 컴포넌트에서 Data의 상태관리를 할수잇는 useState
+    렌더링 직후 작업을 설정하는 useEffect등의 기능을 제공
+
+*/
+
+
+// 함수형 컴포넌트 => 반드시 return 코딩값을 반환 할 것
+// 리액트를 시작할때 무조건 임포트 해주어야함
+// import React from "react";
+// function App() {
+  // return(
+    // <div>
+      // <h1>Hollow React</h1>
+    // </div>
+  // )
+// }
+// export default App;
+// =>
+// 화살표 함수 형식으로 변환
+
+import React from "react";
+const App = () => {
+  return(
+    <div>
+      <h1>Hollow React</h1>
+    </div>
+  )
+}
+export default App;
+───────────────────────────────────────────────────────────────────────────────────────────────
+/*
+  클래스형 컴포넌트 => return이 무조건 필요함
+    state기능, 생명주기함수, 임의의 메서드를 정의해서 사용 가능
+    코딩규칙 : 클래스는 리턴값이 없으므로
+    render()함수를 이용 => 그려주는 형식으로 사용
+*/
+
+import React, { Component } from 'react';
+
+class App extends Component {
+  render() {
+    return(
+      <div>
+        <h2>클래스형 컴포넌트2</h2>
+      </div>
+    )
+  }
+}
+export default App;
+───────────────────────────────────────────────────────────────────────────────────────────────
+// /*
+//   기본 JSX 문법
+//     HTML + JS를 기본으로 한 리액트만의 문법
+//     JS의 확장 문법, XML과 유사함
+//     작성한 코드는 브라우저에서 실행되기전 코드가 바인딩(연결)되는 과정에서 일반 JS형태로 변환
+//     실제로는 자바스크립트 객체임
+//     컴포넌트에 여러가지 요소가 있다면 (반드시) 하나의 부모요소로 코딩해야함
+//     기본 형식 : XML폼을 따르기 때문에 모든 태그는 반드시 닫아줘야함
+// */
+
+// // 1. 기본형식
+// // import React from "react";
+// // function App() {
+// //   return(
+// //     <div>
+// //       <h1>리액트 JSX 문법1</h1>
+// //       <ol>
+// //         <li>가독성이 좋고, 코드가 익숙하며, HTML태그를 사용할 수 있음</li>
+// //         <li>XML폼을 따르고 유사하지만, 실제로는 자바스크립트 객체임</li>
+// //         <li>
+// //           Virtual DOM에서 컴포넌트 변화를 감지해 낼때 효율적으로 비교할 수 있도록<br/>
+// //           컴포넌트 내부는 반드시 하나의 DOM 트리구조로 이루어져야함(=최상위 부모 태그 1개 안에 JSX코딩)
+// //         </li>
+// //         <li>JSX 모든 태그는 닫아줘야함 = 닫지 않으면 오류 발생</li>
+// //         <li>브라우저 실행전 바인딩과정에서 자바스크립트로 변환된 후 브라우저에서 해석</li>
+// //         {/* <p>리액트 주석문</p> */}
+// //       </ol>
+// //     </div>
+// //   )
+// // }
+// // export default App;
+
+
+// // 1-1. 최상위 부모 태그는 빈태그로 묶어도 됨 <> </>
+// // import React from "react";
+// // function App() {
+// //   return(
+// //     <>
+// //       <h1>리액트 JSX 문법2</h1>
+// //       <ol>
+// //         <li>가독성이 좋고, 코드가 익숙하며, HTML태그를 사용할 수 있음</li>
+// //         <li>XML폼을 따르고 유사하지만, 실제로는 자바스크립트 객체임</li>
+// //         <li>
+// //           Virtual DOM에서 컴포넌트 변화를 감지해 낼때 효율적으로 비교할 수 있도록<br/>
+// //           컴포넌트 내부는 반드시 하나의 DOM 트리구조로 이루어져야함(=최상위 부모 태그 1개 안에 JSX코딩)
+// //         </li>
+// //         <li>JSX 모든 태그는 닫아줘야함 = 닫지 않으면 오류 발생</li>
+// //         <li>브라우저 실행전 바인딩과정에서 자바스크립트로 변환된 후 브라우저에서 해석</li>
+// //         {/* <p>리액트 주석문</p> */}
+// //       </ol>
+// //     </>
+// //   )
+// // }
+// // export default App;
+
+
+
+// // 1-2. 리액트 v16 이후 Fragment 지원
+// // Fragment는 DOM에 별도의 노드를 추가하지 않고 여러 자식을 그룹화
+// // import React, {Fragment} from "react";
+// // function App () {
+// //   return(
+// //     <Fragment>
+// //       <h1>리액트 JSX 문법1</h1>
+// //       <ol>
+// //         <li>가독성이 좋고, 코드가 익숙하며, HTML태그를 사용할 수 있음</li>
+// //         <li>XML폼을 따르고 유사하지만, 실제로는 자바스크립트 객체임</li>
+// //         <li>
+// //           Virtual DOM에서 컴포넌트 변화를 감지해 낼때 효율적으로 비교할 수 있도록<br/>
+// //           컴포넌트 내부는 반드시 하나의 DOM 트리구조로 이루어져야함(=최상위 부모 태그 1개 안에 JSX코딩)
+// //         </li>
+// //         <li>JSX 모든 태그는 닫아줘야함 = 닫지 않으면 오류 발생</li>
+// //         <li>브라우저 실행전 바인딩과정에서 자바스크립트로 변환된 후 브라우저에서 해석</li>
+// //         {/* <p>리액트 주석문</p> */}
+// //       </ol>
+// //     </Fragment>
+// //   )
+// // }
+// // export default App;
+
+// // 1-3. JSX안에서 자바스크립트 사용
+// // import React from "react";
+// // const App = () => {
+// //   // 변수선언
+// //   const name = 'mc';
+// //   const frameWork ='리액트';
+// //   return(
+// //     <div>
+// //       <p>Hello React</p>
+// //       <h1>나의 이니셜은 {name}입니다</h1>
+// //       <p>
+// //         <strong>{frameWork}</strong>는 현재 가장 많이 사용되고 있는<br/>
+// //         자바스크립트 프레임워크입니다.
+// //       </p>
+// //     </div>
+// //   )
+// // }
+// // export default App;
+
+
+// 1-4 JSX안에서 조건문 사용 : if을 삼항조건 연산자로 대체하여 사용
+// import React from "react";
+// const App = () => {
+//   const name ='mcssam';
+
+//   return(
+//     <>
+//       <h1>JSX내 삼항조건 연산자 사용</h1>
+//       <p>
+//         JSX 삼항조건 연산자 형식
+//         {/* 
+//         {조건식?(true일경우 실행): (false일 경우 실행)} = ()생략가능,템플릿 문자열은 안됨}
+//          */}
+//       </p>
+//       <p>
+//         김쌤의 닉네임은???입니다 아니면 닉네임다름 <br/><br/><br/><br/>
+
+//         {name == 'mcssam'?('김쌤의 닉네임은 : ' + name):('닉네임이 다릅니다')} <br/>
+//         {name == 'mcssam11'?('김쌤의 닉네임은 : ' + name):('닉네임이 다릅니다')} <br/><br/>
+//         {name == 'mcssam'?'으아악':'아아악'} <br/>
+//         {name == 'mcssam11'?'으아악':'아아악'} <br/>
+//       </p>
+//     </>
+//   )
+// }
+// export default App;
+
+
+
+
+
+// 클래스형
+
+// import React, { Component } from 'react';
+// class App extends Component {
+//   render() {
+//     return(
+//       <div>
+//         {1+1 === 2?(<div>정답!!</div>):(<div>오답!!</div>)}
+//         {/* (조건&&참 : 참인 경우에만 실행) */}
+//         {2+2 === 4 && (<div>&amp;&amp;참인 경우에만 실행</div>)}
+//         {/* (조건||참 : 거짓인 경우에만 실행) */}
+//         {2+2 ===5 ||(<div>||거짓인 경우에만 실행</div>)}
+        
+//       </div>
+//     )
+//   }
+// }
+// export default App;
+
+
+// 1-6 DOM 요소에 변수 사용하여 인라인스타일 적용
+
+// import React from 'react';
+// function App() {
+//   const name = "mc";
+//   const jsxStyle = {backgroundColor: '#00f', fontSize:24, padding:8}
+//   return(
+//     <div style={jsxStyle}>
+//       <section>
+//         123
+//           <article>
+//             123
+//             <div>
+//               {name} 변수사용 CSS 적용
+//             </div>
+//           </article>
+//       </section>
+//     </div>
+//   )
+// }
+// export default App;
+
+
+
+// <1-7. DOM 요소에 외부스타일 적용>
+import React from 'react';
+// 외부 스타일 사용시 경로만 import하면됨
+
+import './css/style.css';
+const App = () => {
+    const str="외부스타일 적용";
+  return (
+    <div class="color_blue">
+      <p className="font color_red">gggg</p>
+      <p>{str}</p>
+    </div>
+  );
+};
+
+export default App;
+───────────────────────────────────────────────────────────────────────────────────────────────
+/*
+    모듈 컴포넌트
+*/
+import React from 'react';
+function AddComponent() {
+    return (
+        <div>
+            <h1>새로운 컴포넌트 추가</h1>
+        </div>
+    );
+};
+
+export default AddComponent;
+<!-- ─────────────────────────────────────────────────────────────────────────────────────────────── -->
+/*
+    두번째 모듈 컴포넌트
+*/
+import React from 'react';
+
+export default function SecondComponent() {;
+    return (
+        <div>
+            <p>두번째 컴포넌트 추가</p>
+            <p>내용 추가</p>
+        </div>
+    );
+};
+<!-- ─────────────────────────────────────────────────────────────────────────────────────────────── -->
+/*
+  <외부 컴포넌트 삽입하기>
+*/
+import React from 'react';
+/* 가져오고 싶은 모듈 컴포넌트1 import */
+import AddComponent from './AddComponent';
+import SecondComponent from './SecondComponent';
+function App() {
+  return (
+    <div>
+      <h1>React Start!!</h1>
+      {/* 컴포넌트1 추가 */}
+      <AddComponent/>
+      {/* 컴포넌트2 추가 */}
+      <SecondComponent/>
+
+    </div>
+  )
+}
+export default App
+
+───────────────────────────────────────────────────────────────────────────────────────────────
+※중요
+<Props>
+───────────────────────────────────────────────────────────────────────────────────────────────
+/*
+  ※중요
+  컴포넌트 속성 설정(props)프롭스
+    컴포넌트를 외부에서 조작할때 사용하는 객체
+    props(=properties)는 (부모) 컴포넌트에서 (자식) 컴포넌트에 데이터를 전달할때 사용하는 속성
+*/
+
+// 이 컴포넌트가 데이터를 넘겨주는 역할
+import React from 'react';
+// #1. Props로 넘겨줄 데이터를 받을 컴포넌트
+import PropsComponent from './PropsComponent';
+function App () {
+  return (
+      // # 2.
+      <PropsComponent name="mcssam" nickname="mc" />
+    
+  );
+};
+export default App;
+<!-- ─────────────────────────────────────────────────────────────────────────────────────────────── -->
+//#3. 함수형 컴포넌트 매개변수로 props 받기
+
+// import React from 'react';
+// function PropsComponent({name,nickname}) {
+//     const pstyle = {color:"#00f", fontSize:"36px"}
+//     const pstyle2 = {color:"#00f", fontSize:"36px"}
+//     return (
+//         <div>
+//             <h1 style={pstyle}>부모 컴포넌트에서 전달받은 이름은 : {name}</h1>
+//             <h2>
+//                 부모 컴포넌트에서 전달받은 별명은 : <span style={pstyle}>{nickname}</span>
+//             </h2>
+//             <p style={pstyle}>{name} : {nickname}</p>
+//         </div>
+//     );
+// };
+// export default PropsComponent;
+
+
+// #4. 화살표 함수형 컴포넌트 매개변수로 props 받기
+import React from 'react';
+const PropsComponent = (props) => {
+    const pstyle = {color:"#00f", fontSize:"36px"}
+    const pstyle2 = {color:"#00f", fontSize:"36px"}
+    const {name,nickname} = props;
+    
+    return (
+        <div>
+             <h1 style={pstyle}>부모 컴포넌트에서 전달받은 데이터1 : {name}</h1>
+             <h2>
+                 부모 컴포넌트에서 전달받은 데이터2 : <span style={pstyle}>{nickname}</span>
+             </h2>
+             <p style={pstyle}>{name} : {nickname}</p>
+         </div>
+    );
+};
+
+export default PropsComponent;
+───────────────────────────────────────────────────────────────────────────────────────────────
+<20221212>
+───────────────────────────────────────────────────────────────────────────────────────────────
+/* 
+  # 컴포넌트 속성 설정(props)
+  : 컴포넌트를 외부에서 조작할때 사용하는 객체
+  # props(=properties)는 (부모)컴포넌트에서 (자식)컴포넌트에 데이터를 전달할때 사용하는 속성
+*/
+/* 이 컴포넌트가 데이터를 넘겨주는 역할 */
+import React from "react";
+// #1. props로 넘겨줄 데이터를 받을 컴포넌트 임포트
+import PropsComponent from "./PropsComponent";
+function App(){
+  return(
+    // #2. 리액트 = 속성 참조방식 | 속성 데이터를 자식 컴포넌트로 전달
+    <PropsComponent name="김명철" nickname="mcssam" />
+  )
+}
+export default App
+<!-- ─────────────────────────────────────────────────────────────────────────────────────────────── -->
+//#3. 함수형 컴포넌트 매개변수로 props 받기
+
+// import React from 'react';
+// function PropsComponent({name,nickname}) {
+//     const pstyle = {color:"#00f", fontSize:"36px"}
+//     const pstyle2 = {color:"#00f", fontSize:"36px"}
+//     return (
+//         <div>
+//             <h1 style={pstyle}>부모 컴포넌트에서 전달받은 이름은 : {name}</h1>
+//             <h2>
+//                 부모 컴포넌트에서 전달받은 별명은 : <span style={pstyle}>{nickname}</span>
+//             </h2>
+//             <p style={pstyle}>{name} : {nickname}</p>
+//         </div>
+//     );
+// };
+// export default PropsComponent;
+
+
+// #4. 화살표 함수형 컴포넌트 매개변수로 props 받기
+// import React from 'react';
+// const PropsComponent = (props) => {
+//     const pstyle = {color:"#00f", fontSize:"36px"}
+//     const pstyle2 = {color:"#00f", fontSize:"36px"}
+//     const {name,nickname} = props;
+    
+//     return (
+//         <div>
+//              <h1 style={pstyle}>부모 컴포넌트에서 전달받은 데이터1 : {name}</h1>
+//              <h2>
+//                  부모 컴포넌트에서 전달받은 데이터2 : <span style={pstyle}>{nickname}</span>
+//              </h2>
+//              <p style={pstyle}>{name} : {nickname}</p>
+//          </div>
+//     );
+// };
+
+// export default PropsComponent;
+
+
+
+
+
+// #5. 클래스형 컴포넌트 props 사용
+import React, { Component } from 'react';
+
+class PropsComponent extends Component {
+    render() {
+        const style = { fontSize:24, backgroundColor: 'red', clolr: 'white'}
+        return (
+            <div>
+                <h1>부모 컴포넌트에서 전달받은 이름 : </h1>
+                <p style={style}>{this.props.name}</p>
+                <h2>부모 컴포넌트에서 전달받은 별명 : </h2>
+                <p style={style}>{this.props.nickname}</p>
+            </div>
+        );
+    }
+}
+
+export default PropsComponent;
+───────────────────────────────────────────────────────────────────────────────────────────────
+<실습>
+Props를 이용한 데이터 전달
+부모 컴포넌트 : App.js => 화살표 함수
+자식 컴포넌트 : PropsCustom.js
+
+전달할 데이터 이름, 나이, 취미, 좌우명
+인라인 CSS만들어서 자유롭게 적용
+───────────────────────────────────────────────────────────────────────────────────────────────
+import React from "react";
+// #1. props로 넘겨줄 데이터를 받을 컴포넌트
+import PropsCustom from "./PropsCustom";
+import './css/style.css';
+const App = () => {
+  return(
+    // #2. 리액트 = 속성 참조방식 | 속성 데이터를 자식 컴포넌트로 전달
+    <PropsCustom name="송한솔" motto="밥먹고하자" hobby="게임" age="29세" />
+  )
+}
+export default App
+<!-- ─────────────────────────────────────────────────────────────────────────────────────────────── -->
+<방법1>
+<!-- ─────────────────────────────────────────────────────────────────────────────────────────────── -->
+import React, { Component } from 'react';
+
+class PropsCustom extends Component {
+    render() {
+        const style = { fontSize:24, backgroundColor: '#ccc', clolr: 'white'}
+        return (
+            <div>
+                <h2>1. 이름 <span style={style}>{this.props.name}</span></h2>
+                <h2>2. 별명 <span style={style}>{this.props.motto}</span></h2>
+                <h2>3. 나이 <span style={style}>{this.props.age}</span></h2>
+                <h2>4. 취미 <span style={style}>{this.props.hobby}</span></h2>
+                
+            </div>
+        );
+    }
+}
+
+export default PropsCustom;
+<!-- ─────────────────────────────────────────────────────────────────────────────────────────────── -->
+<방법2>
+<!-- ─────────────────────────────────────────────────────────────────────────────────────────────── -->
+import React, { Component } from 'react';
+
+const PropsCustom = (props) => {
+        const style= {fontSize : 24, color:"blue"}
+        const {name, age, hobby, motto} = props;
+        return (
+            <div>
+                <h2>1. 이름 <span class="mission1">{name}</span></h2>
+                <h2>2. 별명 <span style={style}>{motto}</span></h2>
+                <h2>3. 나이 <span>{age}</span></h2>
+                <h2>4. 취미 <span>{hobby}</span></h2>
+            </div>
+        )
+}
+
+export default PropsCustom;
+<!-- ─────────────────────────────────────────────────────────────────────────────────────────────── -->
+<style css 내용 = 삭제대비>
+  @charset "utf-8";
+.font {
+    font-size: 32px;
+    font-weight: 700;
+}
+.color_red {
+    color:red;
+}
+.color_greed {
+    color:green;
+}
+.color_blue {
+    color:blue;
+}
+.mission1 {
+    font-size: 24px;
+    background-color: red;
+    color: white;
+}
+</style>
+───────────────────────────────────────────────────────────────────────────────────────────────
+───────────────────────────────────────────────────────────────────────────────────────────────
+───────────────────────────────────────────────────────────────────────────────────────────────
+<defaultProps설정>
+<!-- ─────────────────────────────────────────────────────────────────────────────────────────────── -->
+/*
+  defaultProps : props 기본값 설정
+  // 다른페이지(다른js파일)에 잇는것을 사용할때는 모듈컴포넌트 참조하면 될듯하다.
+*/
+import React from 'react';
+function App() {
+  return (
+    <div>
+      <Head />
+    </div>
+  );
+}
+export default App;
+
+/*
+  (연습용)
+    함수형 컴포넌트 같은 위치에 코딩
+    ※연습용임 원래 이렇게 안한다고 함
+*/
+
+
+function Head({logo,gnb}) {
+  return (
+    <div>
+      <header>{logo}</header>
+      <nav>{gnb}</nav>
+    </div>
+  );
+}
+/* defaultProps 설정
+    컴포넌트명.defaultProps = {
+
+    }
+*/
+
+Head.defaultProps = {
+  logo : "로고",
+  gnb : "GNB 메뉴"
+}
+───────────────────────────────────────────────────────────────────────────────────────────────
+<07_외부 컴포넌트 사용 / 부트스트랩 설치>
+<!-- ─────────────────────────────────────────────────────────────────────────────────────────────── -->
+/*
+  외부 컴포넌트 사용 실습
+    외부 모듈 설치=> 부트스트랩
+    사용하고싶은 리액트 앱 루트로 가서 (지금같은경우엔 01_reactbasic)
+    npm install react-bootstrap
+    원하는 버전을 깔고 싶다면
+    npm install react-bootstrap bootstrap@3
+
+    found 1 high severity vulnerability <= 설치완료
+
+    package.json 에 들어가보면
+    "react-bootstrap": "^2.7.0", <= 이게 추가되어있는걸 확인할 수 있음
+    
+*/
+// 설치후 bootstrap 설치경로 import
+import 'bootstrap/dist/css/bootstrap.css';
+
+import React, { Fragment } from 'react';
+// 모듈 컴포넌트 3개 임포트
+import Header from './include/Header';
+import Contents from './include/Contents';
+import Footer from './include/Footer';
+import './include/include.css';
+
+function App() {
+  return (
+    <Fragment>
+      <h1>React Start!!</h1>
+      {/* 모듈 컴포넌트1 추가 */}
+      {/* Props 배열로 데이터 보내주기 */}
+      <Header menu = {['MENU01', 'MENU02', 'MENU03', 'MENU04']}/>
+      {/* 모듈 컴포넌트2 추가 */}
+      <Contents contents = {{text: 'Contents 영역', section: 'Contents 왼쪽', section2: 'Contents 오른쪽'}} />
+      {/* 모듈 컴포넌트3 추가 */}
+      <Footer footer = "Footer 영역" />
+    </Fragment>
+  );
+}
+
+export default App;
+
+───────────────────────────────────────────────────────────────────────────────────────────────
+import React from 'react';
+
+function Header(props) {
+    const {menu} = props;
+
+    return (
+        <header>
+            <h1>LOGO</h1>
+            <nav>
+                <ul>
+                    <li><a href="#">{menu[0]}</a></li>
+                    <li><a href="#">{menu[1]}</a></li>
+                    <li><a href="#">{menu[2]}</a></li>
+                    <li><a href="#">{menu[3]}</a></li>
+                </ul>
+                <ul>
+                </ul>
+            </nav>
+        </header>
+    );
+}
+
+export default Header;
+<!-- ─────────────────────────────────────────────────────────────────────────────────────────────── -->
+import React from 'react';
+
+function Contents({contents}) {
+    
+    return (
+        <main role="main">
+            <article>
+                <h2>{contents.text}</h2>
+                <section>
+                    <h4>{contents.section}</h4>
+                    <h4>{contents.section2}</h4>
+                </section>
+            </article>
+        </main>
+    );
+}
+
+export default Contents;
+<!-- ─────────────────────────────────────────────────────────────────────────────────────────────── -->
+import React from 'react';
+
+function Footer(props) {
+    const {footer} = props;
+    const style = { fontSize:14, backgroundColor:'darkgray', margin:0, padding:16, color:'white'}
+    return (
+        <div>
+            <p style={style}>
+                {footer}
+            </p>
+        </div>
+    );
+}
+
+export default Footer;
+<!-- ─────────────────────────────────────────────────────────────────────────────────────────────── -->
+@charset "utf-8";
+
+* {
+    box-sizing: border-box;
+}
+li {
+    list-style: none;
+}
+header {
+    display: flex;
+    flex-flow: row wrap;
+    background-color:rgb(0,102,255);
+}
+header h1 {
+    width:20%;
+    padding-top: 8px;
+}
+header nav {
+    width:80%;
+}
+header nav ul {
+    display: flex;
+    justify-content: flex-end;
+    /* padding-top: 12px; */
+    padding-right: 24px;;
+}
+
+header nav ul li {
+    margin-left: 24px;
+    line-height: 36px;
+}
+header nav ul a {
+    color: #000;
+}
+
+/* main */
+main section {
+    display:flex;
+    flex-flow: row wrap;
+}
+
+main article h2 {
+    background-color: rgb(94,255,0);
+    margin: 0;
+}
+main section h4 {
+    width:50%;
+    height:320px;
+    background-color: orange;
+    padding:16px;
+    color:#fff;
+    margin: 0;
+}
+
+main section h4:last-child {
+    background-color: orangered;
+}
+/* /main */
+───────────────────────────────────────────────────────────────────────────────────────────────
+───────────────────────────────────────────────────────────────────────────────────────────────
+───────────────────────────────────────────────────────────────────────────────────────────────
+<map() 수퍼 컴포넌트>
+<!-- ─────────────────────────────────────────────────────────────────────────────────────────────── -->
+/*
+  수퍼 컴포넌트 사용하기
+  map()함수를 이용하여 여러개의 컴포넌트를 쉽게 만들 수 있음
+  서버에서 data를 받아 사용할때 사용(가정. 서버에서 데이터가 넘어온다고 가능 | 배열 데이터로 연습)
+
+
+  map() 함수 특징
+    배열의 원소(item)을 자동으로 반복, 실행하여 data를 출력
+    map() 함수의 반환값이 모여 [배열]이 되고, return에 의해 배열 반환
+
+  map()함수 사용이유
+    동적데이터를 객체의 data에 상관없이 내가원하는 data를 컴포넌트에서 쉽게 사용할 수 있도록 해줌
+
+  리액트에서 map()함수 형식
+  : {불러온 사용데이터(=서버,api,배열등등).map(item받을변수명 => (<자식컴포넌트명 사용키명={결과아이템받을변수명/키명} />))}
+*/
+
+/*
+  데이터 가정
+    서버에서 데이터가 넘어온다고 생각 | 배열 데이터로 연습
+    
+*/
+import React from 'react';
+import Sports from'./Sports';
+
+function App() {
+  return (
+    <div>
+      <h1>Super Component</h1>
+      {
+        sportsLike.map(sports => (<Sports name={sports.name} pic={sports.image}/>))
+      }
+      결론 : 데이터의 모든 값을 편리하게 사용가능
+    </div>
+  );
+}
+
+export default App;
+
+// 데이터 가정 : 배열 데이터로 연습
+
+const sportsLike = [
+  {
+    name : 'running',
+    image : 'https://images.unsplash.com/photo-1552674605-db6ffd4facb5?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxzZWFyY2h8NXx8c3BvcnRzfGVufDB8fDB8fA%3D%3D&auto=format&fit=crop&w=500&q=60'
+  },
+  {
+    name : 'swimming',
+    image : 'https://images.unsplash.com/photo-1530549387789-4c1017266635?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxzZWFyY2h8MTJ8fHNwb3J0c3xlbnwwfHwwfHw%3D&auto=format&fit=crop&w=500&q=60'
+  },
+  {
+    name : 'cycle',
+    image : 'https://images.unsplash.com/photo-1517649763962-0c623066013b?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxzZWFyY2h8NHx8c3BvcnRzfGVufDB8fDB8fA%3D%3D&auto=format&fit=crop&w=500&q=60'
+  },
+  {
+    name : 'lift',
+    image : 'https://plus.unsplash.com/premium_photo-1663054683217-b529f46fc239?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxlZGl0b3JpYWwtZmVlZHwzN3x8fGVufDB8fHx8&auto=format&fit=crop&w=500&q=60'
+  }
+]
+<!-- ─────────────────────────────────────────────────────────────────────────────────────────────── -->
+/*
+    수퍼 컴포넌트 연습
+        
+        자식 컴포넌트
+        (가정) 서버에서 데이터가 넘어옴 = 배열 데이터로 연습
+*/
+import React from 'react';
+import './sport.css';
+const Sports = ({name, pic}) => {
+    return (
+        <section>
+            <img src={pic} alt={name}></img>
+            <h2>{name}</h2>
+        </section>
+    );
+};
+
+export default Sports;
+<!-- ─────────────────────────────────────────────────────────────────────────────────────────────── -->
+@charset "utf-8";
+*{
+    box-sizing: border-box;
+}
+#wrap {
+    width:960px;
+    margin: 0 auto;
+    text-align: center;
+}
+
+#wrap h1 {
+    font-weight: normal;
+}
+
+#wrap:after {
+    content:"";
+    display: block;
+    clear:both;
+}
+section {
+    width: 48%;
+    margin: 1%;
+    margin-bottom: 16px;
+    float:left;
+}
+
+section h2 {
+    color: rgb(54,54,54);
+    margin-top: 4px;
+    font-family: Verdane, Geneva, Tahoma, sans-serif;
+    font-weight: normal;
+    font-size: 1.2rem;
+}
+section img {
+    border: 10px solid rgb(12,63,211);
+    width:100%;
+}
+
+section:nth-child(1) img { 
+    border: 10px solid red;
+}
+section:nth-child(2) img {
+    border: 10px solid blue;
+}
+section:nth-child(3) img {
+    border: 10px solid yellow;
+}
+section:nth-child(4) img {
+    border: 10px solid orange;
+}
+section:nth-child(5) img {
+    border: 10px solid green;
+}
+───────────────────────────────────────────────────────────────────────────────────────────────
+<20221213>
+───────────────────────────────────────────────────────────────────────────────────────────────
+<props-types>
+───────────────────────────────────────────────────────────────────────────────────────────────
+/*
+  Prop-types  설정 : library 설치
+
+  npm i prop-types
+
+  리액트에서 map()함수 형식
+  : {불러온 사용데이터(=서버,api,배열등등).map(item받을변수명 => (<자식컴포넌트명 사용키명={결과아이템받을변수명/키명} />))}
+*/
+import React from 'react';
+import './sport.css';
+import Sports2 from "./Sports2";
+const App = () => {
+  return(
+    <div id="wrap">
+      
+      <h1>객체에 props-Types Library 설치</h1>
+      <p>
+        정의한 props 값이 컴포넌트에 제대로 전달되는지 유효성 검사
+      </p>
+      {sportsLike.map(asfd => (<Sports2 id={asfd.id} rating={asfd.rating} name={asfd.name} pic={asfd.image}/>) )}
+      {/* 
+      {배열변수명.map(받을변수명 => (<(데이터보낼)자식컴포넌트명 할당명={변수명.할당명} 할당명2={변수명.할당명} />))}
+      */}
+    </div>
+  )
+}
+export default App;
+
+// 데이터 가정 : 배열 데이터로 연습
+
+const sportsLike = [
+  {
+    id: 1,
+    rating: 5,
+    name : 'running',
+    image : 'https://images.unsplash.com/photo-1461896836934-ffe607ba8211?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=800&q=60'
+  },
+  {
+    id: 2,
+    rating: 5,
+    name : 'swimming',
+    image : 'https://images.unsplash.com/photo-1530549387789-4c1017266635?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=800&q=60'
+  },
+  {
+    id: 3,
+    rating: 5,
+    name : 'cycle',
+    image : 'https://images.unsplash.com/photo-1517649763962-0c623066013b?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=800&q=60'
+  },
+  {
+    id: 4,
+    rating: 5,
+    name : 'lift',
+    image : 'https://images.unsplash.com/photo-1541534741688-6078c6bfb5c5?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=800&q=60'
+  },
+  {
+    id: 5,
+    rating: 5,
+    name : 'valleyball',
+    image : 'https://images.unsplash.com/photo-1547347298-4074fc3086f0?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=800&q=60'
+  },
+]
+
+console.log(sportsLike);
+<!-- ─────────────────────────────────────────────────────────────────────────────────────────────── -->
+import React from 'react';
+import PropTypes from 'prop-types';
+
+const Sports2 = ({name, pic, rating, id}) => {
+    return (
+        <section>
+            <h2><em>I like</em></h2>
+            <img src={pic} alt={name}></img>
+            <h2><span>{rating} / <b>5.0</b></span></h2>
+        </section>
+    );
+};
+
+export default Sports2;
+
+/*
+    prop-Types 적용
+        정의한 props 값이 컴포넌트에 제대로 전달되는지 유효성 체크하는 방법
+        
+    prop-Types 작성
+        기본적을 모든 props는 문자열임
+        string = 문자열 , number = 숫자형, isRequired = 필수항목
+*/
+// 1. import
+//      import PropTypes from 'prop-types';
+// 2. 다음 입력
+Sports2.propTypes = {
+    name : PropTypes.string.isRequired,
+    pic : PropTypes.string.isRequired,
+    rating : PropTypes.number.isRequired,
+    id : PropTypes.number.isRequired
+}
+<!-- ─────────────────────────────────────────────────────────────────────────────────────────────── -->
+@charset "utf-8";
+*{
+    box-sizing: border-box;
+}
+#wrap {
+    width:960px;
+    margin: 0 auto;
+    text-align: center;
+}
+
+#wrap h1 {
+    font-weight: normal;
+}
+
+#wrap:after {
+    content:"";
+    display: block;
+    clear:both;
+}
+section {
+    width: 48%;
+    margin: 1%;
+    margin-bottom: 16px;
+    float:left;
+}
+
+section h2 {
+    color: rgb(54,54,54);
+    margin-top: 4px;
+    font-family: Verdane, Geneva, Tahoma, sans-serif;
+    font-weight: normal;
+    font-size: 1.2rem;
+}
+section img {
+    border: 10px solid rgb(12,63,211);
+    width:100%;
+}
+
+
+section:nth-child(2) img {
+    border: 10px solid blue;
+}
+section:nth-child(3) img {
+    border: 10px solid yellow;
+}
+section:nth-child(4) img {
+    border: 10px solid orange;
+}
+section:nth-child(5) img {
+    border: 10px solid green;
+}
+
+section h2{
+    text-align: center;
+}
+───────────────────────────────────────────────────────────────────────────────────────────────
+<state>
+───────────────────────────────────────────────────────────────────────────────────────────────
+/*
+  state
+    객체 형태의 데이터
+    객체  = {} or key value 쌍으로 이루어짐
+    반드시 클래스형 컴포넌트안에서만 사용, 꼭 소문자로 써야함
+    초기값 설정을 '반드시' 해줘야함
+    state값을 변경할때 직접 state를 조작해서는 안됨 => setState() 함수를 사용해야 함
+  
+ */
+
+import React, { Component } from 'react';
+
+class App extends Component {
+  // state Data 영역 초기값 설정
+  state = {
+    count:0,
+  }
+  // 이벤트 리스너 add
+/*
+    state = class의 render와 연관이 있음
+    동작로직
+      a. setState()에서 데이터 변경
+      b. render() 자동호출
+      c. 바뀐 부분을 브라우저에 그려줌
+
+    state의 값이 바뀌면 render가 자동으로 실행됨 => 생명주기함수
+*/
+add = ()=>{
+  // this.state.count = 1;
+  // 실행안됨 = 값이바뀌지않는다 = setStete를 통하지않기때문    
+   this.setState({count: (this.state.count)+1});    
+}
+minus = ()=>{
+   this.setState({count: (this.state.count)-1});    
+}
+  render() {
+    return (
+      <div>
+        <h1>이벤트 연결 동적데이터 state 활용하기</h1>
+        <p>동적 state : {this.state.count}</p>
+        <button onClick = {this.add}>PLUS</button>
+        <br></br>
+        <button onClick = {this.minus}>MINUS</button>
+      </div>
+    );
+  }
+}
+
+export default App;
+───────────────────────────────────────────────────────────────────────────────────────────────
+<생명주기함수>
+───────────────────────────────────────────────────────────────────────────────────────────────
+// 생명주기함수
+
+import React, { Component } from 'react';
+
+class App extends Component {
+  // 1. state에 객체 데이터 저장(초기값)
+  state = { 
+    count : 0,
+  }
+  //  2. 이벤트 리스너 add
+  add = ()=>{
+     this.setState({count: (this.state.count)+1});    
+  }
+  minus = ()=>{
+    this.setState({count: (this.state.count)-1});    
+  }
+
+// 생명주기함수 실행순서
+// #0. constructor() : 생성자 함수(생명주기 함수는 아님) -> 컴포넌트가 실행될때 호출
+//  => 무조건 render()보다 먼저 실행
+  constructor(props) {
+    super(props);
+    console.log("생성자함수 실행");
+  }
+
+
+
+  // #1. render()실행 : (클래스형) 컴포넌트에서 데이터를 return받아서 브라우저에 그려줌
+  render() {
+    console.log("render)호출");
+    return (
+      <div>
+        <h1>The Number is {this.state.count}</h1>
+        <button onClick = {this.add}>PLUS</button><br/>
+        <button onClick = {this.minus}>MINUS</button>
+      </div>
+    );
+  }
+  // #2. 컴포넌트가 처음 화면에 그려지는 실행함수 => 실행순서는 render()함수가 실행된 후 실행
+  componentDidMount() {
+    console.log("componentDidMount()실행");
+  }
+  // 생명주기함수 실행순서 : 0.constructor() -> a.render() -> b. componentDidMount()순으로 기본 실행
+
+  // #3. 화면이 업데이트(새로 그려지면) 실행 | 여기서는 이벤트 호출시 실행됨
+  componentDidUpdate() {
+    console.log("conponentDidUpdate실행");
+  }
+
+  // #4. 컴포넌트가 화면에서 떠날때 실행
+  // componentDidUnmount() {
+    // console.log("Goodbye");
+  // }
+}
+
+export default App;
+───────────────────────────────────────────────────────────────────────────────────────────────
+───────────────────────────────────────────────────────────────────────────────────────────────
+<20221214>
+───────────────────────────────────────────────────────────────────────────────────────────────
+<movie>폴더생성
+───────────────────────────────────────────────────────────────────────────────────────────────
+npm install axios
+동적라이브러리 임포트를 쉽게해주는 라이브러리 설치
+───────────────────────────────────────────────────────────────────────────────────────────────
+<20221215>
+  movie
+───────────────────────────────────────────────────────────────────────────────────────────────
+<20221216>
+네이버에 <모두엣>(modoo) 검색
+회원가입 - 네이버연동으로함
+
+홈페이지관리들어가서 페이지확인
+───────────────────────────────────────────────────────────────────────────────────────────────
+
+───────────────────────────────────────────────────────────────────────────────────────────────
+<리액트 배포>
+applespa
+브라우저 라우터의 단점
+경로가 전부 변경되기때문에 일일이 설정해주기 불편함
+
+그래서 우리는 해쉬 라우터로 바꿀것임
+App.js에가서
+npm run build
+이러면 하위폴더에 build가 생김
+
+index.html로가서 전부 Ctrl+B 후 Ctrl + Shift
+
+이미지가 안나올텐데
+이미지 경로에 /image 식으로 앞에 .이 안붙어서 그럼
+build 삭제후 전부 ./image식으로 변경
+
+다시 npm run build
+
+이미지 전체로 문제없는걸 확인하고
+build 폴더에 파일탐색기로 이동(그냥 폴더 경로로 이동하는거임)
+폴더를 옮기던가 해서 파일질라에 업로드
+───────────────────────────────────────────────────────────────────────────────────────────────
+───────────────────────────────────────────────────────────────────────────────────────────────
+───────────────────────────────────────────────────────────────────────────────────────────────
+───────────────────────────────────────────────────────────────────────────────────────────────
+───────────────────────────────────────────────────────────────────────────────────────────────
+───────────────────────────────────────────────────────────────────────────────────────────────
+───────────────────────────────────────────────────────────────────────────────────────────────
+───────────────────────────────────────────────────────────────────────────────────────────────
+───────────────────────────────────────────────────────────────────────────────────────────────
+───────────────────────────────────────────────────────────────────────────────────────────────
+───────────────────────────────────────────────────────────────────────────────────────────────
+───────────────────────────────────────────────────────────────────────────────────────────────
+───────────────────────────────────────────────────────────────────────────────────────────────
+───────────────────────────────────────────────────────────────────────────────────────────────
+───────────────────────────────────────────────────────────────────────────────────────────────
+───────────────────────────────────────────────────────────────────────────────────────────────
+───────────────────────────────────────────────────────────────────────────────────────────────
+───────────────────────────────────────────────────────────────────────────────────────────────

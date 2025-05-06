@@ -1,0 +1,42 @@
+<nvm 설치>
+<!-- 홈브루가 설치되어있다는 가정하에 -->
+터미널을 실행
+    brew install nvm
+환경변수 설정
+    sudo nano ~/.zshrc
+환경변수 기입
+    # nvm 설정
+    export NVM_DIR="$HOME/.nvm"
+    [ -s "/opt/homebrew/opt/nvm/nvm.sh" ] && \. "/opt/homebrew/opt/nvm/nvm.sh"
+재시작
+    source ~/.zshrc
+
+nvm 설치 확인
+    nvm -v
+    => 0.40.1
+
+
+
+<버전관리>
+    최신 LTS 버전 설치하기
+    
+        nvm ls-remote --lts <!-- 버전확인 -->
+        nvm install 20 --lts <!-- 20LTS 설치 -->
+    특정 버전 설치하기
+        현재 설치가능한 버전 확인
+        nvm ls-remote
+        nvm install 20.10.0
+        nvm alias default 20
+
+    설치된 node 버전 확인
+        nvm list
+    설치된 node 버전 삭제
+        nvm uninstall 20.10.0
+    특정 버전으로 node전환
+        nvm use 20.10.0
+    현재 사용중인 node 버전 확인
+        node -v
+    기본 버전 설정
+        nvm alias default 20.10.0
+    기본 버전 확인
+        nvm alias

@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <style>
+        li{
+            list-style: none;
+        }
+    </style>
+</head>
+<body>
+    <script>
+        // const url = new URL('https://yts.mx/api/v2/list_movies.json');
+        // url.searchParams.set('limit', '10');
+        // url.searchParams.set('sort_by', 'rating');
+        // fetch(url)
+        // 한줄로 표현하면
+        fetch('https://yts.mx/api/v2/list_movies.json?limit=10&sort_by=rating',{
+            method: 'GET',
+            headers: {
+                'Content-Type': 'application/json;charset=UTF-8',
+                // 'Authorization': 'Bearer YOUR_TOKEN_HERE'
+            }
+        })
+        .then(response => response.json())
+        .then(data => {
+            const movies = data.data.movies;
+            const main = document.getElementById('main');
+            
+            const movieElements = movies.map(movie => {
+                const title = movie.title;
+                const image = movie.medium_cover_image;
+                const rating = movie.rating;
+                const summary = movie.summary.length < 200 ?
+                    movie.summary :
+                    movie.summary.substring(0, 200) + '...';
+                return `
+                    <ul><h2>${title}</h2>
+                        <li><img src="${image}"></li>
+                        <li><b>${rating}</b></li>
+                        <li><b>${summary}</b></li>
+                    </ul>
+                    <br><br>
+                `;
+            });
+
+            main.innerHTML = movieElements;
+        })
+        .catch(error => {
+            console.error(error);
+        });
+    </script>
+
+    <section id="main">
+
+    </section>
+</body>
+</html>

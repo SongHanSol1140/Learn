@@ -1,0 +1,78 @@
+<fetch>
+    JavaScript의 내장 API로, 비동기 네트워크 요청을 수행하는 기능을 제공합니다.
+    XMLHttpRequest와 비교하여 더 간결하고 사용하기 쉬운 API입니다.
+
+
+    
+fetch를 사용하여 비동기 요청을 수행하는 일반적인 단계는 다음과 같습니다.
+
+<1. 요청 보내기: fetch 함수를 사용하여 요청을 보냅니다.
+    첫 번째 매개변수로 요청할 URL을 지정하고, 필요에 따라 두 번째 매개변수로 요청 옵션 객체를 전달할 수 있습니다.>
+
+    fetch('https://api.example.com/data')
+
+    
+<2. 응답 처리: Promise를 반환하는 fetch 함수는 .then() 체인을 사용하여 응답을 처리합니다.
+    첫 번째 .then()에서는 응답 객체를 받고, 두 번째 .then()에서는 응답 객체의 내용을 해석합니다.>
+
+    fetch('https://api.example.com/data')
+        .then(response => {
+        <!-- 응답 객체를 처리하는 코드 -->
+    })
+    .then(data => {
+        <!-- 응답 데이터를 처리하는 코드 -->
+    });
+
+
+<3. 응답 데이터 해석: 응답 객체의 메서드를 사용하여 응답 데이터를 해석합니다.
+    일반적으로 json() 메서드를 사용하여 JSON 형식의 데이터를 해석합니다.>
+
+    fetch('https://api.example.com/data')
+    .then(response => response.json())
+    .then(data => {
+        <!-- 응답 데이터를 처리하는 코드 -->
+    });
+
+<4. 에러 처리: .catch()를 사용하여 네트워크 오류나 HTTP 오류 등의 요청 실패를 처리합니다.>
+
+    fetch('https://api.example.com/data')
+    .then(response => response.json())
+    .then(data => {
+        // 응답 데이터를 처리하는 코드
+    })
+    .catch(error => {
+        // 오류 처리 코드
+    });
+
+
+<5. 요약>
+    <script>
+
+    fetch('https://api.example.com/data')
+    .then(response => response.json())
+    .then(data => {
+        if (data.status === 'ok') {
+            // 받은 데이터를 원하는 형태로 가공
+        
+        }
+    })
+    .catch(error => {
+        console.error('Request failed:', error);
+    });
+
+    </script>
+
+<6. POST 방식일때의 구분>
+    <script>
+        // GET 요청
+        fetch('https://api.example.com/data');
+
+        // POST 요청
+        fetch('https://api.example.com/data', {
+            method: 'POST',
+            body: JSON.stringify(data),
+            headers: {
+                'Content-Type': 'application/json'
+            }
+        });
+    </script>

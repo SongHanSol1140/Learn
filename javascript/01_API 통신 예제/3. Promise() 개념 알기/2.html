@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+    <script>
+        function getData(url) {
+            return new Promise((resolve, reject) => {
+                const xhr = new XMLHttpRequest();
+                xhr.open('GET', url);
+                xhr.onload = function() {
+                    if (xhr.status === 200) {
+                        resolve(JSON.parse(xhr.responseText));
+                    } else {
+                        reject('Error:', xhr.status);
+                    }
+                };
+                xhr.onerror = function() {
+                    reject('Request failed.');
+                };
+                xhr.send();
+            });
+        }
+
+        getData('https://yts.mx/api/v2/list_movies.json?limit=10&sort_by=rating')
+            .then(data => {
+                if (data.status === 'ok') {
+                    data.data.movies.forEach(movie => {
+                        const summary = movie.summary.length < 200 ?
+                            movie.summary :
+                            movie.summary.substring(0, 200) + '...';
+                        document.getElementById('titleList').innerHTML += '<li>' + movie.title + '</li>';
+                        document.getElementById('titleImage').innerHTML += '<li><img src="' + movie.medium_cover_image + '"></li>';
+                        document.getElementById('ratingList').innerHTML += '<li>' + movie.rating + '</li>';
+                        document.getElementById('summaryList').innerHTML += '<li>' + summary + '</li><br>';
+                    });
+                }
+            })
+            .catch(error => {
+                console.error('Error:', error);
+            });
+    </script>
+    <div>
+        <h1>Title</h1>
+            <ul id="titleList">
+            </ul>
+        <h1>TitleImage</h1>
+            <ul id="titleImage">
+            </ul>
+        <h1>Rating</h1>
+            <ul id="ratingList">
+            </ul>
+        <h1>Summary</h1>
+            <ul id="summaryList">
+            </ul>
+    </div>
+</body>
+</html>

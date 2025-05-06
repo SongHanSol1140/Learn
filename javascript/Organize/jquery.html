@@ -1,0 +1,735 @@
+
+<jQuery>
+    제이쿼리 준비!
+<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css">
+<!-- 부트스트랩 -->    
+<!-- 버전 안정화 4 -->
+<!-- css를 클래스화 해놓음 -->
+
+<!-- 1. 제이쿼리 코어파일 사용 -->
+    <script src="./js/jquery-1.12.4.min.js"></script>
+    <script src="./js/jquery-3.3.1.min.js"></script>
+<!-- 2. 제이쿼리 CDN 방식이용 -->
+    <!-- <script src="http:code.jquery.com/jquery-1.12.4.min.js"></script> -->
+    <!-- <script src="http:code.jquery.com/jquery-3.3.1.min.js"></script> -->
+
+    <!-- 반드시 jQuery 코어파일 밑에 스크립트를 적어야함 -->
+    <script>
+    // jQuery 기본형(상단에 적혀있을때)
+        $(document).ready(function(){
+            // => javaScript 의 window.onload = function(){와같음
+            alert("제이쿼리 준비완료!");
+        });
+    // on 메서드
+        $(document).on('click',function(){
+            alert("제이쿼리 준비완료!");
+        });
+    // on 메서드 한줄표기법
+        $(document).ready(function(){
+        // $('h5').on({'mouseover':function(){실행문},'mouseout':function(){실행문}});
+            $('h5').on({'mouseover':function(){
+                alert("마우스오버!");
+            },'mouseout':function(){
+                alert("마우스아웃!");
+            }});
+        });
+    </script>
+───────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
+<제이쿼리, this 개념[중요]>
+
+<!-- 부트스트랩 -->    
+<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css">
+<!-- 버전 안정화 4 -->
+<!-- css를 클래스화 해놓음 -->
+<!-- 1. 제이쿼리 코어파일 사용 -->
+<script src="./js/jquery-1.12.4.min.js"></script>
+<script src="./js/jquery-3.3.1.min.js"></script>
+<!-- 2. 제이쿼리 CDN 방식이용 -->
+<!-- <script src="http:code.jquery.com/jquery-1.12.4.min.js"></script> -->
+<!-- <script src="http:code.jquery.com/jquery-3.3.1.min.js"></script> -->
+
+<style>
+#div {
+    width:100%;
+    margin-bottom:10px;
+}
+.clickTest {
+    border: 1px solid #000;
+    background-color: yellowgreen;
+    border-radius: 5px;
+    padding:10px;
+    margin-bottom: 10px;
+    cursor: pointer;
+}
+</style>
+<!-- 반드시 jQuery 코어파일 밑에 스크립트를 적어야함 -->
+<script>
+$(document).ready(function(){
+    // DOM 객체 변수 할당
+    var elm = $('.clickTest');
+    $(elm).click(function(){
+        alert("경고창");
+    });
+    elm.on("click",function(){
+        alert('aa');
+        elm.text('클릭되었습니다.');
+    });
+});
+
+// 전부 개별로 알람등록하세요!
+    var div1 = $("#div1");
+    div1.on("click",function(){
+        div1.text("클릭되었습니다1");
+    });
+    var div2 = $("#div2");
+    div2.on("click",function(){
+        div2.text("클릭되었습니다2");
+    var div3 = $("#div3");
+    div3.on("click",function(){
+        div3.text("클릭되었습니다3");
+    });
+    var div4 = $("#div4");
+    div4.on("click",function(){
+        div4.text("클릭되었습니다4");
+    });
+    var div5 = $("#div5");
+    div5.on("click",function(){
+        div5.text("클릭되었습니다5");
+    });
+// 위의 불편함을 해결한 방법이 this
+// : DOM 요소 $(this)
+// this는 상황에 따라 들어있는 변수가 바뀌는 '특수변수'임
+// 이벤트 리스너에서의 this 이벤트 발생한 DOM요소가 들어감
+// 즉, 위의 소스에 경우 '클릭한 요소' 가 this에 할당
+// this사용
+    $('.clickTest').on("click",function(){
+        $(this).text("클릭되었습니다!");
+    });
+});
+</script>
+</head>
+<body>
+<button id ="div1" class="clickTest">div!!</button><br>
+<button id ="div2" class="clickTest">div!!</button><br>
+<button id ="div3" class="clickTest">div!!</button><br>
+<button id ="div4" class="clickTest">div!!</button><br>
+<button id ="div5" class="clickTest">div!!</button><br>    
+</body>
+</html>
+───────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
+<이벤트 메서드>
+
+
+<script>
+
+
+    $(document).ready(function(e){
+// 0. 기본 기능 제거
+        e.preventDefault();
+        // 이거쓸때 function(여기)에 매개변수 꼭넣기!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+// 1. 단일 이벤트
+    $('h5').click(function(){
+        alert('단일이벤트호출');
+    });
+// 2. one() 이벤트 메서드 : 이벤트 한번만 실행
+    $('h5').one('click',function(){
+        alert('one이벤트 실행');
+    });
+// 3. on() 이벤트 메서드 : 하나의 DOM요소에 여러개 이벤트 등록 가능
+    $('h5').on('click',function(){
+        alert('on이벤트 실행');
+    });
+// 3-1. on() 이벤트 메서드 : 여러개 이벤트 등록
+    // $('h5').on({'mouseover':function(){실행문},'mouseout':function(){실행문}})
+    $('h5').on({'mouseover':function(){
+        // alert('마우스오버');
+    },'mouseout':function(){
+        // alert('마우스아웃');
+    }});
+    });
+</script>
+───────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
+메서드
+$("선택자").~~().~~().~~();
+val() = value의 약자
+    <input type="text" value="텍스트박스">
+    => $('input').val(); = "텍스트박스"
+parent() : 부모 요소 선택
+children() : 자식 요소 선택
+next() : 다음(형제 요소 중) 선택
+<script>
+css()
+    // 선택자 속성명
+        $('.author').css({color:'blue', backgroundColor:'yellow', fontSize:'32px'});
+filter()
+    // 기본 선택자를 사용해도 되지만, 배열과 관련된 DOM객체에서
+    // 특정 문서객체를 걸러내서 선택할 목적 포함 */
+        $('li').filter(':even').css('color','blue');
+        $('li').filter(':odd').css('color','green');
+eq()
+    // 요소들의 인덱스번호(0부터 시작)를 이용하여 선택 */
+        $('li').eq(-1).css('color','green');
+        // 0-1 = 선택자의 last
+        $('li').eq(odd).css({color:'orange', fontSize:'32px',fontWeight:'bold'});
+        $('li').eq(even).css({'color':'orange','font-size':'24px','font-weight':'bold'});
+    first() / last()
+    // 요소의 맨 처음과 맨마지막을 선택
+        $('li').first().css('background','green').css('color','white');
+        $('li').last().css('background','yellow');
+
+find()
+    // 선택된 DOM 객체의 후손문서객체를 선택
+        $('body').find('span').css('color','cyan');
+        $('h3').find('span').css('color','pink');
+        $('h3').find('span').css('background','purple');
+        $('h3,h4').find('span').css('border','3px solid #000');
+is()
+    // 주어진 매개변수와 하나라도 일치하면 true값 리턴 */
+    /*실습 h3,h4요소에 자식에 span 있는지를 판별하여
+            자식으로 span이 있으면 (경고창)자식있음!! 출력
+            없으면 (경고창)자식없음!! 출력
+            children(), is(), 변수, if문 사용 */
+        var isChild = $('h3').children().is('span');
+        if(isChild){
+            alert('자식있음!!');
+        }else {
+            alert('자식없음!!');
+        }          
+
+has()
+    // 주어진 매개변수의 태그가 일치하면 선택
+    // h6 태그가 있는지 여부 판별
+        var div = $('div').css('color','lightgray').has('h6').css('color','orange');
+        console.log('has 메서드'+div);
+        $('tr').eq(0).css('background','red');
+        $('table').find('tr').eq(0).css('background','blue');
+        
+
+        
+addClass()
+    $(document).ready(function(){
+    // 선택 DOM객체에 지정된 클래스 추가 */
+        $('h5').eq(0).addClass('change_01');
+        $('h5').eq(1).addClass('change_02');
+        
+removeClass()
+    // 선택 DOM객체에 지정된 클래스 삭제 */
+        $('h5').eq(1).removeClass('change_02');
+        
+attr()
+    // DOM객체의 속성값을 확인하거나 속성을 추가
+    // 단, 매개변수가 2개일 경우 값을 변경하는것(속성명:속성값);*/
+        $('img').attr('width','200px');
+        $('img').attr('height','300px');
+    /* 실습. 마지막 이미지에 너비 200 높이 200 대체텍스트 사진1로 변경 코딩 */
+        $('img').eq(2).attr('width','200px');
+        $('img').eq(2).attr('height','200px');
+        $('img').eq(2).attr('alt','사진1');
+    // 한줄표기
+        $('img').eq(2).attr({width:200,height:'200',alt:'사진1'});
+    });
+
+
+html()
+    // 선택 DOM 객체의 첫번째 요소 문자열을 반환, 문자열 변경 <html 태그인식>
+    // ※h3이 두개라면 첫번째 h3만 선택된다는 의미
+    // 그러나 $('h3').eq(1)로 두번째 h3도 선택가능하다.
+        var out = $('h3').html();
+        alert('html 메서드 : '+ out);
+        
+        
+text()
+    // 선택 DOM 객체의 모든 문자열을 묶어서 반환, <html 태그인식못함>
+        var out2 = $('h3').text();
+        alert('out 메서드 : '+ out2);
+    // 실습 1. html()로 div에 속성 추가하기
+        $('div').eq(0).html('<p style="color:red;">추가된 HTML</p>');
+    // 실습 2. text()로 div에 속성 추가하기
+        $('div').eq(0).text('<p style="color:red;">추가된 HTML</p>');
+    // 실습 3. p태그의 자식으로 p태그 사용하여 텍스트노드 By Kitting이 나오도록 코딩하세요.
+        $('p').html('<p>By Kitting</p>')
+
+remove()
+    // 선택 DOM 객체 제거 = 매개변수 없음 = 태그자체를 삭제 */
+        $('h3').eq(0).remove();
+        $('h3').first().remove();
+        $('h3:first').remove(); 
+
+empty()
+    // 자식노드를 제거(텍스트노드도 삭제) */
+        $('div').empty(); // =>div 안에 들어가있는 요소들 전부 삭제됨
+        
+appendTo()
+    // 매개변수의 맨 마지막 자식요소로 태그 생성 */
+        $('<h1>Dead Poet Society</h1>').css('color','purple').appendTo('body');
+
+    /*실습. jQuery메서드를 이용하여 body요소의 자식으로 img태그를 생성하시오.
+            attr()함께 사용하여 너비 300 높이 300 대체텍스트=이미지1*/
+        $('<img src="./images/img1.jpg" alt="img1">').appendTo('body');
+        $('img').eq(0).attr({width:200,height:'200',alt:'이미지1'});
+        // $('<img>').attr({'src':'./images/img1.jpg', 'width':'300px', 'height':'300px', 'alt'="이미지2"}).appendTo('body');
+</script>
+───────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
+이벤트 리스너
+    css의 display:none;과 연관이 있음
+<script>
+        $(document).ready(function(){
+/* 1. show(), hide(), toggle() */
+    $('#btn1').click(function(){
+    hide()
+    // 숨김
+            $('.box1').hide();
+        });
+        $('#btn2').click(function(){
+    show()
+    // 등장,나타남
+            $('.box1').show(500);
+        });
+        $('#btn3').click(function(){
+    toggle()
+    // hide | show 동시사용
+            $('.box1').toggle('slow');
+        });
+        
+/* 2. slideDown(), slideUp(), slideToggle() */
+        $('#btn4').click(function(){
+    slideUp()
+    // 위로 올려서 사라지게함
+            $(this).parent().next().slideUp('slow');
+        });
+        $('#btn5').click(function(){
+    slideDown()
+    // 아래로 내려서 나타나게함
+            $(this).parent().next().slideDown('fast');
+        });
+        $('#btn6').click(function(){
+    slideToggle()
+    // slideup | slideDown의 동시사용
+            $(this).parent().next().slideToggle(200);
+        });
+
+/* 3. fadeIn(), fadeOut(), fadeToggle() */
+        $('#btn7').click(function(){
+    fadeOut()
+    // 서서히 사라짐
+            $('.box1').fadeOut();
+        });
+        $('#btn8').click(function(){
+    fadeIn()
+    // 서서히 나타남
+            $(this).parent().next().fadeIn();
+        });
+        $('#btn9').click(function(){
+    fadeToggle()
+    // fadeIn | fadeOut 동시사용
+            $(this).parent().next().fadeToggle();
+        });
+    });
+</script>
+
+<!-- show, slide, fade 실습 1. -->
+        // DOM구조
+        <body>
+            <div id="acc" class="card-body accordion">
+                <h1>아코디언 UI</h1>
+                <h2 class="header">제목1</h2>
+                <p class="content">내용1</p>
+
+                <h2 class="header">제목2</h2>
+                <p class="content">내용2</p>
+
+                <h2 class="header">제목3</h2>
+                <p class="content">내용3</p>
+
+                <h2 class="header">제목4</h2>
+                <p class="content">내용4</p>
+
+                <h2 class="header">제목5</h2>
+                <p class="content">내용5</p>
+            </div>
+        </body>
+        <script>
+    $(document).ready(function(){
+                $('#acc>.content').hide();
+        // 제목을 눌러서 내용 부분이 나타날 수 있도록 토글하시오
+            $('.header').eq(0).click(function(){
+                $('.content').eq(0).toggle();
+            });
+            $('.header').eq(1).click(function(){
+                $('.content').eq(1).toggle();
+            });
+            $('.header').eq(2).click(function(){
+                $(this).next('p').toggle();
+            });
+            $('.header').eq(3).click(function(){
+                $(this).next('.content').toggle();
+            });
+            $('.header').eq(4).click(function(){
+                $(this).next('.content').toggle();
+            });
+    // 위의 코드를 한번에 압축하면
+            $('.header').click(function(){
+                $(this).next('.content').toggle();
+            });
+        });
+</script>
+<1depth 메뉴 설정 예시>
+    <style>
+    .gnb .submenu {
+        display: none;
+    }
+    </style>
+    <script>
+    $(".gnb li").on({'mouseenter':function(){
+        $(this).children('div').stop().slideDown();
+    }, 'mouseleave':function(){
+        $(this).find('div:visible').stop().slideUp();
+        // find('div:visible')
+        // $(this)의 자손 div:visible => div중에 display에 출력되고 있는것
+        // display:none; 상태는 선택이 안됨??
+    }});
+    </script>
+    <script>
+
+
+// show, slide, fade 실습 2.
+        // DOM 구조
+        <body>
+            <div id="wrap">
+                <h2>
+                    <a href="#">버튼1</a>
+                </h2>
+                <p>
+                    내용1
+                </p>
+
+                <h2>
+                    <a href="#">버튼2</a>
+                </h2>
+                <p>
+                    내용2
+                </p>
+            </div>
+        </body>
+
+    $(document).ready(function(){
+            $('p').hide();
+        // 실습1. 버튼 각각 눌럿을때 this를사용해서 내용 toggle
+            $('h2').on('click',function(){
+                $(this).next('p').toggle();
+            });
+        // 실습2. 버튼 각각 눌렀을때 this를 사용하여 내용 toggle
+        //        단, 버튼1을 눌럿을때 버튼2는 다시 없어져야함
+            $('h2').eq(0).on('click',function(){
+                $(this).next('p').toggle();
+                $('p').eq(1).hide();
+            });
+            $('h2').eq(1).on('click',function(){
+                $(this).next('p').toggle();
+                $('p').eq(0).hide();
+            });
+        
+        // 버튼 1,2 <a>를 클릭했을때 이벤트 작동
+                $('#wrap>h2>a').on('click',function(){
+                    $('#wrap>p').hide();
+                    $(this).parent().next().stop().show();
+                    });
+        });
+    </script>
+───────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
+animate()
+    <script>
+     $(document).ready(function(){
+     // 1. animate({속성명:속성값(숫자),시간,속도,콜백함수});
+        // a. 속성 : 반드시 매개변수값으로 입력)속성값이 숫자값으로 사용되는 속성들만 사용가능)
+            // =>제이쿼리 코어 플러그인을 설치할 경우 문자값도 사용가능
+        // b. 시간 : 'slow', 'normal', 'fast'
+        // c. 속도 : swing(기본값:처음에 느려지고 마지막에 느려짐), linear(동일속도)
+        // d. 콜백함수 : 해당 메서드가 실행이 된 이후 호출하여 사용하는 함수
+        $('div').mouseover(function(){
+            $(this).stop().animate({width:100,height:100},'slow','linear');
+        });
+        $('div').mouseout(function(){
+            $(this).stop().animate({width:50,height:50},'slow','linear');
+        });
+            // ※ animate앞에 stop()을 써줘야 over와 out을 반복했을때 대기열이 쌓이지 않는다
+
+    // 실습1. 버튼1을 클릭할때마다 50px씩 오른쪽으로 애니메이션 동작이 되도록 코딩
+        $('#btn1').on("click",function(){
+            $('.div1').stop().animate({width:'+=50'},'slow','linear');
+        });
+    // 실습2 버튼2을 클릭할때마다 -50px씩 왼쪽으로 애니메이션 동작이 되도록 코딩
+        $('#btn2').click(function(){
+            $('.div1').stop().animate({width:'-=50'},'slow','swing');
+    //  실습3 버튼3을 클릭할때 처음 위치(애니메이션 동작전)로 애니메이션 동작이 되도록 코딩
+        });
+        $('#btn3').on("click",function(){
+            $('.div1').stop().animate({width:50},'slow','linear');
+                                           // └ 처음 시작값
+        });
+    // delay() : 설정 밀리초후에 애니메이션 실행
+        $('button').eq(-1).click(function(){
+            $('.delay').stop().delay(1000).animate({left:500},'slow','linear');
+        })
+    // 별도실습. DELAY 버튼 클릭시 delay박스 나오도록 코딩
+        $('button').eq(-1).on("click",function(){
+            $('.delay').show();
+        })
+    });
+    </script>
+    // DOM구조
+    <body>
+        <div class="div1"></div>
+        <button id="btn1">버튼1</button>
+        <button id="btn2">버튼2</button>
+        <button id="btn3">버튼3</button>
+        <button id="dealy">DELAY</button>
+        <div class="delay"></div>
+    </body>
+    </script>
+
+───────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
+<제이쿼리 scroll(스크롤)>
+<!-- 3. 제이쿼리 scroll플러그인 추가 -->
+    <script src="./js/jquery.scrollTo.min.js"></script>
+
+    <script>
+        $(document).ready(function(){
+            $('.gnb a').click(function(e){
+        // 기본 기능 제거
+            e.preventDefault();
+        // alert("!!");
+        // scrollTo : 플러그인 사용    
+        // scrollTo(링크될 # || y축픽셀값, 애니메이션 시간)
+            $(window).scrollTo(this.hash || 0,1000); 
+        });
+    // 스크롤 100px 이상 되었을때 TOP 버튼이 나오도록 코딩
+    // if~else, scrollTop(), 이벤트 scroll
+        $(window).scroll(function(){
+            var scrT = $(this).scrollTop();
+            if(scrT<=100){
+                $('aside div').stop().slideUp();
+            } else{
+                $('aside div').stop().slideDown();
+            }
+        });
+    // animate 부드러운 스크롤탑 이동
+        $('.top').click(function(e){
+            e.preventDefault();
+            $('html,body').stop().animate({scrollTop:0},2000,'swing');
+            });
+        });
+    </script>
+
+    <script>
+        $(document).ready(function(){
+            // scroll Event
+            $(window).on('scroll',function(){
+                var sctT = $(this).scrollTop();
+                var sctL = $(this).scrollLeft();
+                console.log("스크롤탑(높이) 값" + sctT); 
+                console.log("스크롤레프트(좌우) 값" + sctL);
+            });
+        
+        });
+    </script>
+───────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
+<자동슬라이드>
+<script>
+    // 1. 초깃값 설정
+var slideIndex = 0;
+
+// 3. 자동 슬라이드 실행함수 호출(호이스팅 때문에 위에있어도 실행됨 | 선언적 함수)
+autoSlide();
+
+// 2.자동슬라이드 실행함수 설정
+function autoSlide(){
+    // a. 변수 선언
+    var i;
+    var slide = $('.slide');
+    var dot = $('.dot');
+    // b. 로딩시 슬라이드 이미지 모두 가리기
+    for(i=0; i<slide.length; i++){
+        slide.eq(i).css({display:'none'});
+    }
+    // c. slideIndex값 동적으로 세팅
+    slideIndex++;
+    // d. 데이터 유효성 코딩 : 슬라이드 이미지 갯수보다 slide Index값이 초과되면 1로 세팅
+    if(slideIndex > slide.length) {
+        slideIndex = 1;
+    }
+    // e. 첫번째 슬라이드 이미지 보이도록 코딩
+    slide.eq(slideIndex-1).show();
+    // f. 첫번째 도트에 컬러 보이도록 코딩
+    dot.eq(slideIndex-1).css({backgroundColor:'red'});
+    dot.eq(slideIndex-2).css({backgroundColor:'#ccc'});
+    // g. 2초마다 새로고침(재귀호출)
+    setTimeout(autoSlide,1500);
+}
+</script>
+───────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
+<비디오 jquery>
+<script>
+$(doBtn).click(function(){
+    if(video.get(0).paused){
+        // video의 첫번째가(0)를 가져왓을때, 정지상태면
+        video.get(0).play();
+        doBtn.children('i').eq(1).hide();
+        doBtn.children('i').eq(0).show();
+        // 비디오의 첫번째를 가져와서 재생한다
+    }else{
+        video.get(0).pause();
+        doBtn.children('i').eq(0).hide();
+        doBtn.children('i').eq(1).show();
+    }
+});
+// SOUND CONTROL BUTTON
+const soundBtn = $('#car_sound');
+// 사운드 뮤트(무음)으로 초기값 설정
+video.prop('muted',true);
+soundBtn.click(function(){
+    // muted 상태일때
+    if(video.prop('muted')){
+        // soundBtn.html('<i class="fa fa-volume-up" aria-hidden="true"></i>');
+        video.prop('muted',false);
+    }else {
+        // soundBtn.html('<i class="fa fa-volume-off" aria-hidden="true"></i>');
+        video.prop('muted',true);
+    }
+});
+</script>
+───────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
+<제이쿼리, 제이쿼리 UI플러그인비>
+    <link rel="stylesheet" href="./css/jq_plugin.css">
+
+<!-- 제이쿼리 UI 플러그인 추가 -->
+    <script src="./js/jquery-ui.min.js"></script>
+
+    <style>        
+        #wrap {
+            width: 1280px;
+            margin:0 auto;
+            text-align: center;
+        }
+        #wrap header {
+            height: 140px;
+            background: #222;
+
+        }
+        header>h1 {
+            font-size: 2rem;
+            color: #fff;
+            height: 80px;
+            line-height: 80px;
+            letter-spacing: -1px;
+        }
+
+        header>nav {
+            background-color: #555;
+        }
+        header>nav ul {
+            width: 960px;
+            margin:0 auto;
+            /* 플렉스 */
+            display: flex;
+            flex-flow: row nowrap;
+            justify-content: space-between;
+        }
+        header>nav ul li {
+            height: 60px;
+            line-height: 60px;
+        }
+        header>nav ul li a {
+            color:#fff;
+            font-size: 1.1rem;
+        }
+        #wrap img {
+            width:100%;
+        }
+        article {
+            width:100%;
+            height:1400px;
+        }
+        footer {
+            width:100%;
+            height:50px;
+            background: #222;
+            color:#fff;
+            line-height: 40px;
+        }
+        /* 로딩시 이미지 안보이게 하기 */
+        article img {
+            display: none;
+        }
+    </style>
+    <script>
+        $(document).ready(function(){
+        //   jQuery UI플러그인 : 효과 메서드들의 추가 기능 제공 플러그인
+            // show('여기'), hide('여기'), toggle('여기') => effect type 지정
+            // effect type = blind, bounce, clip, explode, fold, highlight
+            // show(3000),show('slow'),show('fast')는 플러그인이 없어도 사용가능함
+            $('ul li').eq(0).click(function(){
+                $('article img').stop().show(3000);
+            });
+            $('ul li').eq(1).click(function(){
+                $('article img').stop().hide();
+            });
+            $('ul li').eq(2).click(function(){
+                $('article img').stop().toggle('explode');
+            });
+
+        // jQuery Core에서는 속성값이 숫자형만 가능
+        // jQuery UI플러그인에서는 대부분 속성 사용 가능
+            $('ul li').eq(3).click(function(){
+                $('footer').animate({color:'silver', backgroundColor:'black'},'1000','linear');
+                $('footer span').delay(1000).animate({color:'red',fontWeight:'700'},'3000','linear');
+            });
+        });
+    </script>
+───────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
+───────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
+<요소명 선택자>
+<script>
+        $(document).ready(function(){
+        // $ = 선택자 선택기호
+        // 1. 전체 선택자 
+            $("*").css("color","red");
+        // 2. 요소명 선택자.
+            $("h3").css("color","green");
+        // 3. 클래스 선택자
+            $(".author").css("color","blue");
+            $('.author').css({color:'blue', backgroundColor:'yellow', fontSize:'32px'});
+        // 4. 아이디 선택자
+            $("#txt1").css('color','red');
+            $("#txt2").css({'color':'silver', 'background-color':'black'});
+            // 번외
+        // 5. 입력양식 선택자 : type 속성
+        var out = $(':text').val();
+            alert(out); // 텍스트박스
+        });
+
+        
+        
+    // 실습1. 자바스크립트로 txt2에 글자색 블랙으로
+        $(document).ready(function(){        
+            var text_2 = document.getElementById("txt2");
+            text_2.style.color = "black";
+            document.querySelector("#txt2").style.color = "black";
+            var js = document.querySelector("#txt2");
+            js.style.color = "black";
+        });
+    </script>
+</head>
+<body>
+    <h3 id="txt1">
+        변명 중에서도 가장 어리석고 못난 변명은
+    </h3>
+    <h3 id="txt2">
+        시간이 없어서 하는 변명입니다.
+    </h3>
+    <h4 class="author">
+        By Edison
+    </h4>
+    <input type="text" value="텍스트박스">
+</body>
+───────────────────────────────────────────────────────────────────────────────────────────────────────────────────────

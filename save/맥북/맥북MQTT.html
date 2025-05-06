@@ -1,0 +1,68 @@
+<MQTT 설치>
+brew install mosquitto
+<모스키토 방화벽 설정>
+sudo nano /opt/homebrew/etc/mosquitto/mosquitto.conf
+=> 불편하므로
+open /opt/homebrew/etc/mosquitto
+=> 실행후 VS코드로 .conf파일 이동하여 편집
+
+Listeners부분에
+    listener 1883 구문 추가
+allow_anonymous로 검색
+    allow_anonymous false가 주석처리 되어있을텐데
+    주석해제후 allow_anonymous true로 변경 <!-- 모든접속허용 -->
+
+
+
+<실행>
+<!-- 서비스 실행 -->
+brew services start mosquitto
+=> 방화벽연결을 허용할것이냐고 물어봄
+-> 이제부터 맥북을 재부팅해도 계속실행됨
+<!-- 중지 -->
+    brew services stop mosquitto
+<!-- 재시작 -->
+    brew services restart mosquitto
+
+
+<확인>
+netstat -an | grep LISTEN | grep 1883
+<로그남기기(에러체크용)>
+mosquitto.conf에 추가
+# write log
+log_dest file /opt/homebrew/etc/mosquitto/mosquitto.log
+log_type all
+
+
+<MQTT 비밀번호 설정방법>
+<!-- mosquitto.conf파일 수정 -->
+allow_anonymous false
+password_file /opt/homebrew/etc/mosquitto/passwd
+
+
+<!-- 해당 경로로 이동 -->
+open /opt/homebrew/etc/mosquitto
+<!-- 패스워드 파일 생성 -->
+touch passwd
+<!-- 권한 설정 : 패스워드를 추가하려면 해줘야함 -->
+sudo chown root:wheel /opt/homebrew/etc/mosquitto/passwd
+sudo chmod 604 /opt/homebrew/etc/mosquitto/passwd
+<!-- 패스워드 추가 : 아이디 / 비밀번호-->
+sudo mosquitto_passwd -b /opt/homebrew/etc/mosquitto/passwd coldbrew_ESP32_1 coldbrew_ESP32_1
+sudo mosquitto_passwd -b /opt/homebrew/etc/mosquitto/passwd coldbrew_ESP32_2 coldbrew_ESP32_2
+<!-- 설정한 아이디에 비밀번호 변경 -->
+=> 그냥 다시한번 입력하면 변경됩니다
+sudo mosquitto_passwd -b /opt/homebrew/etc/mosquitto/passwd coldbrew_ESP32_1 new_password
+<!-- 비밀번호가 제대로 추가됬는지 확인 : 해쉬로 설정되어있어 구체적인 값은 확인이 불가능함 -->
+sudo cat /opt/homebrew/etc/mosquitto/passwd
+
+
+
+
+<모든 수정이 끝낫다면>
+<!-- 중지 -->
+brew services stop mosquitto
+<!-- 재시작 -->
+    brew services restart mosquitto
+
+    

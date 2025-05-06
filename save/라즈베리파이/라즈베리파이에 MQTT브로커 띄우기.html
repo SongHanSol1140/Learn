@@ -1,0 +1,52 @@
+gMosquitto 설치: 먼저, 라즈베리 파이에 Mosquitto를 설치해야 합니다. 터미널을 열고 다음 명령어를 입력하세요:
+
+    sudo apt update
+    sudo apt install -y mosquitto mosquitto-clients
+    위의 명령어는 라즈베리 파이의 패키지 목록을 업데이트하고, Mosquitto 브로커와 클라이언트를 설치합니다.
+
+Mosquitto 실행: Mosquitto를 실행하려면 다음 명령어를 입력하세요:
+    sudo systemctl start mosquitto
+
+자동 실행 설정: 라즈베리 파이를 재시작할 때마다 Mosquitto가 자동으로 실행되도록 하려면 다음 명령어를 입력하세요:
+    sudo systemctl enable mosquitto
+
+    
+<MQTT 브로커 외부접속 허용하기>
+
+    sudo nano /etc/mosquitto/mosquitto.conf
+    port 접속할 포트의 번호 => 없으면 1883이 기본입니다.
+    bind_address 0.0.0.0 => 모든 IP 허용 이게없으면 라즈베리파이에서 외부접속이 안됩니다.
+    allow_anonymous true => 위와 같은 이유로 외부인 접속 허용
+
+
+
+<포트 개방하기>
+
+sudo iptables -A INPUT -p tcp --dport 1883 -j ACCEPT
+sudo iptables -L
+
+sudo apt-get install iptables-persistent 명령을 사용하여 iptables-persistent 패키지를 설치합니다.
+    설치 중에 설정 파일을 저장할 것인지 묻는 메시지가 나타날 수 있습니다. 모든 규칙을 저장하려면 Yes를 선택하십시오.
+규칙을 수정한 후
+sudo netfilter-persistent save
+명령을 사용하여 변경 사항을 저장합니다.
+sudo systemctl enable netfilter-persistent
+명령을 사용하여 부팅시에 규칙을 자동으로 로드하도록 설정합니다.
+
+<라즈베리파이 자체 발신/수신 테스트>
+    <Subscriber(구독자) 실행 테스트>
+        mosquitto_sub -h localhost -t /testTopic
+    <Publisher(발신자) 실행 테스트>
+        mosquitto_pub -h localhost -t /testTopic -m "Test Message"
+<실행 확인>
+sudo systemctl status mosquitto
+<라즈베리파이 mqtt브로커 실행확인>
+sudo lsof -i :1883
+mqtt나 mosquitto라고 나온다면 실행중인것
+
+sudo service mosquitto status
+<모스키토 설정파일 수정>
+/etc/mosquitto/mosquitto.conf
+
+<접속할 모스키토에서 방화벽 설정>
+

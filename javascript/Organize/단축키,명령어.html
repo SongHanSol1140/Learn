@@ -1,0 +1,841 @@
+<html>
+     1300~1350 점심시간
+     
+     설치
+     비주얼스튜디오
+     확장 - korean 언어팩
+     확장 - liveserver 설치 <!-- (브라우저 실행 단축키 ALT+L => ALT+O 연속입력) -->
+     확장 - htmltagwrap<!-- 설치후 문자드래그해서 Alt + W 사용 -->
+     확장 - JavaScript (ES6) code snippets
+     확장 - Material Icon Theme<!-- 아이콘 확장 -->
+     
+     https://developer.mozilla.org/ko/ 태그,명령문 검색사이트
+     https://entitycode.com/ 엔티티코드
+     https://www.notion.so/ko-kr 노션
+     https://unsplash.com/ 언스플랫(무료이미지사용)
+     https://pixabay.com/ko/ 픽사베이(무료이미지사용)
+     https://www.pexels.com/ko-kr/ 실습용 이미지/동영상 사이트
+
+     https://www.dothome.co.kr/ 무료 서버 호스팅사이트 닷홈
+     https://filezilla-project.org/download.php?type=client 파일질라 클라이언트 다운로드링크
+
+     <img src"https://place-hold.it/1000x600" alt="가상이미지">
+     가상이미지 업로드링크, 1000x600부분을 조절해서 원하는 사이즈로 링크가능
+
+<단축키>
+     Ctrl+/ = 주석문 설정
+     Alt + Shift + ↓ = 한줄복사
+     Alt + ↑↓ = 선택한 줄 줄바꿈
+     Alt + 클릭 = 여러지점 복사-붙여넣기나 텍스트기입할때 한번에 선택,입력 가능
+     드래그+ALT+W = htmltagwrap설치시 문자양옆에 태그입력기능
+     드래그+TAP = 지정된 범위 TAP 추가
+     드래그+SHIFT+TAP = 지정된 범위 TAP 빼기
+     드래그+TAP = 지정된 범위 TAP 추가
+     크롬 F12(콘솔) = ctrl+shift + p = run => capture(캡쳐)
+
+     
+
+
+
+
+<html태그>
+     <div id="#"></div> = 블록 구간을 특정할때 사용
+     <~ class="."> </~> = 특정 구간에 지정한 속성값을 줄때 사용
+     <span></span> = class와 같은식으로 사용 할 수 있지만 좀더 넓게보는 요소값임
+     <br> = 줄바꿈
+     <hr> = 페이지에 수평줄 생성
+     <strong> : 낭독기에서 강조하여 읽어줌 (굵게)
+     <em> : 낭독기에서 강조하여 읽어줌(기울이기)
+     <h1~6></h1~6> 제목 사이즈 조절, h1은 페이지에 하나만 사용가능하다
+     <b> = 볼드체
+     <i> = 이탤릭체
+     <small> = 글씨를 작게해줌
+     <abbr> = 축약, 마우스를 갓다댈시 기입한 단어가 보임
+     <q> = 인용시 사용 ""자동생성 <q cite>의 약자
+     <sup> = 윗첨자
+     <sub> = 아래첨자
+     <u> = 언더라인의 약자, 밑줄을 그어준다 낭독기에선 밑줄이라고 읽어줌
+     <s> = 취소선을 그어줌 글씨에 ───────그어짐
+     <mark> = 형광펜 효과
+     <blockquote></blockquote> = 자동으로 들여쓰기(TAB)를 해주는 태그
+     <caption>제목 | 중앙정렬
+     <figure>+<figcaption> 제목 | 중앙정렬 안됨
+     <!-- figure(형상) = 멀티미디어 컨텐츠라고 브라우저가 인식함 -->
+     <pre></pre> = 태그, 명령어를 무시하고 모두 표시하게 만드는 태그
+     <a href="주소">내용</a> = '내용'을 누를시 입력된 주소로 하이퍼링크 생성
+     <a href="주소" target="_blank">내용</a> _blank붙일시 새창에서 이동함 -->
+     <img src="주소" alt="내용" width="숫자" height="숫자"> = 이미지 태그, 크기조절
+       <!-- 예시<img src="./images/b.jpg" alt="아이" width="200" height="320"> -->
+     <table> = 테이블(표)생성
+          <p id=""summary">
+               id값으로 설명을 써서 낭독기에서 표를 설명하도록 하는 속성
+          </p>
+
+          <!-- 시멘틱태그 -->
+          <col style="~">
+          <!-- col style은 colgroup요소 -->
+          <!-- colgroup은 반드시 caption 다음에 코딩 -->
+          <!-- 테이블2-2예시 참조 -->
+
+정의형 목록 태그(카테고리화)
+
+
+     <nav> = <ul>,<li>의 시멘틱 태그
+     <ul></ul> = 순서가 상관없는(크게 상관없는) 목록을 정리할때 사용 각 항목앞에 작은원 또는 사각형 블릿이 붙음
+
+     <ol></ol> = 순서가 중요한 목록을 순차적으로 정리해야할 때 사용, 각 항목앞에 기본적으로 1,2,3순으로 붙음
+          // <li></li> = <ul>,<ol>의 자식태그
+
+          <ol></ol>의 활용
+          <ol type="a"></ol> = a,b,c,d순으로 목록을 정리
+          <ol type="i"></ol> = 로마자순으로 목록을 계산
+          <ol start="n"></ol> = 지정한 기호부터 항목을 세어감
+               <!-- <ol start="5"></ol>로 입력시 항목이 5부터 시작함 -->
+
+
+          <dl></dl> = 정의형 리스트 태그, 특정 내용을 정의해야 할 때, 선언할 때 사용 자식태그로 <dt><dd>외에 사용안함
+          <dt></dt> = 정의할 목록의 제목
+          <dd></dd> = 정의한 제목(dd)의 내용, 설명
+     <!-- 정의형목록1,2 문서로 복습 -->
+
+form 태그<!-- 09_폼.html참조 -->
+
+     <form>
+          <fieldset>박스생성
+               <legend>박스제목</legend>
+               <label for="#">로그인 정보</label>
+               <input type="text/password" id="#" maxlength="8">
+               <!-- label for="#" '로그인 정보'를 눌럿을때 설정된 input이 선택됨 
+                    maxlength="n" = 최대문자수 제한 -->
+
+               <label for="c_id">* 아이디 : </label>
+               <input type="text" id="c_id" required autocomplete="on" autofocus>
+               <label for="c_pw"><span1>*</span1> 비밀번호 : </label>
+               <input type="password" id="c_pw" required placeholder="비밀번호를 입력해 주세요">
+               <!-- required 필수항목으로 설정
+                    placeholder 설정한 힌트주기 
+                    autocomplete="on/off" = 자동완성기능
+                    autofocus = 브라우저가 켜졋을때 해당위치에 커서가 자동으로 올라가있음 -->
+          </fieldset>
+          <input type="submit" value="전송">
+          <input type="reset" value="취소">
+          submit(전송)과 reset(취소)를 무조건 입력해줘야 서버에 데이터가 전송됨
+     </form>
+
+     <input 타입>
+          <!-- 1. 텍스트형 = 정보를 기입하여 전송할 수 있음 -->
+          <label for="a_id">아이디 : </label>
+          <input type="text" id="a_id" size="12">
+
+          <!-- 2. 패스워드 -->
+          <label for="a_pw1">비밀번호 : </label>
+          <input type="password" id="a_pw1">
+
+          <!-- 3. 메모 -->
+          <label for="a_memo">메모</label>
+          <textarea id="a_memo" cols="60" rows="3"></textarea>
+
+          <!-- 4. 데이터 전송,취소버튼 생성 -->
+          <input type="submit" value="전송">
+          <input type="reset" value="취소">
+
+          <!-- 5. 라디오(radio) 버튼 -->
+          데이터중 하나만 선택할때 사용
+          name을 같은 객체로 정할것
+          체크형 박스로 input값에 문자열이 포함되지 않기때문에 서버로 전송할 수 있는 value값을 추가해줘야함
+          <label>123
+               <input type="radio" name="subject" value="html" checked>HTML
+          </label>
+          <!-- checked: 선택된채로 브라우저가시작함 -->
+          <label>456
+               <input type="radio" name="subject" value="css">CSS
+          </label>
+          <label>789
+               <input type="radio" name="subject" value="js">javaScript
+          </label>
+
+          <!-- 6. 체크박스(checkbox) -->
+          하나만 선택 가능한 type="radio"와 다르게 복수선택이 가능하다
+          <label>
+               <input type="checkbox" name="mailing1" value="html">HTML
+          </label>
+          <label>
+               <input type="checkbox" name="mailing2" value="css">CSS
+          </label>
+          <label>
+               <input type="checkbox" name="mailing3" value="js">javaScript
+          </label>
+          <!-- 7. HTML5 input type = 아직모름 -->
+          <label for="c_search">검색 : </label>
+               <input type="search" name="c_search" id="c_search">
+          <label for="c_url">사이트 주소 : </label>
+               <input type="url" name="c_url" id="c_url">
+          <!-- 8. 수량을 셀수있는 input -->
+          <label for="c_number">수량 : </label>
+               <input type="number" name="c_number" id="c_number" value="0" min="1" max="10" step="2">
+          <!-- 9. 날짜선택 -->
+          <label for="c_date">날짜선택(년,월,일) : </label>
+               <input type="date" name="c_date" id="c_date">
+
+
+비디오
+<figure>
+     <figcaption text-align="center">first mp4.</figcaption>
+          <video muted autoplay controls>
+               <source src="./media/video_sil1.mp4" type="video/mp4">
+          </video>
+     <figcaption>second mp4</figcaption>
+          <video controls>
+               <source src="./media/video_sil2.mp4" type="video/mp4">
+          </video>
+</figure> 
+------------------------------------------------
+<style>
+     
+
+     CSS 기본 리셋
+         /* * = 문서 전체를 지칭하는 단어 */
+     * {
+          margin:10px 20px;
+          /* 상하 좌우 조절*/
+          /* margin:10px 20px 30px; 40px */
+          /* 상단 우단 하단 좌단 마진값 조절 */
+          padding:0;
+     }
+     h1,h2,h3,h4,h5,h6 {
+          font-size: 16px;
+          font-weight: normal;
+
+     }
+     a {
+          color:inherit;
+          text-decoration: none;
+     }
+     li {
+          list-style: none;
+     }
+     img {
+          vertical-align:top;
+     }
+     
+ </style>
+ -----------------------------------------------
+ CSS 요소명 / HTML 요소랑 연동되어있음
+ 하위요소는 탭으로 맞춰놨지만
+  하위요소인것을 알아보기 쉽게하기위함이고
+  실제 CSS에는 이렇게 넣지않음에 유의
+
+
+     * {전체 선택자}
+     h1,h2,h3,h4,h5,h6 {제목}
+     caption {컨텐츠의 제목}
+     figcaption {멀티미디어 컨텐츠의 제목}
+          video {}
+     p {문단생성}
+     a {a 타입 요소}
+     ol,ul{}
+          li {}
+     img {}
+     table {}
+          thead {}
+          tbody {}
+          tfoot {}
+               th,td {}
+     form {}
+          fieldset {}
+               legend {}
+     input {}
+     span {}
+     .(클래스선택자) {}
+
+     #(id선택자) {}
+
+ <style> 선택자
+
+          * {/* 1. 전체 선택자
+               * = 문서 전체를 지칭하는 단어
+          */
+               margin: 0;
+               padding: 0;
+          }
+          h1,h2,h3,h4,h5,h6 { /* 요소 선택자 */
+               font-size: 16px;
+               font-weight: normal;
+               color: red;
+               margin-bottom: 24px;
+               /* margin:0 0 24px 0;과 같음 */
+               text-transform: capitalize;
+               /* capitalize = 앞글자 대문자로 */
+          }
+          a { /* inherit : 상속 */
+               /* 보통 상위집단인 body의 색상을 받아온다 */
+               color:inherit;
+               text-decoration: none;
+          }
+          li {
+               list-style: none;
+          }
+          img {
+               vertical-align:top;
+               width: 320px;
+               height: 320px;
+          }
+          table, th, td {
+               border: 1px solid #000;
+               border-collapse: collapse;
+               }
+               th, td {
+                    width:600px;
+                    margin: 0 auto;
+                    padding: 10px;
+                    }
+               thead {
+               }
+               tbody{
+               }
+               tfoot {
+               }
+
+          legend {
+               text-indent: -9999px;
+               /* 텍스트 좌표값을 조절하는데쓰임
+                  -9999px로 빼버리면 화면에 안보이게 설정해버릴수 잇음 */
+          }
+          .text_1 {/* (class 선택자) */
+               /* <~ class="text_1">식으로 설정하고 지정값을 줄수 있음 */
+               /* class의 선택자 기호는 [.] */
+          }
+          #text_2 {/* (id 선택자) */
+               /* <~ id="text_2">식으로 설정하고 지정값을 줄수 있음 */
+               /* class의 선택자 기호는 [#] */
+          }
+
+          video {
+               width:100%;
+               /* 중요! %는 가변형으로 기준값이 있어야 설정이 가능하다 */
+               /* 밑에 body 구조에 video는 wrap의 아래에 있으므로 */
+               /*  wrap의 CSS값 1280px의 100%로 꽉채워서 들어감!! */
+          }
+          .wrap {
+          width:n;
+          height:n;
+          overflow:hidden;
+          /* 지정범위를 넘어선 이미지는 안보이게 설정함 */
+          position: relative;
+          /* 주로 부모 블록요소에 사용함 상대좌표설정 */
+               position:absolute;
+               /* 주로 relative에 자식태그에 입력함, 절대좌표 */
+         }
+
+
+         /*<inline-block> 인라인요소에서 */
+
+         span {
+            width: 200px;
+            height: 200px;
+          }
+        .txt_1 {
+            background-color: yellow;
+            display: inline-block;
+        }
+          /* 이렇게하면 span에서 설정한 width, height값을 <span class="txt_1"> 인라인요소에 적용시킬 수 잇음 */
+          /* 인라인 요소는 기본적으로 콘텐츠만큼의 크기를 가지므로 width, height값을 먹지 않음*/
+          /* 블록요소의 장점과 인라인의 장점을 합침*/
+        
+        /* 백그라운드(bg) CSS 태그 */
+          .bg {
+                 /* 1. 이미지 등록 */
+               bacground-image: url('');
+               /* 이미지가 부모의 블록크기보다 작을경우 같은이미지를 바둑판식으로 배열함 */
+
+               /* 2. 이미지 크기 조절 */
+               background-size: 100% 100%;
+               background-size: 200px 100px;
+                     /* left top */
+
+               /* 3. 이미지 반복 조정 */
+               background-repeat: no-repeat;
+                     /*  반복안함 */
+               background-repeat: reapeat-x;
+                     /* <!-- x축 반복 --> */
+               background-repeat: reapeat-y;
+                     /* <!-- y축 반복 --> */
+               
+               /* 4. 이미지 위치 조정 */
+               background-position: center center;
+                    /* <!-- left top  --> */
+          }
+          </style>
+
+───────────────────────────────────────────────────────────────────────────────────────────────
+가상 선택자
+     <가상선택자 :not | 특정요소를 제외하고 스타일 적용>
+     <style>
+     가상선택자 :not | 특정요소를 제외하고 스타일 적용
+          #signup input:not([type=radio]) {
+               width: 200px;
+               padding: 4px;
+               border: 1px solid #000;
+          }
+     </style>
+     <또다른 예시>
+     <style>
+          ul li:not(:nth-child(1)) {
+               background-color: red;
+          }
+     </style>
+     <div id="wrap">
+          <h1>제품목록</h1>
+          <ul>
+               <li class="new1">제품 A</li>
+               <li>제품 B</li>
+               <li>제품 C</li>
+               <li class="new1">제품 D</li>
+          </ul>
+     </div>
+     
+     이렇게하면 ul li의 :nth-child(1)을 제외하고 백그라운드 컬러가 칠해짐
+     </style>
+
+
+     <중요 input이 체크되면 label에 효과주기>
+     <style>
+     #signup input:checked+label {
+          color: red;
+          font-weight: bold;
+     }
+     </style>
+
+
+
+     <가상선택자 가상요소 ::>
+     <style>
+         #wrap {
+             width: 960px;
+             margin: 0 auto;
+         }
+         #wrap h1 {
+             font-size: 2rem;
+         }
+         #wrap ul li {
+             margin: 20px;
+         }
+         /* li.new::after =*/
+         /* li의class 'new1'를 선택 */
+         /* after를 넣엇으므로 해당 'new'클래스 다음에 설정이 붙음 */
+         #wrap ul li.new::after {
+             content: "NEW!!";
+             font-size: 9px;
+             color: #fff;
+             background: #f00;
+             border-radius: 2px;
+             padding: 2px 4px;
+             margin: 0 10px;
+         }
+         /* before을 넣는다면 해당 class 앞쪽에 설정값이 붙음 */
+         #wrap ul li.new2::before {
+         content:"NEW!!";
+         font-size: 9px;
+         color: #fff;
+         background: red;
+         border-radius: 4px;
+         padding: 2px 4px;
+         margin: 0 10px;
+     }
+     </style>
+          <22. 가상선택자4>
+          <style>
+          /* 수식사용하여 선택하기 */
+          /* 핵심은 nth-child() */
+          table tr:nth-child(2n) {
+          /* 2n = 2의배수 선택 */
+          background-color: gray;
+          color:#fff;
+          }
+          table tr:nth-child(odd) {
+          /* odd = 홀수선택 */
+          background-color: lightgray;
+          color:red;
+          }
+          table tr:nth-child(2n+1) {
+          background: red;
+          }
+     </style>
+───────────────────────────────────────────────────────────────────────────────────────────────
+
+<23.트랜스폼 = 전부 암기해야함>
+<transform>
+    <style>
+/* 접두어(prefix) 사용 */
+        /* 1. x축, y축 이동 */
+        .movexy:hover {
+            transform: -webkt-translate(10px,20px);
+            transform: -moz-translate(10px,20px);
+            transform: -o-translate(10px,20px);
+            transform: -ms-translate(10px,20px);
+            transform: translate(10px,20px);
+        }
+        .movex:hover {
+            transform: translateX(30px);
+        }
+        .movey:hover {
+            transform: translateY(-30px);
+        }
+
+
+        /* 크기변환 */
+        .scale:hover {
+            transform: scale(0.8);
+        }
+        .scale_x:hover {
+            transform: scaleX(1.4);
+        }
+        .scale_y:hover {
+            transform: scaleY(1.4);
+        }
+
+
+        /* 3. 회전 */
+        .rotate1:hover {
+            transform: rotate(20deg);
+        }
+        .rotate2:hover {
+            transform: rotate(-20deg);
+
+        }
+        /* /3. 회전 */
+
+
+        /* 4. 기울이기(왜곡) */
+        .skew:hover {
+            transform: skew(30deg,20deg);
+        }
+        .skew_x:hover {
+            transform: skewX(-25deg);
+        }
+        .skew_y:hover {
+            transform: skewy(-20deg);
+        }
+        </style>
+───────────────────────────────────────────────────────────────────────────────────────────────
+<style>
+     .tr1 {
+         width: 100px;
+         height: 100px;
+         background-color: red;
+         border: 2px solid #000;
+         cursor: pointer;
+         /* transition은 원본에 코딩해야함 */
+         /* = 트랜지션 속성은 원본 박스에 코딩 */
+         /* 접두어(prefix) 필요 */
+         
+         /* 트랜지션 시킬 CSS 속성명 */
+         transition-property: width,height,background-color;
+         /* 트랜지션 시간 */
+         transition-duration: 1s,1s,1s;
+         /* 한줄표기법 */
+         transition: all 1s;
+         /*           │   └animation 관련 속성에서 반드시 시간값을 입력해주어야함   */
+         /*           │              ※트랜지션은 tran,animation 둘중 중간값의 속성을 가짐    */
+         /*           └CSS3 관련 속성명 */    
+     }
+     .tr1:hover {
+         width:200px;
+         height:200px;
+         font-size: 32px;
+         transform:rotate(180deg)
+     }
+     h1 {
+         font-size: 48px;
+         font-weight: bold;
+         text-align: center;
+         line-height: 100px;
+     }
+     /* 포지션position */
+     #wrap {
+          position : relative;
+          left:50px;
+          top:100px;
+          z-index: 1;
+     }
+ </style>
+ inherit = 상속
+ margin = 박스와 박스사이의 여백
+ padding = 박스 내부 보더와 컨텐츠 사이의 여백
+ text-align = top,left,right,center,bottom; 컨텐츠위치 설정
+───────────────────────────────────────────────────────────────────────────────────────────────
+               
+
+
+
+<scrip t 명령어>
+<선언적함수만들기>
+     <script>
+     // function 선언적함수명(){
+          // 실행문;
+     // }
+     // 예시
+      function pub(){
+          count++;
+          document.write("선언적함수 : "+count+"<br>");
+      }
+     </script>
+
+<익명 함수 만들기>
+     <script>     
+        // [형식]
+        // var 참조변수명 = funtion(){
+        // 실행문;
+        // }
+        // 예시
+        var count = 0;
+        var noName = function(){
+            count++;
+            document.write("익명함수 : " + count + "<br>");
+        }
+        // 이렇게 해도 함수는 메모리 공간에 올라가만 있고 사용되지않음, 사용하려면 [호출]을 해야함
+
+
+     조건 : 스크립트 영역이 헤드 안에 잇을때
+// window.onload
+// 헤드안에 스크립트 영역이 있지만, DOM객체(body)를 먼저 메모리에 올리고 스크립트를 실행해라
+        var contents = heading;
+        window.onload = function(){
+            // 1. 문서객체 변수에 할당
+            var text123 = "새로운 문자";
+            var btn = document.getElementById('button')
+            var contents = heading;
+            console.log(btn);
+            console.log(contents);
+            // 2. Event Listener 작성
+            // 2-a [기능]경고창
+            // DOM 이벤트 버튼 클릭시 JS Event 방식 글자색 블루
+            function whenClick1() {
+                alert("경고");
+                contents.style.color = "blue";
+            }
+            // 2-b [기능]새로운 내용으로 바꾸기
+            function whenClick2() {
+                alert("경고");
+                document.getElementById('heading')
+                contents.innerHTML = "새로운 내용"
+                // innerHTML => 문자열을 덮어 씌우는 명령어
+            }
+            // 3. Event DOM에 EventListener 연결
+            btn.addEventListener('click',whenClick1);
+            heading.addEventListener('click',whenClick2);
+        }
+     </script>
+
+<데이터 3유형>
+     String = 문자형 = 문자 / undefined(정의되지 않음)
+     Number = 숫자형 = 숫자 / null(값이없음)
+     Boolean = 데이터형 = true/false
+
+
+     <var 변수 선언>
+     var ~ = ~; : 변수 선언
+     <!-- var name = 한솔 -->
+     <!-- 이경우 한솔이라고 적히면 브라우저에서는 name이라고 받아들임 -->
+
+     <switch 선택문>
+     var site = prompt("구글,네이버,다음 중 하나 입력", "구글");
+     var url;
+     switch(site) {
+          case "구글":
+              url = "http://google.co.kr";
+              break;
+          case "네이버":
+              url = "http://naver.com";
+              break;
+          case "다음":
+              url = "http://www.daum.net";
+              break;
+          default:
+              alert("다시입력해주세요");
+              location.reload();
+          }
+          if(url) {
+               location.href = url;
+          }
+
+     <if 실행문>
+     <!-- 구문이 참일경우 해당명령문을 실행함 -->
+          <script>
+               var i = 10;
+     
+               if( i > 10){
+               document.write("14번행");
+               }else if(i > 12){
+               document.write("17번행");
+               }else{
+               document.write("그외");
+               } 
+          </script>
+     
+     <location객체 : 브라우저 관련 속성과 메서드 제공>
+     <새로고침 메서드>
+          location.reload();
+
+     <for문, 반복문>
+          ※중요※
+          var dan = prompt('단수입력',2);
+          dan = Number(dan);
+          // 데이터형을 반드시 정의해줄것, 기본형인 문자형은 자바 외 모든곳에서 에러가남
+          var i, result;
+          document.write("<h1>" + dan + "단</h1>");
+          for(i=1; i<=9; i++){
+          result = dan * i;
+          document.write(dan + "x" + i + " = " + result + "<br>");
+          }
+
+
+     <while문, 반복문>
+     // 1. 초기값
+     var i = 1;
+     // 2. 조건식
+     while(i<=5){
+         document.write("안녕하세요 "+ i +"<br>");
+         // 3. 증감식
+         i++;
+     }
+     document.write("while문 종료 ");
+
+     prompt = 사용자에게 값을 얻을 수 있는 동적데이터 수집 질문
+     <!-- 예시 -->
+     var ~ = prompt("질문", "선입력값");
+     ex)var name = prompt("당신의 이름은 무엇입니까?", "사용자");
+     <!-- var name = prompt("당신의 이름은 무엇입니까?", "사용자"); -->
+     <!-- 해당창에 한솔이라고 기입시 name이 기입한 한솔로 정해짐(동적데이터) -->
+     
+
+     <js 07 논리연산자>
+          console.log(a);
+          console.log(b);
+          console.log(c);
+          console.log(d);
+          console.log(result);
+
+          1. 논리연산자(논리합) : || : or 연산자로 논리식 중 하나라도 true면 true
+          result = b > a || b <= c || a > c;
+          document.write("1.논리연산자(논리합)"+result+"<br>") // true
+
+          2. 논리연산자(논리곱) : && : or 연산자로 논리식 모두가 true면 true
+          result = b > a && b <= c && a > c; 
+          document.write("2.논리연산자(논리곱)"+result+"<br>") // false
+
+          result = b > a && b >= c && a > c; //true
+          document.write("3.논리연산자(논리곱)"+result+"<br>") // true
+
+          3. 논리연산자(논리부정) : ! : not 연산자, 단항 연산자 = 부정
+          틀렷을때 true가 나오는 값
+          result = !(a>b);
+          document.write("3.논리연산자(논리부정)"+result+"<br>") // true
+
+     ※[중요]※
+          <삼항조건연산자>
+          <script>
+          // 조건식 ~~~? (형식)
+          // 자바스크립트코드1(조건식의 값이 1/true일 경우 실행:)
+          // 자바스크립트코드2(조건식의 값이 0/false일 경우 실행;)
+          var int1 = 10;
+          var int2 = 20;
+          var tf = int1<int2?'4.true일 경우 실행': 'false일 경우 실행';
+          document.write(tf+"<br>"); //true
+          var tf = int1>int2?'true일 경우 실행': '5.false일 경우 실행';
+          document.write(tf+"<br>"); //false
+
+          // 다른 예시
+          var month1 = Number(prompt("1월에 받은 급여는 얼마입니까?", 2000));
+          var month2 = Number(prompt("2월에 받은 급여는 얼마입니까?", 2000));
+          var month3 = Number(prompt("3월에 받은 급여는 얼마입니까?", 2000));
+          var result = (month1+month2+month3)/3;
+          console.log(result);
+          avg = result>=1000;
+          // prompt에서 기입한 값에따라 avg가 true가될지 false가 될지 결정
+          console.log(avg);
+          avg?document.write("고소득자"):document.write("평균임금자");
+          // avg가 :(true)라면 'document.write("고소득자")'를 입력
+          //      ;(false)라면 'document.write("평균임금자")'를 입력
+          //  논리연산자에서처럼 var ~ = ~?식이아니라
+          // ~? ~: ~;식으로도 쓸수잇음
+          </script>
+
+문자열 객체 메서드/속성
+     <script>
+          var str = "hello Thank you good luck to you";
+
+     // [중요]문자열 갯수 반환(암기)
+          document.write(str.length,"<br>"); //32
+          // hello Thank you good luck to you
+          // 01234567890123456789012345678901 = 0~31(32) 인덱스(배열) 번호까지 잇다
+
+     // 문자열에서 인덱스 번호에 해당하는 문자를 반환
+          document.write(str.charAt(10),"<br>"); // k
+          document.write(str[0],str[1],str[2],"<br>"); //hel
+     
+     // 문자열에서 왼쪽부터 찾을 문자와 제일 먼저 일치하는 문자의 인덱스 번호를 반환
+          document.write(str.indexOf("you"),"<br>"); //12
+
+     // 문자열에서 오른쪽부터 찾을 문자와 제일 먼저 일치하는 문자의 인덱스 번호를 반환    
+          document.write(str.lastIndexOf("you"),"<br>"); //29
+
+     // 문자열에서 왼쪽부터 찾을 문자와 일치하는 문자를 찾아, 제일 먼저 일치하는 문자를 반환
+          // 찾을 문자가 없으면 null
+          document.write(str.match("luck"),"<br>"); // luck
+          document.write(str.match("map"),"<br>"); // null
+
+     // [중요]문자열에서 왼쪽부터 바꿀 문자와 일치하는 문자를 찾아, 제일 먼저 찾는 문자를 새문자로 치환(암기)
+          document.write(str,"<br>");
+          document.write(str.replace("you","me"),"<br>");
+
+     // 문자열에서 왼쪽부터 찾을 문자와 제일 먼저 찾는 문자의 인덱스 번호를 치환
+          document.write(str.search("you"),"<br>"); // 12
+
+     // [중요]문자열에서 문자를 자른 후 남는 문자를 치환(암기)
+          document.write(str.slice(3,7),"<br>"); //
+          // hello Thank you good luck to you
+          // 01234567890123456789012345678901 = 0~31(32) 인덱스(배열) 번호까지 잇다
+          // 3~7을 제외한 부분을 제거하여 추출
+
+     // [중요]문자열에서 문자 갯수만큼 문자열 반환(암기) = 인덱스(배열) 번호 21부터 4글자를 추출
+          document.write(str.substr(21,4),"<br>"); // luck
+
+     // [중요]문자열에서 영문 소문자를 모두 대문자로 치환(암기)
+          document.write(str.toUpperCase(),"<br>"); // HELLO THANK YOU GOOD LUCK TO YOU
+
+     // [중요]문자열에서 영문 대문자를 모두 소문자로 치환(암기)
+          document.write(str.toLowerCase(),"<br>"); // hello thank you good luck to you
+
+     // 문자의 앞 또는 뒤에 공백문자열 삭제
+          document.write(str.trim(),"<br>");
+     </script>
+
+
+     <데이터형 정보 수집 참|거짓>
+     confirm = 사용자에게 값을 얻을 수 있는 동적데이터 수집 확인
+     <!-- 예시 -->
+     var cf = confirm("자바스크립트 어렵나요?");<!-- 확인(참)/취소(거짓)  -->
+     <!-- 선택값에따라 cf값이 true/false로 나뉘어짐 -->
+     var ed = cf?'송한솔 YES':'송한솔 NO';
+     document.write("<br><h1>"+ed+"</h1>")
+     <!-- 이후 확인을 누를경우 송한솔YES | 거짓을 누를경우 송한솔 NO로 표기 -->
+     <알람>
+     alert('내용'); = 경고창을 띄워줌     
+     
+
+     <문서영역에 표시>
+     document.write(내용);
+     <!-- 문서영역에 표시 -->
+
+     <데이터 타입 확인법(typeof)>
+          console.log(box);
+          console.log(typeof(box));
+          typeof를 입력시 box가 string(문자) 타입으로 콘솔에 나타남
+          <!-- typeof = 변수의 데이터 타입을 확인 할 수 있는 명령어 -->
+          
+          <데이터 3유형>
+          문자형 = 문자 / undefined(정의되지 않음)
+          숫자형 = 숫자 / null(값이없음)
+          데이터형 = true/false
+     

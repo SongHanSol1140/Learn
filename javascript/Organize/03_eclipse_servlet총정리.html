@@ -1,0 +1,2212 @@
+
+2022.10.20
+───────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
+JSPUtils 폴더 따로생성
+Javautils파일들 복붙하는데 압축을 새로풀어서 새로설정해야함
+우측상단 Open Pespective - Java 설정해서 Java 버튼 만들고
+(커피콩)Java EE(EE:엔터프라이즈 에디션)으로 체크,
+
+환경설정
+General- Workspace - text file encoding - UTF-8
+General- Web Browser - use external web browser 체크
+WEB - CSS,HTMLJSP - Encoding => UTF-8로 수정
+
+JAVA EE체크
+Windows-Servers-서버생성-톰캣v8.5 생성
+
+좌측에 폴더피고나서 서버 - 하단에소스눌러서 63줄
+<Connector connectionTimeout="20000" port="8080" protocol="HTTP/1.1" redirectPort="8443"/>
+이게 있는데
+<Connector URIEncoding="UTF-8" connectionTimeout="20000" port="8080" protocol="HTTP/1.1" redirectPort="8443"/>
+URIEncoding="UTF-8" 추가, port번호 
+톰캣서버삭제
+
+윈도우즈-프리퍼런스(환경설정)-서버-런타임
+───────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
+
+File - NEW - Dyanamic Web Project
+project name = Chap01ServletBasic
+target runtime
+    apache tomcat v8.5
+=>Next
+=>Next
+Generate web.xml deployment descriptor 체크되는
+=>Finish
+생성된 프로젝트 우클릭 - Properties(제일아래)
+1.Project Facets - Java - 1.8버전으로 수정
+2.Java Build Path - Libraries JRE System Library [JavaSE-1.8]인지 확인
+───────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
+Servlet = 자바객체중 하나
+동작 위치 : <WAS>(Webp Aplication Server)
+    Servlet은 WAS 서버 안에서만 구동이 되게 설계됨
+    Tomcat = WAS 서버중 하나, (공짜라서 실습용으로 쓰는것)
+평소에 말하는 Server와 WAS의 Server는 다름
+Tomcat 버전에 따라 폴더 구성이 다르기때문에 염두에 둘것
+───────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
+<이클립스 관련 서드파티 모듈 설치>
+좌측상단 Help - Install New Software
+add - Name
+    emmet
+location
+    http://emmet.io/eclipse/updates
+하단에 add 선택
+나타난 Emmet에 체크박스를 체크
+=>Next 하면 설치됨
+Next => Agree
+<설치후 환경설정>
+Windows - Preferences - Emmet
+....in files with extesions 끝에 , jsp 추가
+<예시>
+html, xml, xsl, xsd, css, php, tpl, less, styl, scss, sass, jade, haml, hbs, twig, jsp
+
+───────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
+<HTML파일>
+좌측에 Chap01ServletBasic 누르고 src-main-webapp 폴더 우클릭
+HTML File - Next - HTML5 - Finish
+───────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
+
+1. 브라우저에서 서버에 요청을 함
+2. 서버에서는 요청한 사항을 처리할 수 있는 기능이 없음
+3. 요청을 처리할 수 없기때문에 WAS서버(Tomcat)으로 처리를 위임함
+4.WAS 서버에서 JSP로 전송
+
+───────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
+package view;
+
+import java.io.IOException;
+import javax.servlet.ServletConfig;
+import javax.servlet.ServletException;
+import javax.servlet.annotation.WebServlet;
+import javax.servlet.http.HttpServlet;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+/*
+	서블릿 이해하기
+		정적웹페이지의 문제점을 보완 => 동적 웹페이지를 구현하는 것(서블릿, JSP)
+		초기 동적 웹페이지 = 서블릿(Servelet, 자바로 만든 CGI프로그램을 이용해 구현
+		서블릿 문제점 보완하여 나온것 = JSP
+		JSP의 많은 기능 = 서블릿 기능을 따름 => 서블릿을 먼저 이해하면 JSP를 좀 더 쉽게 이해할 수 있음
+		실제 웹애플리케이션 개발사 JSP, 서블릿의 각자 고유한 역활을 나누어 기능을 구현함
+		
+		===============================================================
+	# 아파치 톰켓
+		자바 기반 오픈 소스 WAS(Web Application Server)인 Servlet/JSP의 컨테이너
+		서블릿은 톰켓안에 포함되어 있어서 톰캣 안에서만 작용함
+		
+	# 서블릿 동작 과정
+		클라이언트(브라우저)요청 -> 웹서버 -> 웹애플리케이션서버(WAS)에 위임 -> 서블릿 호출 -> 서블릿에서 결과처리 실행
+		->웹애플리케이션서버(WAS)에 결과 전송 -> 웹서버 결과 전송 -> 클라이언트에 결과 응답
+	
+	# 서블릿 특징
+		a. 서버쪽에서 기능 수행
+		b. 스레드 방식 실행
+		c. 자바의 모든 특성을 가짐 (단, 단독으로는 실행 못함)
+		d. 보안 기능 적용이 쉬움
+		e. 웹 브라우저 요청시 수행
+		
+	# 서블릿 API 계층 구조
+	Servlet + ServletConfig = 인터페이스 <--- GenericServlet 추상클래스(인터페이스 구현) <- HttpServlet 상속받음
+	
+	## HTTPServlet 클래스
+		HTTP프로토콜 사용하는 서블릿 기능을 구현하는 클래스임
+	
+	# HTTPServlete 클래스 | javax.servlet.http패키지
+		HTTP프로토콜 사용하는 서블릿 기능을 구현하는 클래스임
+		클라이언트 요청시 service()가 먼저 호출
+		=> 데이터 요청 방식에 따라 doGet(), doPost()차례로 호출됨
+		서블릿 = HttpSeervlet 클래스를 상속받아 사용
+	
+	#서블릿 생명주기 메서드
+		초기화 과정 -> 메모리에 인스턴스 생성 ->서비스 수행 -> 소멸 과정을 가짐(자바와 같다)
+		
+		서블릿은 각 요청 실행단계마다 기능을 수행하는 콜백 메서드들이 있음
+		1. init()
+			초기화 = 서블릿 요청시 맨 처음 한 번만 호출, 서블릿 생성시 초기화 작업을 주로 수행 => 생략 가능
+		2. doGet()/doPost()
+			작업수행 = 서블릿 요청시 매번 호출, 실제로 클라이언트가 요청하는 작업을 수행
+			=> 서블릿 핵심으로 반드시 구현
+		3. destroy()
+			종료 =  서블릿 기능을 수행, 메모리에서 소멸될때 호출, 서블릿 마무리 작업시 주로 수행
+			=> 생략가능
+			
+	# 서블릿 동작 과정 = 코딩 순서
+		a. 사용자 정의 서블릿 클래스 만들기
+		b. 서블릿 생명주기 메서드 구현 = init(), doGet() 또는 doPost(), destroy()
+		c. 서블릿 매핑 작업 = web.xml 또는 어노테이션 사용
+		d. 클라이언트(웹브라우저) 서블릿 매핑이름 요청
+		
+	===================================================
+	
+	# 서블릿 Thread 작동
+		여러 클라이언트가 같은 서블릿을 요청햇을 서블릿 처리 과정
+	1. 클라이언트가 DoServlet 서블릿 요청
+		=> 아파치 톰캣이 서블릿이 메모리에 로드되어 있는지 확인
+	2-1. DoServlet 서블릿이 없다면
+		=> DoServlet 서블릿 메모리에 로드
+		=> init() 호출
+		=> doGet() 또는 doPost() 호출
+		=> 클라이언트에 결과 응답
+	2-2. DoServlet 서블릿이 있다면
+		=> doGet() 또는 doPost()호출
+		=> 클라이언트에 결과 응답
+	
+	[결론]위의 방식이 서블릿을 재사용하여 훨씬 빠르고 효율적으로 동작됨
+*/
+
+public class HelloServlet extends HttpServlet {
+	
+	<!-- //생명 주기 메서드 = 초기화 / 해당 클래스를 초기화 해줌  -->
+	public void init(ServletConfig config) throws ServletException {
+		System.out.println("init 메서드 호출");
+	}
+
+	<!-- // 생명 주기 메서드 = 메모리에서 소멸시킬때 -->
+	public void destroy() {
+		System.out.println("destroy 메서드 호출");
+	}
+	<!-- // 클라이언트(브라우저) Get로 데이터 넘길때의 요청 처리 -->
+	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+		System.out.println("doGet 메서드 호출");
+	}
+
+	<!-- // 클라이언트(브라우저) Post로 데이터 넘길때의 요청 처리 -->
+	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+		System.out.println("doPost 메서드 호출");
+	}
+
+}
+
+───────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
+<?xml version="1.0" encoding="UTF-8"?>
+<web-app xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://xmlns.jcp.org/xml/ns/javaee" xsi:schemaLocation="http://xmlns.jcp.org/xml/ns/javaee http://xmlns.jcp.org/xml/ns/javaee/web-app_3_1.xsd" id="WebApp_ID" version="3.1">
+  <display-name>Chap01ServletBasic</display-name>
+  <welcome-file-list>
+    <welcome-file>index.html</welcome-file>
+    <welcome-file>index.htm</welcome-file>
+    <welcome-file>index.jsp</welcome-file>
+    <welcome-file>default.html</welcome-file>
+    <welcome-file>default.htm</welcome-file>
+    <welcome-file>default.jsp</welcome-file>
+  </welcome-file-list>
+<!-- 
+   클라이언트로부터 요청이 들어오면 어떤 서블릿 자바 파일을 실행할지 먼저 기술해야 함
+   아파치 서버가 실행되면 web.xml과 어노테이션을 읽어,
+   요청이름과 실행할 자바 파일을 매핑시켜 서블릿 컨테이너(톰캣)에 등록하여 차곡차곡 쌓아 놓음
+
+ -->
+  <!-- 1. 서블릿 등록 -->
+  <servlet>
+     <servlet-name>hello2</servlet-name>
+     <servlet-class>view.HelloServlet</servlet-class>
+  </servlet>
+  <!-- 2. 서블릿 매핑 = 서블릿과 주소창 연결-->
+  <servlet-mapping>
+     <servlet-name>hello2</servlet-name>
+     <url-pattern>/helloservlet</url-pattern>
+  </servlet-mapping>
+  
+</web-app>
+───────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
+2022.10.21
+───────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
+<맵핑>
+맵핑이란 브라우저 주소창과 우리의 파일을 연결하는것
+1. web.xml에 코딩
+2. 어노테이션(annotation)을 구동??
+───────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
+폴더 우클릭- new -패키지생성 - 패키지우클릭 - servlet
+init,destroy,doget,dopost체크 생성
+───────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
+package view;
+/*
+	<어노테이션 서블릿 매핑>
+		기존의 web.xml은 설정시 번거롭고 불편함
+		서블릿 클래스에 @WebServlet("/서블릿매핑이름")을 이용해 표시해주면
+		가독성도 좋고 편리하다
+		톰캣 버전7 부터 사용
+		단, 반드시 HttpServlet을 상속받은 클래스(extends HttpServlet)에서만 사용가능
+*/
+import java.io.IOException;
+import javax.servlet.ServletConfig;
+import javax.servlet.ServletException;
+import javax.servlet.annotation.WebServlet;
+import javax.servlet.http.HttpServlet;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+
+//<어노테이션방식>
+@WebServlet("/third")
+public class HelloServlet3 extends HttpServlet {
+	
+
+	public void init(ServletConfig config) throws ServletException {
+		System.out.println("init 호출");
+	}
+	public void destroy() {
+		System.out.println("destroy 호출");
+	}
+	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+		System.out.println("doget 메서드 호출");
+	}
+	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+		System.out.println("doPost 메서드 호출");
+	}
+}
+
+───────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
+스택 = 참조변수 저장공간
+heap = 인스턴스 저장공간
+───────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
+───────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>서블릿 로그인</title>
+</head>
+<body>
+	<form name="formLogin" action="login" method="get">
+		아이디 : <input type="text" name="user_id"><br>
+		비밀번호 : <input type="password" name="user_pw"><br>
+		<input type="submit" value="로그인">
+		<input type="reset" value="다시입력">
+	</form>
+</body>
+</html>
+<!-- ─────────────────────────────────────────────────────────────────────────────────────────────────────────────────────── -->
+<web.xml맵핑>
+
+
+<?xml version="1.0" encoding="UTF-8"?>
+<web-app xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://xmlns.jcp.org/xml/ns/javaee" xsi:schemaLocation="http://xmlns.jcp.org/xml/ns/javaee http://xmlns.jcp.org/xml/ns/javaee/web-app_3_1.xsd" id="WebApp_ID" version="3.1">
+  <display-name>Chap02ServletForm</display-name>
+  <welcome-file-list>
+    <welcome-file>index.html</welcome-file>
+    <welcome-file>index.htm</welcome-file>
+    <welcome-file>index.jsp</welcome-file>
+    <welcome-file>default.html</welcome-file>
+    <welcome-file>default.htm</welcome-file>
+    <welcome-file>default.jsp</welcome-file>
+  </welcome-file-list>
+  
+  
+  <servlet>
+     <servlet-name>InputServlet </servlet-name>
+     <servlet-class>dao.02_input</servlet-class>
+  </servlet>
+  <!-- 2. 서블릿 매핑 = 서블릿과 주소창 연결-->
+  <servlet-mapping>
+     <servlet-name>InputServlet </servlet-name>
+     <url-pattern>/InputServlet</url-pattern>
+  </servlet-mapping>
+  <!-- =================================== -->
+</web-app>
+───────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
+───────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>Insert title here</title>
+</head>
+<body>
+	<!-- 서블릿명 InputServlet, 매핑명 input, 전송방식 get-->
+	<form action="input" method="get">
+		아이디 : <input type="text" name="user_id"><br>
+		비밀번호 : <input type="password" name="user_pw"><br><br>
+		<!-- name값이 같으므로 데이터 배열처리 -->
+		<input type="checkbox" name="subject" value="java">자바
+		<input type="checkbox" name="subject" value="servlet">서블릿
+		<input type="checkbox" name="subject" value="jsp">JSP
+		<input type="checkbox" name="subject" value="oracle">Oracle
+		<input type="checkbox" name="subject" value="react">리액트
+		<br><br>
+		<input type="submit" value="로그인">
+		<input type="reset" value="다시입력">
+	</form>
+</body>
+</html>
+<!-- ─────────────────────────────────────────────────────────────────────────────────────────────────────────────────────── -->
+package dao;
+
+import java.io.IOException;
+import javax.servlet.ServletConfig;
+import javax.servlet.ServletException;
+import javax.servlet.annotation.WebServlet;
+import javax.servlet.http.HttpServlet;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+
+
+@WebServlet("/input")
+public class InputServlet extends HttpServlet {
+	//데이터 전송
+	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+		//한글처리
+		request.setCharacterEncoding("utf-8");
+		// HttpServletRequest 소속 getParameter()이용 name 속성값 받아옴
+				String id = request.getParameter("user_id");
+				String password = request.getParameter("user_pw");
+				// 콘솔출력
+				System.out.println(id + password);
+				// 배열처리 = 배열반환 메서드 = getParameterValues();
+				String[] subjectarray = request.getParameterValues("subject");
+				
+				// 배열 데이터 콘솔출력
+				System.out.println("아이디 : " + id);
+				System.out.println("비밀번호 : " + password);
+//				for(int i=0; i<subjectarray.length; i++) {
+//					System.out.println("선택한과목 : " + subjectarray[i]);
+//				}
+				for(String sublist : subjectarray) {
+					System.out.println("선택한과목 : " + sublist);
+				}
+	}
+
+	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+		
+	}
+
+}
+
+───────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
+───────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>서블릿 로그인 브라우저 출력</title>
+</head>
+<body>
+	<form name="formLogin" action="loginbrowser" method="get">
+		아이디 : <input type="text" name="user_id"><br>
+		비밀번호 : <input type="password" name="user_pw"><br>
+		<input type="submit" value="로그인">
+		<input type="reset" value="다시입력">
+	</form>
+</body>
+</html>
+<!-- ─────────────────────────────────────────────────────────────────────────────────────────────────────────────────────── -->
+package dao;
+
+import java.io.IOException;
+import java.io.PrintWriter;
+
+import javax.servlet.ServletConfig;
+import javax.servlet.ServletException;
+import javax.servlet.annotation.WebServlet;
+import javax.servlet.http.HttpServlet;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+
+/*
+	HttpServletrequest를 이용한 서블릿 응답
+	
+	<PrintWriter 객체>
+		텍스트를 출력해주는 객체
+		
+	PrintWriter out = response.getWriter(); => PrintWriter 객체 생성
+	
+	
+	
+*/
+@WebServlet("/loginbrowser")
+public class LoginServetBrowser extends HttpServlet {
+	
+	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+		//한글처리
+		request.setCharacterEncoding("utf-8");
+		//서버에서 MIME_TYPE 지정해서 클라이언트에 보내줌 => 여기서는 한글처리
+		response.setContentType("text/html; charset=utf-8");
+		
+		//PrintWriter 객체 = 데이터 출력
+		// HttpServletResponse의 getWriter()이용, 출력스트림인 PrintWriter객체 타입으로 저장
+		PrintWriter out = response.getWriter();
+		
+		// 폼데이터 저장
+		String id = request.getParameter("user_id");
+		String password = request.getParameter("user_pw");
+		System.out.println(out);
+		
+		// 추력 데이터를 HTML 형식으로 만듦
+		
+		String data = "<html>";
+		data += "<body>";
+		data += "아이디 : " + id;
+		data += "<br>";
+		data += "비밀번호 : " + password;
+		data += "</body>";
+		data += "</html>";
+		
+		out.print(data);
+		
+		
+	}
+	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+	}
+}
+───────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
+───────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
+<!DOCTYPE html>
+<html>
+	<head>
+	<meta charset="UTF-8">
+	<title>서블릿 로그인 Post방식</title>
+	<script>
+	function validate(){
+		const formLogin = document.formLogin; // 폼태그 할당
+        const user_id = formLogin.user_id.value; // id값 할당
+		const user_pw = formLogin.user_pw.value; // pw값 할당
+   		if((user_id.length == 0 || user_id == "") ||
+			(user_pw.length == 0 || user_pw == "")) { //값이 없으면
+			alert("아이디와 비밀번호를 입력하세요.");
+		}else { // 값이 있으면
+        	formLogin.method = "post";
+	        formLogin.action = "loginPost";
+	        formLogin.submit();
+		}
+	}
+	</script>
+	</head>
+<body>
+	<!-- 처리 서블릿 LoginServletPost = 매핑이름 loginPost -->
+	<form name="formLogin" action="loginPost" method="post">
+		아이디 : <input type="text" name="user_id"><br>
+		비밀번호 : <input type="password" name="user_pw"><br>
+		<!-- JS호출 = 유효성 검사-->
+		<input type="button" onclick="validate();" value="로그인">
+		<input type="reset" value="다시입력">
+		<!-- Hidden값 넘겨주기 = 화면에는 보이지 않지만 데이터는 서블릿으로 전송 -->
+		<input type="hidden" name="user_address" value="서울 성동구">
+	</form>
+</body>
+</html>
+<!-- ─────────────────────────────────────────────────────────────────────────────────────────────────────────────────────── -->
+package dao;
+
+import java.io.IOException;
+import java.io.PrintWriter;
+
+import javax.servlet.ServletConfig;
+import javax.servlet.ServletException;
+import javax.servlet.annotation.WebServlet;
+import javax.servlet.http.HttpServlet;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+/*
+	POST 방식으로 서블릿에 요청 = 자바스크립트 서블릿 요청
+*/
+
+@WebServlet("/loginPost")
+public class LoginServletPost extends HttpServlet {
+
+	
+	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+	
+	}
+
+	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+		request.setCharacterEncoding("utf-8");
+		response.setContentType("text/html; charset=utf-8");
+		PrintWriter out = response.getWriter();
+		
+		
+		String id = request.getParameter("user_id");
+		String password = request.getParameter("user_id");
+		String address = request.getParameter("user_address");
+		System.out.println("아이디 : " + id);
+		System.out.println("비밀번호 : " + password);
+		System.out.println("주소 : " + address);
+		
+//		브라우저 출력
+		String data = "<html>";
+		data += "<body>";
+		data += "아이디 : " + id;
+		data += "<br>";
+		data += "비밀번호 : " + password;
+		data += "<br>";
+		data += "주소 : " + address;		
+		data += "</body>";
+		data += "</html>";
+		out.print(data);
+	}
+
+}
+
+───────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
+───────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
+
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>Insert title here</title>
+</head>
+	<style>
+		* {
+              margin: 0;
+              padding: 0;
+              font-size: 24px;
+         }
+
+		form {}
+		
+		legend {
+			font-size: 24px;
+			font-weight: bold;
+			
+		}
+		li{
+			list-style: none;}
+
+		
+		div {
+			border:none;
+			padding-right: 20px;
+			
+		}
+		input {
+			width:180px;
+			height:24px;
+			
+		}
+		.right, .left {
+			float:left;
+		}
+		.bottom {
+		clear:both;
+		}
+		
+		.bottom input {
+			width:100px;
+			font-size: 16px;
+		}
+		
+	</style>
+
+	<script>
+	function create1(){
+		// 사용id 전부 할당해줘야함
+		const loginform1 = document.loginform1; // 폼태그 할당
+		const user_id = loginform1.user_id.value; // id값 할당
+		const user_pw = loginform1.user_pw.value; // pw값 할당
+		const user_name = loginform1.user_name.value; // 이름값 할당
+		const user_email = loginform1.user_email.value; // 이메일값 할당
+   		if(
+   				(user_id.length == 0 || user_id == "") ||
+   				(user_pw.length == 0 || user_pw == "") ||
+   				(user_name.length == 0 || user_name == "") ||
+   				(user_email.length == 0 || user_email == "")
+   				) { //값이 없으면
+  				alert("회원정보를 입력하세요.");
+		}else { // 값이 있으면
+			loginform1.method = "get";
+			loginform1.action = "1021getpost";
+			loginform1.submit();
+		}
+	}
+	
+		
+   	
+	</script>
+<body>
+	<form name=loginform1 action="1021getpost" method="get" class="cf">
+		<legend>회원가입</legend>
+		<div class="left">
+			<ul>
+				<li>아이디</li>
+				<li>비밀번호</li>
+				<li>이름</li>
+				<li>이메일</li>
+			</ul>
+		</div>
+		<div class="right">
+			<ul>
+				<li>
+					<input type="text" name="user_id">
+				</li>
+				<li>
+					<input type="password" name="user_pw">
+				</li>
+				<li>
+					<input type="text" name="user_name">
+				</li>
+				<li>
+					<input type="email" name="user_email">
+				</li>
+			</ul>
+		</div>
+		<div class="bottom">
+			<input type="button" onclick="create1();" value="회원가입">
+			<input type="reset" value="다시입력">
+		</div>
+	</form>
+</body>
+</html>
+<!-- ─────────────────────────────────────────────────────────────────────────────────────────────────────────────────────── -->
+package exercise20221021getpost;
+
+import java.io.IOException;
+import java.io.PrintWriter;
+
+import javax.servlet.ServletConfig;
+import javax.servlet.ServletException;
+import javax.servlet.annotation.WebServlet;
+import javax.servlet.http.HttpServlet;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+
+@WebServlet("/1021getpost")
+public class get20221021 extends HttpServlet {
+	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+		request.setCharacterEncoding("utf-8");
+		response.setContentType("text/html; charset=utf-8");
+		PrintWriter out = response.getWriter();
+		
+		response.setContentType("text/html; charset=utf-8");
+		String getid = request.getParameter("user_id");
+		String getpw = request.getParameter("user_pw");
+		String getname = request.getParameter("user_name");
+		String getemail = request.getParameter("user_email");
+		System.out.println("======GET방식============");
+		System.out.println(getid);
+		System.out.println(getpw);
+		System.out.println(getname);
+		System.out.println(getemail);
+		String textdata = "<html>";
+		textdata += "<body>";
+		textdata += "<b>GET</b><br>";
+		textdata += "아이디는 : " + getid + "<br>";
+		textdata += "비밀번호는 : " + getpw + "<br>";
+		textdata += "주소는 : " + getname + "<br>";
+		textdata += "이메일 주소는 : " + getemail + "<br>";
+		textdata += "</body>";
+		textdata += "</html>";
+		out.print(textdata);
+	}
+	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+		request.setCharacterEncoding("utf-8");
+		response.setContentType("text/html; charset=utf-8");
+		PrintWriter out = response.getWriter();
+		
+		String postid = request.getParameter("user_id");
+		String postpw = request.getParameter("user_pw");
+		String postname = request.getParameter("user_name");
+		String postemail = request.getParameter("user_email");
+
+		
+		System.out.println("======POST방식============");
+		System.out.println(postid);
+		System.out.println(postpw);
+		System.out.println(postname);
+		System.out.println(postemail);
+		String textdata = "<html>";
+		textdata += "<body>";
+		textdata += "<b>POST</b><br>";
+		textdata += "아이디는 : " + postid + "<br>";
+		textdata += "비밀번호는 : " + postpw + "<br>";
+		textdata += "주소는 : " + postname + "<br>";
+		textdata += "이메일 주소는 : " + postemail + "<br>";
+		textdata += "</body>";
+		textdata += "</html>";
+		out.print(textdata);
+	}
+}
+
+───────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
+───────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
+2022.10.24
+───────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>서블릿 Get Post동시 처리</title>
+<link rel="stylesheet" href="https://unpkg.com/bootstrap@3.3.7/dist/css/bootstrap.min.css">
+	<style>
+
+	</style>
+</head>
+<body>
+	<!-- 처리서블릿 LoginServletGetPost -->
+	<div class="pane1-heading">
+		<h3>로그인</h3>
+	</div>
+	<div class="pane1-body">
+		<form action="loginGetPost" method="post" name=formLogin>
+			<table class="table">
+				<tr>
+					<td>아이디 : </td>
+					<td>
+						<input type="text" name="user_id">
+					</td>
+				</tr>
+				<tr>
+					<td>패스워드 : </td>
+					<td>
+						<input type="password" name="user_pw">
+					</td>
+				</tr>
+				<tr>
+					<td colspan="2">
+						<input type="submit" value="로그인">
+						<input type="reset" value="취소">
+					</td>
+				</tr>
+			</table>
+		
+		</form>
+	</div>
+
+</body>
+</html>
+<!-- ─────────────────────────────────────────────────────────────────────────────────────────────────────────────────────── -->
+package dao;
+
+import java.io.IOException;
+import java.io.PrintWriter;
+
+import javax.servlet.ServletConfig;
+import javax.servlet.ServletException;
+import javax.servlet.annotation.WebServlet;
+import javax.servlet.http.HttpServlet;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+
+@WebServlet("/loginGetPost")
+public class LoginServletGetPost extends HttpServlet {
+
+	//doGet()
+	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+		//doGet() doPost() 두개 동시처리 메서드 호출
+		doGetPost(request,response);
+		System.out.println("doGet 메서드 호출");
+		
+	}
+	//doPost()
+	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+		//doGet() doPost() 두개 동시처리 메서드 호출
+		doGetPost(request,response);
+		System.out.println("doPost 메서드 호출");
+	}
+	
+	//doGet() doPost() 두개 선택처리 메서드
+	protected void doGetPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+		//한글처리
+		request.setCharacterEncoding("utf-8");
+		response.setContentType("text/html; charset=utf-8");
+		//서버에서 글을 써준것들의 출력을 화면으로 해줌
+		PrintWriter out = response.getWriter();
+		//▲입력후 임포트해줄것
+		System.out.println("doGetPost 메서드 호출");
+		//겟 파라미터로 데이터 할당
+		String id = request.getParameter("user_id");
+		String pw = request.getParameter("user_pw");
+		
+		// 결괏값 콘솔에 확인
+		System.out.println("아이디 : " + id);
+		System.out.println("비밀번호 : " + pw);
+
+		//브라우저 출력
+		out.print("아이디 : " + id + "<br>");
+		out.print("비밀번호 : " + pw + "<br>");
+		
+		//브라우저 출력2
+		String data ="<html>";
+		data += "<body>";
+		data += "아이디 : " + id;
+		data += "<br>";
+		data += "password : " + pw;
+		data += "<br>";
+		data += "</body>";
+		data += "</html>";
+		out.print(data);
+		
+	}
+	//init
+	public void init() {
+		System.out.println("init 메서드 호출");
+	}
+	//destory
+	public void destroy() {
+		System.out.println("destroy 메서드 호출");
+	}
+
+}
+───────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
+자바 빌드패스에서 웹앱라이브러리 없는경우
+우측에 에드라이브러리-서버런타임을 눌러서 자바톰캣8.5경로로 추가
+───────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
+<Forward>
+───────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
+───────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
+package forward01;
+
+/*
+   서블릿 포워드 기능
+   : 웹 개발시 회원관리, 상품관리, 게시판 관리등의 각각의 기능을 서로 연동할 경우가 반드시 필요
+     => 각각의 기능을 서로 연동할 경우가 반드시 필요
+     => 서블릿과 서블릿들 또는 JSP들과 서로 데이터를 공유해야 개발이 편리함
+     => 그래서 나오게 된 개념임
+     
+     하나의 서블릿에서
+      a. 다른 서블릿
+      b. 다른 JSP
+      => 와 연동하는 방법을 포워드라고 함
+      
+      [결론]
+      포워드 기능 = 하나의 서블릿에서 다른 서블릿이나 JSP로 요청을 전달하는 역할
+                 데이터를 추가하여 같이 포함시켜서 전달도 가능
+      (중요) MODEL2 개발시 서블릿에서 JSP로 데이터 전달시 주로 사용.
+      
+      [redirect 작동방식] 
+         = 서블릿 요청이 클라이언트의 웹브라우저를 거쳐서 다시 요청되는 방식 => 웹브라우저 주소창 주소가 달라짐
+         a. 클라이언트 요청
+         b. Servlet01ForwardRedirect 서블릿에서 어노테이션 설정한 곳으로 데이터 포워드
+         c. 다시 클라이언트 거쳐서
+         d. Servlet01ForwardRedirect2 서블릿에서 최종 정리
+ */
+
+
+import java.io.IOException;
+import java.io.PrintWriter;
+
+import javax.servlet.ServletException;
+import javax.servlet.annotation.WebServlet;
+import javax.servlet.http.HttpServlet;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+
+
+@WebServlet("/redirect")
+public class Servlet01ForwardRedirect extends HttpServlet {
+
+
+   // doGet()
+   protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+      response.setContentType("text/html; charset=utf-8");
+      PrintWriter out = response.getWriter();
+      response.sendRedirect("redirect2?name=seo");
+      
+   }
+   
+   // doPost()
+   protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+
+      
+   }
+
+   // 선택 처리 메서드
+//   protected void doGetPost(HttpServletRequest request, HttpServletResponse response){
+//      
+//   }
+      
+      
+}
+<!-- ─────────────────────────────────────────────────────────────────────────────────────────────────────────────────────── -->
+package forward01;
+/*
+   웹브라우저를 거쳐 이 서블릿으로 포워드
+   웹브라우저의 주소창은 맵핑된 값이 표시됨 = 새로운 웹브라우저
+ */
+import java.io.IOException;
+import java.io.PrintWriter;
+
+import javax.servlet.ServletException;
+import javax.servlet.annotation.WebServlet;
+import javax.servlet.http.HttpServlet;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+
+
+@WebServlet("/redirect2")
+public class Servlet01ForwardRedirect2 extends HttpServlet {
+
+   // doGet()
+   protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+      response.setContentType("text/html; charset=utf-8"); // 한글처리
+      PrintWriter out = response.getWriter();
+      
+      out.println("<html><body>");
+      out.println("포워드 실습 : sendRedirect 이용 redirect 실습");
+      String name = request.getParameter("name");
+      out.println("이름 :" + name);
+      out.println("</body></html>");
+      
+      out.close();
+   }
+
+   // doPost()
+   protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+      
+   }
+   
+
+
+}
+───────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
+───────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
+package forward01;
+/*
+   [refresh 작동방식]
+   = 서블릿 요청이 클라이언트의 웹브라우저를 거져서 다시 요청되는 방식 => 웹브라우저 주소창 주소가 달라짐
+   a. 클라이언트 요청
+   b. Servlet02ForwardRefresh 서블릿에서 어노테이션 설정한 곳으로 데이터 포워드
+   c. 다시 클라이언트 거쳐서
+   d. Servlet02ForwardRefresh2 서블릿에서 최종 처리
+
+*/
+import java.io.IOException;
+import java.io.PrintWriter;
+
+import javax.servlet.ServletException;
+import javax.servlet.annotation.WebServlet;
+import javax.servlet.http.HttpServlet;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+
+@WebServlet("/refresh")
+public class Servlet02ForwardRefresh extends HttpServlet {
+   // doGet 처리
+   protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+      response.setContentType("text/html; charset=utf-8");
+      PrintWriter out = response.getWriter();
+      response.addHeader("Refresh", "1;url=refresh2?name=gimssam"); // 1초후에 서블릿 refresh2로 포워드
+      
+   }
+
+   protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+      
+   }
+
+}
+<!-- ─────────────────────────────────────────────────────────────────────────────────────────────────────────────────────── -->
+package forward01;
+/*
+   웹브라우저를 거쳐 이 서블릿으로 포워드
+   웹브라우저의 주소창은 매핑된 값이 표시됨 = 새로운 웹브라우저
+*/
+import java.io.IOException;
+import java.io.PrintWriter;
+
+import javax.servlet.ServletException;
+import javax.servlet.annotation.WebServlet;
+import javax.servlet.http.HttpServlet;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+
+@WebServlet("/refresh2")
+public class Servlet02ForwardRefresh2 extends HttpServlet {
+
+   protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+      response.setContentType("text/html; charset=utf-8");
+      PrintWriter out = response.getWriter();
+      
+      // 포워드
+      out.println("<html><body>");
+      out.println("포워드 실습 : addHeader 이용 refresh 실습 <br>");
+      
+      // 포워드 데이터 받기
+      String name = request.getParameter("name");
+      out.println("전달받은 데이터 : " + name);
+      out.println("</body></html>");
+      // 자원반납
+      out.close();
+   }
+
+   protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+      
+   }
+
+}
+───────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
+───────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
+package forward01;
+/*
+<location 작동방식>
+= 서블릿 요청이 클라이언트의 웹브라우저를 거져서 다시 요청되는 방식 => 웹브라우저 주소창 주소가 달라짐
+	a. 클라이언트 요청
+	b. Servlet03ForwardLocation 서블릿에서 어노테이션 설정한 곳으로 데이터 포워드
+	c. 다시 클라이언트 거쳐서
+	d. Servlet03ForwardLocation2 서블릿에서 최종 처리
+
+*/
+import java.io.IOException;
+import java.io.PrintWriter;
+
+import javax.servlet.ServletException;
+import javax.servlet.annotation.WebServlet;
+import javax.servlet.http.HttpServlet;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+
+@WebServlet("/location")
+public class Servlet03ForwardLocation extends HttpServlet {
+	   // doGet 처리
+	   protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+	      //한글설정
+		  response.setContentType("text/html; charset=utf-8");
+		  //printWriter 생성
+	      PrintWriter out = response.getWriter();
+	      // 자바스크립트 location 객체 이용 포워드
+	     
+		  <!--out.println("<script type'text/javascript'>"); -->
+	      out.println("location.href='location2';");
+	      out.println("</script>");
+	      
+	      //자원반납
+	      out.close();
+	      
+	   }
+
+	   protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+	      
+	   }
+}
+
+// ───────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
+package forward01;
+/*
+[location 작동방식]
+= 서블릿 요청이 클라이언트의 웹브라우저를 거져서 다시 요청되는 방식 => 웹브라우저 주소창 주소가 달라짐
+a. 클라이언트 요청
+b. Servlet03ForwardLocation 서블릿에서 어노테이션 설정한 곳으로 데이터 포워드
+c. 다시 클라이언트 거쳐서
+d. Servlet03ForwardLocation2 서블릿에서 최종 처리
+
+*/
+import java.io.IOException;
+import java.io.PrintWriter;
+
+import javax.servlet.ServletException;
+import javax.servlet.annotation.WebServlet;
+import javax.servlet.http.HttpServlet;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+
+@WebServlet("/location2") //어노테이션
+public class Servlet03ForwardLocation2 extends HttpServlet {
+	   // doGet 처리
+	   protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+	      //한글설정
+		  response.setContentType("text/html; charset=utf-8");
+		  //printWriter 생성
+	      PrintWriter out = response.getWriter();
+	      
+	      out.println("<html><body>");
+	      
+	      out.println("포워드 실습 location 이용<br>");
+	      out.println("location.href='location2';");
+	      out.println("/script");
+	      
+	      
+	      
+	      
+	      
+	      out.println("</body></html>");
+	      
+	   }
+
+	   protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+	      
+	   }
+}
+
+───────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
+───────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
+package forward01;
+/*
+	<RequestDispatcher 이용한 포워드>
+		서버에서 포워드가 진행 = > 웹브라우저 주소창 주소가 안변함
+		
+	[RequestDispatcher 작동방식]
+		a. 클라이언트 요청
+		b. Servlet04ForwardDispatch 서블릿은
+		c. RequestDispatcher 객체 이용하여
+		d. RequestDispatcher2 서블릿으로 포워드되면서 최종 처리
+*/
+import java.io.IOException;
+
+import javax.servlet.RequestDispatcher;
+import javax.servlet.ServletException;
+import javax.servlet.annotation.WebServlet;
+import javax.servlet.http.HttpServlet;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+
+@WebServlet("/dispatcher")
+public class Servlet04ForwardDispatcher extends HttpServlet {
+	// doGet처리
+	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+		response.setContentType("text/html; charset=utf-8");
+		//get방식으로 데이터 전송
+		RequestDispatcher dis = request.getRequestDispatcher("dispatcher2?name=hansol");
+		dis.forward(request, response);
+		
+	}
+	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+
+	}
+
+}
+
+// ───────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
+package forward01;
+/*
+	이 서블릿으로 포워드
+	웹브라우저의 주소창 주소 변화 없음
+*/
+import java.io.IOException;
+import java.io.PrintWriter;
+
+import javax.servlet.ServletException;
+import javax.servlet.annotation.WebServlet;
+import javax.servlet.http.HttpServlet;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+
+@WebServlet("/dispatcher2")
+public class Servlet04ForwardDispatcher2 extends HttpServlet {
+
+	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+		//한글설정
+		response.setContentType("text/html; charset=utf-8");
+		//PrintWriter 생성
+		PrintWriter out = response.getWriter();
+		
+		//get 방식으로 데이터 받음 = 포워드
+		String name = request.getParameter("name");
+		
+	     out.println("<html><body>");
+	     out.println("포워드 실습 : RequestDispatcher 객체이용 <br>");
+	     
+	     // 포워드 데이터 받기
+	     out.println("전달받은 데이터 : " + name + "<br>");
+	     out.println("</body></html>");
+	     out.close();
+	}
+	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+	
+	}
+
+}
+
+───────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
+───────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
+package binding02;
+/*
+	바인딩 (Binding)
+		전달하는 데이터의 양이 적을때 GET 방식으로 편리하게 전달 가능
+		=> but, GET은 데이터 전달시 문제점이 있음 (=보안, 적은데이터(용량이작음))
+	웹프로그램 실행시에 데이터(자원)을 서블릿 관련 객체에 저장하는 방법
+		HttpServletRequest, HttpSeesion, ServletContext 객체를 통해 사용
+		저장된 데이터(자원)은 서블릿이나 JSP에서 서로 전달하고 공유하며 사용
+		
+	GET
+		a. 서블릿에 데이터 전송시 데이터가 URL뒤 속성명=속성값 형태로 전송
+			=> 주소값과 붙어서 전송
+		b. 여러 데이터 전송시 &로 구분
+		c. 보안에 취약
+		d. 최대 255자
+		e. 기본 데이터 전송방식
+		f. 웹브라우저에 직접 입력 전송가능
+		g. 서블릿에서 doGet()을 이용해 데이터 처리
+	
+	POST
+		a. 서블릿에 데이터 전송시 데이터가 body영역에 숨겨진 채 전송 
+			=> 주소값과 붙어서 전송
+		b. 여러 데이터 전송시 &로 구분
+		c. 전송 데이터 용량 제한없음
+		d. 속도가 약간 느림 = 전송시 서블릿에서 다시한번 가져오는 작업을 함
+		e.서블릿에서 doPost()이용해 데이터 처리
+*/
+import java.io.IOException;
+
+import javax.servlet.RequestDispatcher;
+import javax.servlet.ServletException;
+import javax.servlet.annotation.WebServlet;
+import javax.servlet.http.HttpServlet;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+
+
+@WebServlet("/bindingredirect")
+public class Binding01Redirect extends HttpServlet {
+	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+		response.setContentType("text/html; charset=utf-8");
+		//(포워드) 리다이렉트
+		//response.sendRedirect("bindingredirect2?name=HANSOL");
+		
+		
+		//웹브라우저에서 요청한 request객체에 해당값을 바인딩
+		request.setAttribute("name", "송한솔"); // "송한솔" : name 오브젝트로 전송됨
+		
+		// 두번째 서블릿으로 전달 = 웹브라우저 통해서 처리
+		response.sendRedirect("bindingredirect2?");
+		
+		
+		
+	}
+	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+
+	}
+
+}
+
+<!-- ─────────────────────────────────────────────────────────────────────────────────────────────────────────────────────── -->
+package binding02;
+/*
+	[결론]
+	서로 다른 요청을 하므로 서블릿간 데이터 공유 안됨
+	=> null값만 찍힘
+*/
+import java.io.IOException;
+import java.io.PrintWriter;
+
+import javax.servlet.ServletException;
+import javax.servlet.annotation.WebServlet;
+import javax.servlet.http.HttpServlet;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+
+
+@WebServlet("/bindingredirect2")
+public class Binding01Redirect2 extends HttpServlet {
+	
+	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+		//한글설정
+		response.setContentType("text/html; charset=utf-8");
+		//PrintWriter 생성
+		PrintWriter out = response.getWriter();
+		
+		//(포워드) 리다이렉트 데이터 받기
+		String name = (String) request.getAttribute("name");
+		// 오브젝트형으로 전송이 돼서 캐스팅을 해줘야함
+		out.println("<html><body>");
+		out.println("테스트 데이터 : " + name); <!-- null이 정상임 교육용예제 -->
+		out.println("<br>");
+		out.println("바인딩 실습 : sendRedirect 이용 바인딩 실습<br>");
+		out.println("</body></html>");
+	
+	}
+	
+	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+
+	}
+
+}
+
+───────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
+───────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
+package binding02;
+/*
+ 	RequestDispatcher을 이용한 바인딩
+*/
+import java.io.IOException;
+
+import javax.servlet.RequestDispatcher;
+import javax.servlet.ServletException;
+import javax.servlet.annotation.WebServlet;
+import javax.servlet.http.HttpServlet;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+
+
+@WebServlet("/binding01dispather")
+public class Binding01Dispatcher extends HttpServlet {
+
+	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+		response.setContentType("text/html; charset=utf-8");
+		
+		// 브라우저 최초 요청 데이터 바인딩
+		request.setAttribute("address", "서울시 중랑구");
+
+		// 데이터 바인딩 할 두번째 서블릿으로 포워드
+		RequestDispatcher dis = request.getRequestDispatcher("binding01dispather2"); //바인딩할 서블릿 지정
+		dis.forward(request,response);
+	}
+
+	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+	
+	}
+
+}
+
+<!-- ─────────────────────────────────────────────────────────────────────────────────────────────────────────────────────── -->
+package binding02;
+
+import java.io.IOException;
+import java.io.PrintWriter;
+
+import javax.servlet.ServletException;
+import javax.servlet.annotation.WebServlet;
+import javax.servlet.http.HttpServlet;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+
+@WebServlet("/binding01dispather2")
+public class Binding01Dispatcher2 extends HttpServlet {
+
+	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+		response.setContentType("text/html; charset=utf-8;");
+		PrintWriter out = response.getWriter();
+		
+		//request를 통해 전달된 데이터를 받음
+		//=>바인딩 = 브라우저를 거치지 않고 바로 첫번째서블릿에서 바로 전달됨
+		String address = (String) request.getAttribute("address");
+		
+		out.println("<html><body>");
+		out.println("테스트 데이터 : " + address); <!-- null이 정상임 <교육용예제> -->
+		out.println("<br>");
+		out.println("바인딩 실습 : RequestDispatcher 이용 바인딩 실습<br>");
+		out.println("</body></html>");
+		out.close();
+	}
+	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+
+	}
+
+}
+
+───────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
+───────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
+2022.10.25
+───────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
+웹에서 톰켓은 JAVA빼고는 정적파일을 건드리지않음
+───────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
+───────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>서블릿 Get Post동시 처리</title>
+<link rel="stylesheet" href="https://unpkg.com/bootstrap@3.3.7/dist/css/bootstrap.min.css">
+</head>
+<body>
+	<!-- 처리서블릿 LoginServletGetPost -->
+	<div class="pane1-heading">
+		<h3>로그인</h3>
+	</div>
+	<div class="pane1-body">
+		<form action="loginServlet" method="post" name=login>
+			<table class="table">
+				<tr>
+					<td>아이디 : </td>
+					<td>
+						<input type="text" name="user_id">
+					</td>
+				</tr>
+				<tr>
+					<td>패스워드 : </td>
+					<td>
+						<input type="password" name="user_pw">
+					</td>
+				</tr>
+				<tr>
+					<td>사는곳 : </td>
+					<td>
+						<input type="hidden" name="user_address" value="서울시 성동구">
+					</td>
+				</tr>
+				<tr>
+					<td>이메일 주소 : </td>
+					<td>
+						<input type="hidden" name="user_email" value="skycriper@naver.com">
+					</td>
+				</tr>
+				<tr>
+					<td>전화번호 : </td>
+					<td>
+						<input type="hidden" name="user_phone" value="010-3127-7711">
+					</td>
+				</tr>
+				<tr>
+					<td colspan="2">
+						<input type="submit" value="로그인">
+						<input type="reset" value="취소">
+					</td>
+				</tr>
+			</table>
+		
+		</form>
+	</div>
+
+</body>
+</html>
+<!-- ─────────────────────────────────────────────────────────────────────────────────────────────────────────────────────── -->
+package cookie01;
+/*
+ 	쿠키(Cookies) 세션(Session)
+ 	
+	 	웹 프로그램에서 사용하는 데이터(자원) = DB에서 가져옴
+	 	=> Servlet / JSP를 통해 가져옴(비지니스 로직)
+	 		=> DB와 관련된 작업을 할떄 사용하는 로직을 비즈니스 로직이라고함
+	 		=> DB의 기본요소 CRUD(Create, Read, Update, Delete) => 비즈니스 로직
+	 	
+	 	동시 사용자가 많아지면 DB에 부하가 걸리고 서비스에 문제가 생김
+	 		=> 따라서 사용 데이터의 종류에 따라,
+	 		=> 클라이언트 PC나 서버의 메모리에 저장하여,
+	 		=> 빠르게 웹애플리케이션을 실행할 수 있음
+	 	HTTP 프로토콜 서버 통신방식
+	 		클라이언트 통신시 stateless 방식으로 통신
+	 		=> 즉, 브라우저에서 새 페이지를 열면 브라우저간 어떤 연결도 없으므로
+	 		=> 각 브라우저끼리는 웹페이지의 상태나 정보를 모름
+	 		=> 따라서, 웹페이지나 서블릿끼리 상태나 정보를 공유하려면 세션이나 쿠키를 이용해야 함.
+	 		
+	 	저장공간
+	 		a. 쿠키 : 클라이언트 PC의 Cookie 파일에 정보를 저장한 후 웹페이지들끼리 공유
+	 		b. 세션 : 서버 메모리에 정보를 저장한 후 웹페이지들끼리 공유
+ 	
+*/
+import java.io.IOException;
+import java.io.PrintWriter;
+
+import javax.servlet.ServletException;
+import javax.servlet.annotation.WebServlet;
+import javax.servlet.http.HttpServlet;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+
+@WebServlet("/loginServlet")
+public class LoginServlet extends HttpServlet {
+
+	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+
+	}
+
+	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+		//한글처리
+		request.setCharacterEncoding("utf-8");
+		response.setContentType("text/html; charset=utf-8;");
+	    PrintWriter out = response.getWriter();	      
+	      
+	    String id = request.getParameter("user_id");
+		String pw = request.getParameter("user_pw");
+		String address = request.getParameter("user_address");
+		String email = request.getParameter("user_email");
+		String phone = request.getParameter("user_phone");
+		
+		
+		String data = "<br>안녕하세요 <br> 로그인하셨어요!!<br>";
+		
+		data += "이름은 : " + id + "<br>";
+		data += "비밀번호는 : " + pw + "<br>";
+		data += "사는곳은 : " + address + "<br>";
+		data += "이메일주소는 : " + email + "<br>";
+		data += "휴대전화번호는 : " + phone + "<br>";
+		
+		
+		out.print("<html><body>");			
+		out.println("안녕하세요!");
+		out.println("<br>");
+		out.println("로그인하셨습니다!");
+		out.println("<br>");
+		out.println("이름은 : " + id);
+		out.println("<br>");
+		out.println("비밀번호는 : " + pw);
+		out.println("<br>");
+		out.println("사는곳은 : " + address);
+		out.println("<br>");
+		out.println("이메일 주소는 : " + email);
+		out.println("<br>");
+		out.println("휴대전화번호 : " + phone);
+		out.println("<br>");
+		out.print(data);
+		out.print("</body></html>");
+		out.close();
+	}
+
+}
+
+───────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
+───────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
+package cookie01;
+/*
+	<쿠키(Cookies) 세션(Session)>
+	
+		<웹 프로그램에서 사용하는 데이터(자원) = DB에서 가져옴>
+		=> Servlet / JSP를 통해 가져옴(비지니스 로직)
+			=> DB와 관련된 작업을 할떄 사용하는 로직을 비즈니스 로직이라고함
+			=> DB의 기본요소 CRUD(Create, Read, Update, Delete) => 비즈니스 로직
+		
+		<동시 사용자가 많아지면 DB에 부하가 걸리고 서비스에 문제가 생김>
+			=> 따라서 사용 데이터의 종류에 따라,
+			=> 클라이언트 PC나 서버의 메모리에 저장하여,
+			=> 빠르게 웹애플리케이션을 실행할 수 있음
+			
+		<HTTP 프로토콜 서버 통신방식>
+			클라이언트 통신시 stateless 방식으로 통신
+			=> 즉, 브라우저에서 새 페이지를 열면 브라우저간 어떤 연결도 없으므로
+			=> 각 브라우저끼리는 웹페이지의 상태나 정보를 모름
+			=> 따라서, 웹페이지나 서블릿끼리 상태나 정보를 공유하려면 세션이나 쿠키를 이용해야 함.
+			
+		<저장공간>
+			a. 쿠키 : 클라이언트 PC의 Cookie 파일에 정보를 저장한 후 웹페이지들끼리 공유
+			b. 세션 : 서버 메모리에 정보를 저장한 후 웹페이지들끼리 공유
+
+		<쿠키 이용 웹페이지 연동>
+			웹 페이지들끼리 공유 정보를 [클라이언트 PC]에 저장
+			필요할 때 여러 웹페이지들이 공유, 사용할 수 있게 매개 역활을 하는것
+			a. 정보가 클라이언트 PC에 저장
+			b. 저장 용량 제한적(4kb)
+			c. 보안에 취약
+			d. 클라이언트의 브라우저가 사용 유무 결정
+			e. 웹사이트당 하나의 쿠키가 만들어짐(도메인당 한개)
+			(예시) 팝업창 더이상 보지 않기 => 주로 보안과 무관한 작은 용량 저장시 사용
+			
+		<쿠키 종류>
+			a. Persistance 쿠키
+				=> 생성위치 = 클라이언트 PC에 파일로 생성
+				=> 종료시간 = 쿠키를 직접 삭제
+				=> 최초 접속시 서버로 전송
+				=> 용도 = 로그인 유무 또는 팝업창 제한
+				
+		<쿠키 기능 실행과정>
+			a. 브라우저로 사이트 최초 접속
+			b. 서버는 정보를 저장할 쿠키 생성
+			c. 생성된 쿠키 브라우저 전송
+			d. 브라우저 서버로 받은 쿠키정보를 쿠키파일에 저장
+			e. 브라우저 재접속시 / 서버가 브라우저에 쿠키전송을 요청하면 / 브라우저는 쿠키 정보를 서버에 넘겨줌
+			f. 서버는 쿠키 정보 이용 작업
+*/
+import java.io.IOException;
+import java.io.PrintWriter;
+import java.net.URLDecoder;
+import java.net.URLEncoder;
+import java.util.Date;
+
+import javax.servlet.ServletException;
+import javax.servlet.annotation.WebServlet;
+import javax.servlet.http.Cookie;
+import javax.servlet.http.HttpServlet;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+
+
+@WebServlet("/setcookie")
+public class Cookie01SetCookie extends HttpServlet {
+
+	<!-- doget 처리 -->
+	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+		
+		<!-- 한글 처리 -->
+		response.setContentType("text/html; charset=utf-8");
+		PrintWriter out = response.getWriter();
+
+		<!-- Date 객체 생성 -->
+		Date d = new Date();
+
+		<!-- Cookie 객체 생성 -->
+		<!-- 한글 정보 인코딩하여 쿠키에 저장(인코딩 할 텍스트, 문자 인코딩 종류) -->
+		Cookie c1 = new Cookie("cookieTest1", URLEncoder.encode("쿠키에 저장된값1", "utf-8"));		
+		Cookie c2 = new Cookie("cookieTest2", URLEncoder.encode("쿠키에 저장된값2", "utf-8"));		
+		Cookie c3 = new Cookie("cookieTest3", URLEncoder.encode("쿠키에 저장된값3", "utf-8"));		
+		
+		<!-- 쿠키 유효기간을 설정 -->
+		c1.setMaxAge(24*60*60); //24시간(24시간*60*1분)
+		c2.setMaxAge(24*60*60); //24시간(24시간*60*1분)
+		c3.setMaxAge(24*60*60); //24시간(24시간*60*1분)
+		
+		<!-- 서버 생성 쿠키 브라우저 전송 -->
+		response.addCookie(c1);
+		response.addCookie(c2);
+		response.addCookie(c3);
+		
+		out.println("현재시간 : " + d);
+		out.println("<br>문자열 Cookie에 저장");
+		out.print("<br>");
+		out.println(URLDecoder.decode(c1. getValue(), "utf-8"));
+		out.print("<br>");
+		out.println(URLDecoder.decode(c2. getValue(), "utf-8"));
+		out.print("<br>");
+		out.print(c1);
+		out.print("<br>");
+		out.print(c2);
+		out.print("<br>");
+		
+		boolean t = c1.equals(c3);
+		out.print(t);
+		out.print("<br>");
+		
+		boolean tt = URLDecoder.decode(c1. getValue(), "utf-8").equals(URLDecoder.decode(c2. getValue(), "utf-8"));
+		out.print(tt);
+		out.print("<br>");
+
+	}
+	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+	}
+}
+
+<!-- ─────────────────────────────────────────────────────────────────────────────────────────────────────────────────────── -->
+package cookie01;
+/*
+	SetCookie -> GetCookie
+	(선행) SetCookie를 브라우저에 실행 후
+		=> 저장된 쿠키값을 GetCookieValue에서 실행
+*/
+import java.io.IOException;
+import java.io.PrintWriter;
+import java.net.URLDecoder;
+
+import javax.servlet.ServletException;
+import javax.servlet.annotation.WebServlet;
+import javax.servlet.http.Cookie;
+import javax.servlet.http.HttpServlet;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+
+
+@WebServlet("/getcookie")
+public class Cookie02GetCookie extends HttpServlet {
+	//doGet 처리
+	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+		//한글 처리
+		response.setContentType("text/html; charset=utf-8;");
+		// 문자열 생성
+		PrintWriter out = response.getWriter();
+		// 브라우저에 있는 쿠키정보를 요청한 후 쿠키정보를 배열로 가져옴
+		Cookie[] allCookie = request.getCookies();
+		
+		for(int i=0; i<allCookie.length; i++) {
+			
+			쿠키 배열에 있는 데이터 중 CookieTest0의 값만 가져오고 싶음 (형식만)
+			if(allCookie[i].getName().equals("cookieTest")) {
+				out.print("<br>");
+				out.println("Cookies값 가져오기 : " + URLDecoder.decode(allCookie[i]. getValue(), "utf-8"));	
+			}
+			out.println("쿠키네임: " + allCookie[i].getName() + "<br>");
+			out.println("쿠키네임 값: " + URLDecoder.decode(allCookie[i].getValue(),"utf-8")+"<br><br>");
+			  <!-- or -->
+			out.print("<br>");
+			out.println("Cookies값 가져오기 : " + URLDecoder.decode(allCookie[i]. getValue(), "utf-8"));
+		}
+	}
+
+	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+	}
+
+}
+
+───────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
+───────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
+package session02;
+/*
+	세션을 이용한 웹페이지 연동
+		웹페이지들끼리 공유 정보를 서버에 저장=> 웹페이지들을 매개해 주는 방법
+		=> 서버의 메모리에 생성되어 정보를 저장
+		=> 로그인 처럼 보안이 요구되는 정보는 대부분 세션 이용
+		=> [중요] 각 브라우저당 한개(=사용자당 한개가 생성)
+		
+	세션 실행 과정
+	  a. 클라이언트 브라우저 => 서버에 최초 접속
+		=> 서버의 서블릿은 세션 객체를 생성
+		=> 세션 객체에 대한 세션 id를 브라우저에 전송
+		=> 브라우저는 서버로부터 받은 세션 id를 브라우저가 사용하는(세션 쿠키)에 저장
+		=> <결론> 서버로부터 전송된 세션id도 일종의 쿠키임
+		
+	  b. 재접속시
+		=> 세션 쿠키에 저장된 세션id를 다시 서버로 전송
+		=> 서버에서는 전송된 세션 id를 이용
+		=> 브라우저 세션 객체에 접근, 브라우저에 대한 작업 수행
+		
+	  세션의 중요한 특징
+		=> 브라우저당 한개씩 생성 (=사용자당 한개 생성)
+		=> 브라우저 종료시 세션 해제
+		
+	  Session API
+	    => HttpSession 객체 생성하여 사용
+	    => HttpServletRequest의 getSession()메서드 호출 생성
+	    => getSession() = 기본 세션 객체가 존재하면 반환, 없으면 새로 생성
+	    
+		
+*/
+import java.io.IOException;
+import java.io.PrintWriter;
+import java.util.Date;
+
+import javax.servlet.ServletException;
+import javax.servlet.annotation.WebServlet;
+import javax.servlet.http.HttpServlet;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
+
+
+@WebServlet("/sessionbasic")
+public class Session01Basic extends HttpServlet {
+	// doGet처리
+	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+		response.setContentType("text/html; charset=utf-8;");
+		// 문자열 생성
+		PrintWriter out = response.getWriter();
+		// 최초 요청시 세션 객체를 새로 생성하거나 기존 세션을 반환
+		HttpSession session = request.getSession();
+		// 생성된 세션 개체 id 가져옴
+		out.println("세션아이디 : " + session.getId() + "<br>");
+		session.getId();
+		// 최초 세션 생성시간
+		out.println("최초 세션 생성시간 : " + new Date(session.getCreationTime()) + "<br>");
+		
+		// 세션 객체 가장 최근 접근한 시간
+		out.println("가장 최근 접근 시간 : " + new Date(session.getLastAccessedTime()) + "<br>");
+		
+		//세션 객체에 유효 시간 = 기본 30분임
+		out.println("세션 유효 시간 : " + session.getMaxInactiveInterval() + "<br>");
+		if(session.isNew()) {
+			out.println("새 세션 생성");
+		}
+	}
+	
+	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+	
+	}
+
+}
+
+<!-- ─────────────────────────────────────────────────────────────────────────────────────────────────────────────────────── -->
+package session02;
+/*
+	세션을 이용한 웹페이지 연동
+		웹페이지들끼리 공유 정보를 서버에 저장=> 웹페이지들을 매개해 주는 방법
+		=> 서버의 메모리에 생성되어 정보를 저장
+		=> 로그인 처럼 보안이 요구되는 정보는 대부분 세션 이용
+		=> [중요] 각 브라우저당 한개(=사용자당 한개가 생성)
+		
+	세션 실행 과정
+	  a. 클라이언트 브라우저 => 서버에 최초 접속
+		=> 서버의 서블릿은 세션 객체를 생성
+		=> 세션 객체에 대한 세션 id를 브라우저에 전송
+		=> 브라우저는 서버로부터 받은 세션 id를 브라우저가 사용하는(세션 쿠키)에 저장
+		=> <결론> 서버로부터 전송된 세션id도 일종의 쿠키임
+		
+	  b. 재접속시
+		=> 세션 쿠키에 저장된 세션id를 다시 서버로 전송
+		=> 서버에서는 전송된 세션 id를 이용
+		=> 브라우저 세션 객체에 접근, 브라우저에 대한 작업 수행
+		
+	  세션의 중요한 특징
+		=> 브라우저당 한개씩 생성 (=사용자당 한개 생성)
+		=> 브라우저 종료시 세션 해제
+		
+	  Session API
+	    => HttpSession 객체 생성하여 사용
+	    => HttpServletRequest의 getSession()메서드 호출 생성
+	    => getSession() = 기본 세션 객체가 존재하면 반환, 없으면 새로 생성
+	    
+		
+*/
+import java.io.IOException;
+import java.io.PrintWriter;
+import java.util.Date;
+
+import javax.servlet.ServletException;
+import javax.servlet.annotation.WebServlet;
+import javax.servlet.http.HttpServlet;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
+
+
+@WebServlet("/sessionbasic2")
+public class Session01Basic2 extends HttpServlet {
+	// doGet처리
+	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+		response.setContentType("text/html; charset=utf-8;");
+		// 문자열 생성
+		PrintWriter out = response.getWriter();
+		// 최초 요청시 세션 객체를 새로 생성하거나 기존 세션을 반환
+		HttpSession session = request.getSession();
+		// 생성된 세션 개체 id 가져옴
+		out.println("세션아이디 : " + session.getId() + "<br>");
+		session.getId();
+		//최초 세션 생성시간
+		out.println("최초 세션 생성시간 : " + new Date(session.getCreationTime()) + "<br>");
+		
+		// 세션 객체 가장 최근 접근한 시간
+		out.println("가장 최근 접근 시간 : " + new Date(session.getLastAccessedTime()) + "<br>");
+		
+		//세션 객체에 유효 시간 = 기본 30분임
+//		session.setMaxInactiveInterval(30); // 세션 객체 유효시간 설정(초)
+		out.println("세션 유효 시간 : " + session.getMaxInactiveInterval() + "초<br>");
+		
+		if(session.isNew()) {
+			out.println("새 세션 생성");
+		}
+		
+		//세션 강제 삭제 // 브라우저와 서버의 연결 끊기
+		session.invalidate();
+	}
+	
+	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+	
+	}
+
+}
+
+───────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
+───────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>서블릿 Get Post동시 처리</title>
+<link rel="stylesheet" href="https://unpkg.com/bootstrap@3.3.7/dist/css/bootstrap.min.css">
+</head>
+<body>
+	<!-- 처리서블릿 LoginServletGetPost -->
+	<div class="pane1-heading">
+		<h3>로그인</h3>
+	</div>
+	<div class="pane1-body">
+		<form action="loginsession" method="post" name=login>
+			<table class="table">
+				<tr>
+					<td>아이디 : </td>
+					<td>
+						<input type="text" name="user_id">
+					</td>
+				</tr>
+				<tr>
+					<td>패스워드 : </td>
+					<td>
+						<input type="password" name="user_pw">
+					</td>
+				</tr>
+				<tr>
+					<td>사는곳 : </td>
+					<td>
+						<input type="hidden" name="user_address" value="서울시 성동구">
+					</td>
+				</tr>
+				<tr>
+					<td>이메일 주소 : </td>
+					<td>
+						<input type="hidden" name="user_email" value="skycriper@naver.com">
+					</td>
+				</tr>
+				<tr>
+					<td>전화번호 : </td>
+					<td>
+						<input type="hidden" name="user_phone" value="010-3127-7711">
+					</td>
+				</tr>
+				<tr>
+					<td colspan="2">
+						<input type="submit" value="로그인">
+						<input type="reset" value="취소">
+					</td>
+				</tr>
+			</table>
+		
+		</form>
+	</div>
+
+</body>
+</html>
+<!-- ─────────────────────────────────────────────────────────────────────────────────────────────────────────────────────── -->
+package session02;
+
+import java.io.IOException;
+import java.io.PrintWriter;
+
+import javax.servlet.ServletException;
+import javax.servlet.annotation.WebServlet;
+import javax.servlet.http.HttpServlet;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
+
+
+@WebServlet("/loginsession")
+public class Session02Login extends HttpServlet {
+	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+		doGetPost(request,response);
+	}
+	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+		doGetPost(request,response);
+	}
+	
+	// doGet doPost 데이터에 따라 처리
+	protected void doGetPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+		//한글처리
+		request.setCharacterEncoding("utf-8");
+		response.setContentType("text/html; charset=utf-8");
+		// 문자열 생성
+		PrintWriter out = response.getWriter();
+		
+		// 세션 생성
+		HttpSession session = request.getSession();
+		// 브라우저에서 전송된 데이터 id 비밀번호 가져오기
+		String id = request.getParameter("user_id");
+		String pw = request.getParameter("user_pw");
+		
+		
+		//세션 존재 유무에 따른 코딩
+		if(session.isNew()) { //최초 요청시
+			 // id값이 있으면 세션 id에 데이터 바인딩
+			if(id != null) {
+				session.setAttribute("user_id", id); // session명 => user_id
+				out.println("<a href='loginsession'>로그인 상태 확인(id값이 있으면)</a>");
+			}else { // id값이 없으면
+				out.println("<a href='04_login_session.html'>id 값이 없으므로 로그인하세요</a>");
+				session.invalidate(); //세션해제
+			}
+		}else { // 최초 요청이 아닐시 id를 가져와 이전에 로그인했는지 여부를 확인
+			id = (String)session.getAttribute("user_id"); // 세션 객체 타입을 문자열로 캐스팅
+			if( id != null && id.length() != 0) { //id가 null이아니면(id가있으면) && id배열이 0이 아니라면
+				out.println("안녕하세요 " + id + "님!!"); //세션값 사용
+				session.invalidate(); // 세션해제
+				
+			}
+			
+			
+		}
+	
+		
+	}
+
+}
+───────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
+───────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
+────────────────────────────────────────────────────────────────F───────────────────────────────────────────────────────
+2022.10.26
+────────────────────────────────────────────────────────────────F───────────────────────────────────────────────────────
+────────────────────────────────────────────────────────────────F───────────────────────────────────────────────────────
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<link rel="stylesheet" href="https://unpkg.com/bootstrap@3.3.7/dist/css/bootstrap.min.css">
+<title>
+	폼데이터 다루기
+</title>
+	<style>
+	#wrap {
+		width:960px;
+		margin: 0 auto;
+	}
+	</style>
+
+</head>
+<body>
+	<div id="wrap">
+		<h1 class="panel-heading">Form 데이터 다루기</h1>
+		
+		<div class="panel-body">
+		<form action="formQuery" method="post">
+			<table class="table">
+				<tr>
+					<td>이름 : </td>
+					<td>
+						<input type="text" name="name" size="30" maxlength="10" value="한솔">
+					</td>
+				</tr>
+				<tr>
+					<td>아이디 : </td>
+					<td>
+						<input type="text" name="id" size="30" maxlength="10" value="아이디입력">
+					</td>
+				</tr>
+				<tr>
+					<td>패스워드 : </td>
+					<td>
+						<input type="password" name="password" value="1234">
+					</td>
+				</tr>
+				<tr>
+					<td>주소 : </td>
+					<td>
+						<input type="text" name="address" placeholder="서울시 성동구 성수동" value="망우동">
+					</td>
+				</tr>
+				<tr>
+					<td>주문수량 : </td>
+					<td>
+						<input type="number" name="qty" min="0" max="10" step="2" value="2">
+					</td>
+				</tr>
+				<tr>
+					<td>E-mail : </td>
+					<td>
+						<input type="email" name="email" value="skycriper@naver.com">
+					</td>
+				</tr>
+				<tr>
+					<td>URL : </td>
+					<td>
+						<input type="url" name="url" size="50" value="http://localhost:8080/Chap100_Pratice/servletpractice01.html">
+					</td>
+				</tr>
+				<tr>
+					<td>날짜 : </td>
+					<td>
+						<input type="date" name="date" value="2022-10-26">
+					</td>
+				</tr>
+				<tr>
+					<td>Comment : </td>
+					<td>
+						<textarea name="comment" cols="50" rows="10"></textarea>
+					</td>
+				</tr>
+				<tr>
+					<td>야구팀 : </td>
+					<td>
+						<input type="radio" name="baseball" value="OB" checked>OB<br>
+						<input type="radio" name="baseball" value="Samsung" checked>Samsung<br>
+						<input type="radio" name="baseball" value="MBC" checked>MBC<br>
+						<input type="radio" name="baseball" value="HAETAE" checked>HAETAE<br>
+						<input type="radio" name="baseball" value="LOTTE" checked>LOTTE<br>
+						<input type="radio" name="baseball" value="SAMMI" checked>SAMMI<br>
+					</td>
+				</tr>
+				<!-- 다중데이터 -->
+				<tr>
+					<td>4강팀 : </td>
+					<td>
+						<input type="checkbox" name="four" value="OB">OB<br>
+						<input type="checkbox" name="four" value="Samsung">Samsung<br>
+						<input type="checkbox" name="four" value="MBC">MBC<br>
+						<input type="checkbox" name="four" value="HAETAE">HAETAE<br>
+						<input type="checkbox" name="four" value="LOTTE">LOTTE<br>
+						<input type="checkbox" name="four" value="SAMMI">SAMMI<br>
+					</td>
+				</tr>
+				<tr>
+					<td>우승팀 : </td>
+					<td>
+						<select name="base">
+							<option value="OB">OB</option>
+							<option value="Samsung">Samsung</option>
+							<option value="MBC">MBC</option>
+							<option value="HAETAE">HAETAE</option>
+							<option value="LOTTE">LOTTE</option>
+							<option value="SAMMI">SAMMI</option>	
+						</select>
+					</td>
+				</tr>
+				<!-- select 단일 데이터 -->
+				<tr>
+					<td>플레이오프 4강팀 : </td>
+					<td>
+						<select name="five" multiple size="6" >
+							<option>선택해주세요</option>
+							<option value="OB">OB</option>
+							<option value="Samsung">Samsung</option>
+							<option value="MBC">MBC</option>
+							<option value="HAETAE">HAETAE</option>
+							<option value="LOTTE">LOTTE</option>
+							<option value="SAMMI">SAMMI</option>
+						</select>
+					</td>
+				</tr>
+				<tr>
+					<td>File Upload :</td>
+					<td>
+						<input type="file" name="upload" class="form-control">
+					</td>
+				</tr>
+				<tr>
+					<td colpsan="2">
+						<input type="submit" value="전송">
+						<input type="reset" value="다시입력">
+					
+					</td>
+				</tr>
+
+			</table>
+	
+		</form>		
+		</div>		
+	</div>
+	
+	
+</body>
+</html>
+<!-- ────────────────────────────────────────────────────────────────F─────────────────────────────────────────────────────── -->
+package servletpractice01;
+
+import java.io.IOException;
+import java.io.PrintWriter;
+
+import javax.servlet.ServletException;
+import javax.servlet.annotation.WebServlet;
+import javax.servlet.http.HttpServlet;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+
+
+@WebServlet("/formQuery")
+public class ServletPractice01 extends HttpServlet {
+	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+	}
+	//doPost처리
+	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+		//한글처리
+		request.setCharacterEncoding("utf-8");
+		response.setContentType("text/html; charset=utf-8;");
+		
+		//문자열 생성
+		PrintWriter out = response.getWriter();
+		
+		String name = request.getParameter("name");
+		String id = request.getParameter("id");
+		String pw = request.getParameter("password");
+		String address = request.getParameter("address");
+		
+		//주문수량 (캐스팅(casting))
+		int qty = Integer.parseInt(request.getParameter("qty"));
+		
+		String email = request.getParameter("email");
+		String date = request.getParameter("date");
+		String comment = request.getParameter("comment");
+		
+		//radio버튼 = 단일데이터
+		String baseball = request.getParameter("baseball");
+		String[] four = request.getParameterValues("four");
+		String base = request.getParameter("base");
+		String[] five = request.getParameterValues("five");
+		
+		String upload = request.getParameter("upload");
+		
+		out.print("<html><body>");
+		out.print("<h2>Form Data 다루기</h2>");
+		out.print("이름은 =" + name + "<br>");
+		out.print("아이디는 = " + id+ "<br>");
+		out.print("비밀번호는 =" + pw + "<br>");
+		out.print("주소 =" + address + "<br>");
+		out.print("주문수량 =" + qty + "<br>");
+		out.print("E-Mail =" + email + "<br>");
+		out.print("날짜 =" + date + "<br>");
+		// 다중데이터 처리		
+		for(int i=0; i<four.length; i++) {			
+			out.print("4강 진출팀 " + (i+1) + "위 =>" + four[i] + "<br>");
+		}
+		
+		out.print("baseball =" + baseball + "<br>");
+		// select 다중데이터(multiple) 처리
+		for(int i=0; i<five.length; i++) {			
+			out.print("4강 플레이오프 진출팀 " + (i+1) + "위 =>" + five[i] + "<br>");
+		}
+		// select 단일데이터 처리
+		out.print("우승팀은 = " + base + "<br>");
+		
+		out.print("upload" + upload + "<br>");
+
+		
+		out.print("</body></html>");
+		
+		
+		
+	}
+
+}
+<!-- ─────────────────────────────────────────────────────────────────────────────────────────────────────────────────────── -->
+───────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
+<JSP란?>
+	HTTP,CSS,JavaScript,JAVA(Servlet)를 한번에 쓸수 잇는 툴
+	기본은 정적데이터이기때문에 WEA-APP안에 생성함
+───────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
+───────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
+───────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
+───────────────────────────────────────────────────────────────────────────────────────────────────────────────────────

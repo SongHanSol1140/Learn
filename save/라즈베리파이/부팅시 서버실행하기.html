@@ -1,0 +1,89 @@
+<방법1>
+    /etc/systemd/system/table.service 파일을 생성하고 다음과 같은 내용을 추가합니다:
+    <!-- ---------------------------------------------------------- -->
+    [Unit]
+    Description=table Server
+    After=network.target
+
+    [Service]
+    ExecStart=/home/nanonix/node-v18.16.1-linux-armv7l/bin/node /home/nanonix/ai/table/server.js
+    WorkingDirectory=/home/nanonix/ai/table
+    Restart=always
+    RestartSec=20
+    User=nanonix
+
+    [Install]
+    WantedBy=multi-user.target
+    <!-- ---------------------------------------------------------- -->
+    권한부여
+    chmod +x /home/nanonix/ai/table/server.js
+    <!-- ---------------------------------------------------------- -->
+    <서버 자동실행 설정>
+    sudo systemctl enable table
+    sudo systemctl start table
+    <!-- ---------------------------------------------------------- -->
+    <재부팅해서 실행확인>
+    sudo systemctl status table
+    <!-- ---------------------------------------------------------- -->
+    <문제시 서버 자동실행 비활성화>
+    sudo systemctl stop table
+    sudo systemctl disable table
+    <안되서 문제해결>
+    상단에 GNU nano 5.4 어쩌구 하는 구문이 있음(자동으로 추가되어있어서 인식을 못함)
+    해당 구문 주석처리 혹은삭제후 저장
+    sudo systemctl daemon-reload
+    sudo systemctl restart table
+    재부팅
+    
+<방법2>
+    sudo nano /etc/rc.local
+    exit 0 문장 전에 다음줄을 추가
+    /usr/bin/node /home/nanonix/ai/table/server.js &
+
+    재부팅하고 서버가 실행됬는지 확인
+    ps aux | grep node
+    
+    실행이 안됬다면 권한확인
+    ls -l /home/nanonix/ai/table/server.js
+    권한부여 - (-rwxr-xr-x 또는 -rwxrwxr-x 등)
+    chmod +x /home/nanonix/ai/table/server.js
+
+    <재시도>
+    부팅 10초뒤 물리적으로 GUI 터미널을 실행시키고, cd /home/
+    crontab -e
+    @reboot sleep 10 && /usr/bin/lxterminal -e "bash -c 'cd /home/nanonix/ai/table; /home/nanonix/node-v18.16.1-linux-armv7l/bin/node server.js; bash'"
+
+
+
+<방법3>
+라즈베리파이 부팅 후 일정 시간 지난 후에 특정 명령을 자동으로 실행하려면, crontab을 사용할 수 있습니다. crontab은 Unix 기반 시스템에서 시간을 기반으로 작업을 예약하는데 사용되는 도구입니다.
+
+아래의 단계를 따라 설정해 보세요:
+
+먼저, 터미널에서 crontab -e 명령을 실행하여 현재 사용자의 크론탭 파일을 엽니다.
+
+처음 실행하는 경우, 편집기를 선택하라는 메시지가 나타날 수 있습니다. 이 경우 원하는 편집기를 선택하면 됩니다 (예: nano).
+
+크론탭 파일의 맨 아래에 다음 줄을 추가합니다:
+
+@reboot sleep 10 && cd /home/nanonix/ai/table && /path/to/node server.js
+이 명령은 시스템이 부팅될 때 (@reboot) 10초 동안 대기 (sleep 10) 한 후, /home/nanonix/ai/table 디렉토리로 이동 (cd /home/nanonix/ai/table)하고, node server.js 명령을 실행하게 됩니다. /path/to/node는 node 실행 파일의 절대 경로를 의미합니다. 시스템에 따라 경로가 다를 수 있으므로, 터미널에서 which node 명령을 실행하여 node의 절대 경로를 확인하실 수 있습니다.
+
+변경사항을 저장하고 편집기를 종료합니다.
+
+이제 시스템이 부팅될 때마다 10초 후에 지정한 명령이 자동으로 실행됩니다. 이 방법은 단순하고 직관적이지만, 명령의 출력을 로깅하거나 명령이 실패했을 때 재시도하는 등의 고급 기능은 제공하지 않습니다. 이러한 기능이 필요한 경우에는 systemd나 다른 시스템 관리 도구를 사용하는 것이 좋습니다.
+
+
+<방법4>
+
+    <부팅확인>
+    부팅 설정 확인: 라즈베리 파이의 부팅 설정을 확인해야 합니다. 터미널이 자동으로 실행되려면 부팅 설정이 올바르게 구성되어야 합니다. 먼저, 라즈베리 파이를 부팅한 후 다음 명령어를 터미널에서 실행합니다:
+   
+    sudo raspi-config
+    그런 다음 "Boot Options"로 이동하고 "Desktop / CLI"를 선택합니다. 그리고 "Console Autologin"을 선택한 다음 "Finish"를 눌러 설정을 저장합니다.
+    
+    ~/.bashrc 파일 확인: 터미널이 자동으로 실행되지 않는 경우, 라즈비안의 환경 설정 파일인 ~/.bashrc 파일을 확인해야 합니다. 다음 명령어를 사용하여 파일을 엽니다:
+
+    <여기서 재부팅하면 터미널모드가됨, 터미널모드에서 GUI로 돌아오려면 startx>
+
+    

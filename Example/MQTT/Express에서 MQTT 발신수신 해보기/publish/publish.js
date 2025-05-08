@@ -37,7 +37,7 @@ var message = {
 }
 
 // client.publish('temperature', JSON.stringify(message));
-client.publish("DoorModule", "openDoor");
+client.publish("Module", "openDoor");
 
 // setInterval(() => {
 

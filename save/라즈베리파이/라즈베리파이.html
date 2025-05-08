@@ -532,3 +532,28 @@ fswebcam -d /dev/video0 test.jpg
 xdg-open test.jpg
 
 촬영된 카메라 데이터를 확인할 수 있습니다.
+
+
+<라즈베리파이 CLI 화면 회전>
+sudo nano /boot/config.txt
+
+lcd_rotate=2
+=> 상하 뒤집기
+<라즈베리파이 GUI 화면 회전>
+    GUI에서 수정
+        GUI 실행
+        Preferences - Screen Configuration - 상단 Layout - Screens - 현재 화면 - Orientation - inverted  - 재부팅
+    CLI에서 수정(CLI 수정됨)
+        sudo nano /boot/cmdline.txt
+        한줄짜리 커맨드라인이 보일텐데
+        줄바꿈 없이 뒤에 추가해야함(줄바꿈이 들어가면 적용안됨)
+        <DSI일 경우>
+            video=DSI-1:800x480@60,rotate=180
+        <HDMI일 경우>
+            video=HDMI-A-1:1920x1080@60,rotate=180
+        <공통 (위의 설정이 안먹힐경우 대비)>
+            fbcon=rotate:2
+
+        <결과예시 (한줄표기가 중요)>
+            ~~~~~~ video=DSI-1:800x480@60,rotate=180 fbcon=rotate:2
+            위와같이 저장

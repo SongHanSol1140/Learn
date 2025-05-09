@@ -7,7 +7,7 @@ var client = mqtt.connect('mqtt://192.168.0.44:1883');
 
 client.on('connect', function () {
     // 여기에 구독명
-    client.subscribe('machineServer', function (err) {
+    client.subscribe('DoorServer', function (err) {
         if (!err) {
         console.log('Connected to MQTT broker');
         }

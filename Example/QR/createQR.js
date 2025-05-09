@@ -12,10 +12,67 @@ const path = require('path');
 // 전화번호 설정
 const phoneNumber = '01031277711';
 const telLink = `tel:07050809109`;
+
+
+// 1) QR 생성
+const qr = QRgenerator(0, 'H');
+qr.addData(telLink);
+qr.make();
+
+// 2) 크기 계산
+const cellSize = 6;                       // 모듈(정사각형) 한 칸의 픽셀 크기
+const margin = 4;                       // 가장자리 여백
+const modules = qr.getModuleCount();     // QR 칸 개수
+const qrSize = cellSize * modules + margin * 2;
+
+// 3) 텍스트 영역 높이
+const textHeight = 20;
+const totalW = qrSize;
+const totalH = qrSize + textHeight + 8; // 텍스트 위 약간 여백(extra 8px)
+
+// 4) SVG 문자열 조합
+let svg = `
+<svg xmlns="http://www.w3.org/2000/svg" width="${totalW}" height="${totalH}">
+  <rect width="100%" height="100%" fill="#FFF"/>
+  <g transform="translate(${margin}, ${margin})">
+`;
+for (let r = 0; r < modules; r++) {
+  for (let c = 0; c < modules; c++) {
+    if (qr.isDark(r, c)) {
+      const x = c * cellSize;
+      const y = r * cellSize;
+      svg += `<rect x="${x}" y="${y}" width="${cellSize}" height="${cellSize}" fill="#000"/>`;
+    }
+  }
+}
+svg += `
+  </g>
+  <text
+    x="50%" 
+    y="${qrSize + textHeight - 4}" 
+    font-family="Arial, sans-serif"
+    font-size="16" 
+    text-anchor="middle" 
+    fill="#000"
+  >${phoneNumber}</text>
+</svg>
+`;
+
+// 5) SVG → PNG 변환 및 저장
+const outPath = path.join(__dirname, 'qrcode_with_number.png');
+sharp(Buffer.from(svg))
+  .png()
+  .toFile(outPath)
+  .then(() => console.log(`✅ Saved to ${outPath}`))
+  .catch(err => console.error(err));
+
+
+
+
+
+
+// ==============================
 // URL 
-const URL1 = 'https://nanonix.help?tn=1';
-const URL2 = 'https://nanonix.help?tn=2';
-const URL3 = 'https://nanonix.help?tn=3';
 // QR 코드 옵션 설정
 // 1. 단순 생성
 // const qrCodeOptions = {
@@ -27,7 +84,7 @@ const URL3 = 'https://nanonix.help?tn=3';
 //   color: {
 //     dark: '#000000FF',
 //     light: '#FFFFFFFF',
-//   },
+//   },ㄴㄴㄴㄴㄴㄴㄴㄴㄴ
 // };
 
 // // __dirname을 사용하여 현재 폴더에 QR 코드 파일 생성
@@ -48,43 +105,43 @@ const URL3 = 'https://nanonix.help?tn=3';
 // L<M<Q<H
 
 
-const orderData = [
-  {
-      option: {
-          temperature: "Ice",
-          iceLevel: "보통",
-          size: "Tall",
-          brewing: "에스프레소"
-      },
-      price: 4000
-  }
-  // 여기에 다른 주문 항목이 있다면 추가될 수 있습니다.
-];
-const orderDataString = JSON.stringify(orderData);
+// const orderData = [
+//   {
+//       option: {
+//           temperature: "Ice",
+//           iceLevel: "보통",
+//           size: "Tall",
+//           brewing: "에스프레소"
+//       },
+//       price: 4000
+//   }
+//   // 여기에 다른 주문 항목이 있다면 추가될 수 있습니다.
+// ];
+// const orderDataString = JSON.stringify(orderData);
 
 
-// QR 코드 생성 (SVG 형식)
-// 4 => 20 숫자가 커질수록 넣을수잇는 데이터가 커짐(픽셀이 많아짐)
-let qrCode = QRgenerator(8, 'L');
-qrCode.addData(telLink);
-qrCode.make();
-let qrSvg = qrCode.createSvgTag({});
+// // QR 코드 생성 (SVG 형식)
+// // 4 => 20 숫자가 커질수록 넣을수잇는 데이터가 커짐(픽셀이 많아짐)
+// let qrCode = QRgenerator(8, 'L');
+// qrCode.addData(telLink);
+// qrCode.make();
+// let qrSvg = qrCode.createSvgTag({});
 
-// SVG를 PNG로 변환하고 너비 지정하여 파일로 저장
-const svgBuffer = Buffer.from(qrSvg);
-const filePath = path.join(__dirname, "QR.png");
-const width = 500; // 원하는 이미지의 너비 (픽셀 단위)
+// // SVG를 PNG로 변환하고 너비 지정하여 파일로 저장
+// const svgBuffer = Buffer.from(qrSvg);
+// const filePath = path.join(__dirname, "QR.png");
+// const width = 500; // 원하는 이미지의 너비 (픽셀 단위)
 
-sharp(svgBuffer)
-  .png()
-  .resize(width) // 너비 지정, 높이는 자동 조정
-  .toFile(filePath, (err, info) => {
-    if (err) {
-      console.error('QR 코드 생성 중 오류가 발생했습니다:', err);
-    } else {
-      console.log(`QR 코드가 ${width}px 너비로 PNG 형식으로 성공적으로 생성되었습니다.`, info);
-    }
-  });
+// sharp(svgBuffer)
+//   .png()
+//   .resize(width) // 너비 지정, 높이는 자동 조정
+//   .toFile(filePath, (err, info) => {
+//     if (err) {
+//       console.error('QR 코드 생성 중 오류가 발생했습니다:', err);
+//     } else {
+//       console.log(`QR 코드가 ${width}px 너비로 PNG 형식으로 성공적으로 생성되었습니다.`, info);
+//     }
+//   });
 
 // ==================================================================
 // ==================================================================

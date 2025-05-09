@@ -1,34 +1,19 @@
 var express = require('express');
 var mqtt = require('mqtt');
 var app = express();
-var options = {
-    clientId: 'admin' ,
-    username: 'admin', // 사용자 이름
-    password: 'admin',  // 패스워드
-    // clientId: 'coldbrewESP32_1' ,
-    // username: 'coldbrewESP32_1', // 사용자 이름
-    // password: 'coldbrewESP32_1',  // 패스워드
-    host: '192.168.0.44',
-    port: 1883
-
+const Options = {
+    clientId: `test${Math.random().toString(16).substr(2, 8)}`, // 랜덤 클라이언트 ID 생성
+    username: 'nanonix', // 브로커 로그인 아이디
+    password: '$@43nanonix', // 브로커 로그인 비밀번호
+    reconnectPeriod: 1000, // 재연결 간격(ms)
+    connectTimeout: 30 * 1000, // 연결 타임아웃(ms)
 };
-var client = mqtt.connect(options);
+var client = mqtt.connect('mqtt://192.168.0.230:1883', Options);
 
 
 client.on('connect', function () {
     // // 여기에 구독명입력
-    client.subscribe('coldbrewMachine', { qos: 1}, function (err) {
-        if (!err) {
-            console.log('Connected to MQTT broker');
-        }
-    });
-    // // 설정
-    // client.subscribe('middleServer1', { qos: 2}, function (err) {
-    //     if (!err) {
-    //         console.log('Connected to MQTT broker');
-    //     }
-    // });
-    client.subscribe('coldbrewController', function (err) {
+    client.subscribe('DoorServer', { qos: 2 }, function (err) {
         if (!err) {
             console.log('Connected to MQTT broker');
         }
@@ -39,7 +24,7 @@ client.on('connect', function () {
 client.on('message', function (topic, message) {
     // message is Buffer
     // if(topic == "coldbrewController") {
-        console.log(message.toString());
+    console.log(message.toString());
     // }
 });
 

@@ -14,7 +14,7 @@ var client = mqtt.connect('mqtt://192.168.0.230:1883', Options);
 // 일반 메세지 전송
 client.on('connect', function () {
     console.log("MQTT Publisher 연결");
-    client.publish("DoorServer", "openDoor", { qos: 2 });
+    client.publish("DoorServer", "GetDoorTimeConfig", { qos: 2 });
 });
 client.on('error', function (err) {
     console.log('MQTT Error: ', err);
@@ -31,6 +31,6 @@ client.on('reconnect', function () {
 
 
 setInterval(() => {
-    client.publish("DoorServer", "openDoor", { qos: 2 });
+    client.publish("DoorServer", "GetDoorTimeConfig", { qos: 2 });
 
 }, 1000);

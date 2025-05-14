@@ -1,0 +1,53 @@
+<라즈베리파이 한국어 설정 - Bookworm OS>
+    한글폰트 설치하기
+        sudo apt update
+        sudo apt install fonts-nanum fonts-noto-cjk -y
+    로케일 설정
+        sudo dpkg-reconfigure locales
+
+        이 명령을 실행하면 메뉴가 뜹니다. 여기서 다음처럼 진행하세요:
+        [ ] en_US.UTF-8 ← (기본 선택된 상태일 수도 있음)
+        [ ] ko_KR.UTF-8 ← 스페이스 바로 체크
+        완료 후 → ko_KR.UTF-8을 default locale로 선택하지 않아도 괜찮음 (영어 계속 사용해도 됨)
+
+        sudo reboot
+    한글 입력기 설치
+        sudo apt install ibus ibus-hangul -y
+        <!-- 삭제 : 
+            sudo apt remove --purge ibus ibus-hangul -y
+            rm -rf ~/.config/ibus
+            rm -f ~/.xprofile
+
+        -->
+        재부팅
+        ibus-setup
+        여기서 Hangul 입력기를 추가하고 활성화하면 Shift + Space로 한/영 전환이 가능해집니다.
+<라즈베리파이 한국어 설정 - Bullseye OS>
+    안하면 한국어들이 전부 □로 출력됨
+    sudo raspi-config
+    "5 Localisation Options" > "L1 Locale"
+    ko_KR.UTF-8 UTF-8을 선택하고, Ok를 누릅니다.
+    그 다음 그리고 설정할 기본 로캘로 ko_KR.UTF-8을 선택하고 다시 Ok를 누릅니다.
+    raspi-config를 종료
+
+    <기본 로캘 설정에 ko_KR.UTF-8이 없다면>
+    locale -a
+        여기에 ko_KR.UTF-8이 있는지 확인, 없다면
+    sudo nano /etc/locale.gen
+        입력하여 ko_KR.UTF-8이 주석처리 되어있나 확인하고
+        주석처리 되어있을시 주석해제
+    sudo locale-gen
+        한국-한국 선택
+    sudo update-locale LANG=ko_KR.UTF-8
+
+    글꼴 설치 -> 설치    한글해야 네모가 출력되지 않음
+    sudo apt-get install -y fonts-nanum*
+    
+    한글 입력기 설치
+    sudo apt-get install -y ibus ibus-hangul
+    ibus를 기본 입력방법으로 설정
+    im-config -n ibus
+    입력기에 한글 추가하기
+    ibus-setup => input Method => Add => Korean => hangul
+
+    sudo reboot

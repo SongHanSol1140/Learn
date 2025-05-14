@@ -3,36 +3,6 @@
 2023/05/03파일
 해당 경로로 이동해서 2.6GB짜리 다운로드
 
-<라즈베리파이 한국어 설정>
-    안하면 한국어들이 전부 □로 출력됨
-    sudo raspi-config
-    "5 Localisation Options" > "L1 Locale"
-    ko_KR.UTF-8 UTF-8을 선택하고, Ok를 누릅니다.
-    그 다음 그리고 설정할 기본 로캘로 ko_KR.UTF-8을 선택하고 다시 Ok를 누릅니다.
-    raspi-config를 종료
-
-    <기본 로캘 설정에 ko_KR.UTF-8이 없다면>
-    locale -a
-        여기에 ko_KR.UTF-8이 있는지 확인, 없다면
-    sudo nano /etc/locale.gen
-        입력하여 ko_KR.UTF-8이 주석처리 되어있나 확인하고
-        주석처리 되어있을시 주석해제
-    sudo locale-gen
-        한국-한국 선택
-    sudo update-locale LANG=ko_KR.UTF-8
-
-    글꼴 설치 -> 설치    한글해야 네모가 출력되지 않음
-    sudo apt-get install -y fonts-nanum*
-    
-    한글 입력기 설치
-    sudo apt-get install -y ibus ibus-hangul
-    ibus를 기본 입력방법으로 설정
-    im-config -n ibus
-    입력기에 한글 추가하기
-    ibus-setup => input Method => Add => Korean => hangul
-
-    sudo reboot
-
 <라즈베리파이에서 고정 IP로 접속하기>
     sudo nano /etc/dhcpcd.conf
     아래로 스크롤하면, 고정 IP 주소를 설정하는 부분이 있습니다.
@@ -60,42 +30,6 @@ git config --global user.name "SongHanSol"
     sudo apt install code
         설치가 다됬다면 터미널에 code 입력
 
-<node.js설치>
-    nodejs 홈페이지로 이동
-    <https://nodejs.org/ko/download>
-    
-    ARMv7이나 ARMv8을 잘 받아서 홈경로에 압축해제
-    압축이 해제된 디렉터리로 이동
-        cd node-v18.18.0-linux-arm64
-    디렉터리를 /usr/local에 복사
-        sudo cp -R * /usr/local/ <!-- 경로로 이동했을때만 -->
-        => sudo cp -R node-v20.19.0-linux-arm64/* /usr/local/ <!-- 홈경로에서(cd node-v18.18.0-linux-arm64를 안했을때)-->
-    버전확인
-        node -v
-    문제가 생긴다면 재부팅시
-        sudo reboot
-<nodejs 설치 - NVM으로>
-    sudo apt update && sudo apt upgrade -y
-    sudo apt install curl build-essential libssl-dev -y
-    curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.39.6/install.sh | bash
-    <!-- # bash 사용 시 -->
-        source ~/.bashrc
-    <!-- # zsh 사용 시 -->
-        source ~/.zshrc
-    command -v nvm
-    <!-- 출력으로 nvm이 나타나면 설치가 성공 -->
-    nvm install 20 --lts
-    <!-- default node버전 설정 -->
-    nvm alias default 20
-
-<nodejs 삭제방법>
-sudo apt remove --purge nodejs npm
-sudo rm -rf /usr/local/bin/node
-sudo rm -rf /usr/local/bin/npm
-sudo rm -rf /usr/local/lib/node_modules
-확인
-node -v
-npm -v
 <!--
 오래된 방법,
 sudo apt-get update

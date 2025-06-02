@@ -66,3 +66,39 @@ brew services stop mosquitto
     brew services restart mosquitto
 
     
+
+<WSS(WebSocket) 웹소켓 설정>
+    # Mosquitto가 support websockets 컴파일 옵션으로 빌드되었는지 확인
+    mosquitto -h | grep websockets
+    아무런 출력이 없으면 지원이 빠진 것이고,
+    다시 빌드해 줘야 합니다.
+
+    # libwebsockets 설치
+    brew install libwebsockets
+    # mosquitto 재설치 (일반적으로 옵션 없이도 자동으로 websockets가 활성화됨)
+    brew reinstall mosquitto
+
+    # 확인
+    brew services restart mosquitto
+    mosquitto -h | grep websockets
+
+    sudo open /opt/homebrew/etc/mosquitto/
+    mosquitto.conf수정
+==================================mosquitto.conf==================================
+    # =================================================================
+    # Listeners
+    # =================================================================
+    #보안 파일
+    password_file /opt/homebrew/etc/mosquitto/auth.txt
+    # MQTT
+    listener 1883
+    allow_anonymous false
+
+    # WSS
+    listener 8083
+    allow_anonymous false
+    protocol websockets
+    cafile   /opt/homebrew/etc/mosquitto/https/domain.cert.pem
+    certfile /opt/homebrew/etc/mosquitto/https/domain.cert.pem
+    keyfile /opt/homebrew/etc/mosquitto/https/private.key.pem
+==================================mosquitto.conf==================================

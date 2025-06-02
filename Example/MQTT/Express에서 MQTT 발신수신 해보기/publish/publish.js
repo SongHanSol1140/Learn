@@ -9,12 +9,21 @@ const Options = {
     reconnectPeriod: 1000, // 재연결 간격(ms)
     connectTimeout: 30 * 1000, // 연결 타임아웃(ms)
 };
-var client = mqtt.connect('mqtt://192.168.0.230:1883', Options);
+// var client = mqtt.connect('mqtt://192.168.0.230:9001', Options);
+var client = mqtt.connect('wss://nanonix.lat:8083', Options);
 
 // 일반 메세지 전송
+
+// const msg = {
+//     1: [123, 124],
+//     2: [125],
+//     3: [126]
+// };
+const msg = "asdf"
+const payload = JSON.stringify(msg);
 client.on('connect', function () {
     console.log("MQTT Publisher 연결");
-    client.publish("DoorServer", "openDoor", { qos: 2 });
+    client.publish("Module", payload, { qos: 2 });
 });
 client.on('error', function (err) {
     console.log('MQTT Error: ', err);
@@ -29,8 +38,4 @@ client.on('reconnect', function () {
 
 });
 
-
-setInterval(() => {
-    client.publish("DoorServer", "openDoor", { qos: 2 });
-
-}, 1000);
+client.publish('test', "asdfasdfasdfsadf");

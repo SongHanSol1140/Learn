@@ -38,4 +38,11 @@ client.on('reconnect', function () {
 
 });
 
-client.publish('test', "asdfasdfasdfsadf");
+client.publish('CustomerServer', "asdfasdfasdfsadf", { qos: 2 }, (err) => {
+    if (!err) {
+        console.log('MQTT Message sent');
+    } else {
+        console.log('MQTT Message send error: ', err);
+    }
+});
+

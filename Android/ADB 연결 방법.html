@@ -1,0 +1,46 @@
+<ADB 연결방법>
+먼저 ADB SDK를 설치
+
+해당 경로에 환경변수 설정(환경변수가 잇어야 설치된 폴더가아닌 아무곳에서나 adb ~~로 명령어 사용가능)
+
+설치 후
+
+ADB접속을 할 안드로이드에서 개발자 옵션 실행
+USB 디버깅 기능 ON
+무선 디버깅 ON
+
+adb kill-server && adb start-server 로 서버 재시작
+<!-- 만약 안드로이드 11이하라 무선디버깅 기능이 없다면 -->
+    1. USB로 노트북과 연결
+        USB연결 허용을 물어보지 않는다면 개발자 옵션 - USB 디버깅 권한 승인 취소후 USB 재연결
+    2. adb devices 입력후 연결 확인
+    3. adb tcpip 5555로 앞으로 5555포트로 접속할것을 활성화
+    4. USB 연결 해제후 adb connect 192.168.0.104:5555하면 연결됨
+       연결시 connected to 192.168.0.104:5555 출력
+
+PC에서 터미널 실행
+    adb connect IP 
+    <!-- adb connect 192.168.0.10:5555 -->
+
+접속이 되면 adb devices로 접속된 기기목록 확인
+
+접속 해제 방법
+    adb disconnect IP
+    <!-- adb disconnect 192.168.0.10:5555 -->
+
+루트 권한 획득
+    adb root
+
+안드로이드 11이상 무선연결
+
+    개발자 옵션 - USB디버깅 + 무선디버깅 체크후
+    무선디버깅을 누르면 IP주소가나옴
+
+    QR이나 6자리 코드로 페어링한다는것은 무시하고
+
+    IP:포트부분 받아서
+    adb connect IP:포트
+
+접속 USB 확인
+리스피커 PID VID확인
+adb shell dumpsys usb | grep -A6 '4 Mic Array'

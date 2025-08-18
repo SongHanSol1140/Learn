@@ -1,0 +1,47 @@
+1. empty application으로 생성
+    네임, 패키지명은 알아서(현재 com.nanonix.coffeewebview로 테스트)
+    kotlin으로 생성
+    build.gradle.kts로 들어가서 
+    implementation("androidx.appcompat:appcompat:1.7.0") 추가 후 sync
+
+
+3. AndroidManifest.xml에 권한 추가
+    <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="android.permission.RECORD_AUDIO" />
+    <uses-permission android:name="android.permission.MODIFY_AUDIO_SETTINGS" />
+4. app/res/values/themes/xml 수정
+    <?xml version="1.0" encoding="utf-8"?>
+    <resources>
+
+        <style name="Theme.FullScreen" parent="Theme.AppCompat.Light.NoActionBar">
+            <item name="android:windowNoTitle">true</item>
+            <item name="android:windowActionBar">false</item>
+            <item name="android:windowFullscreen">true</item>
+            <item name="android:windowContentOverlay">@null</item>
+        </style>
+    </resources>
+
+5. AndroidManifest.xml수정
+    android:theme="@style/Theme.Coffeewebview"
+    => 해당부분 수정
+
+
+6. app/res/layout/acitivity_main.xml 추가
+    <?xml version="1.0" encoding="utf-8"?>
+    <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:app="http://schemas.android.com/apk/res-auto"
+        xmlns:tools="http://schemas.android.com/tools"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        tools:context=".MainActivity">
+
+        <WebView
+            android:id="@+id/webView"
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+    </androidx.constraintlayout.widget.ConstraintLayout>

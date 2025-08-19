@@ -37,9 +37,9 @@ const OutletLayout: React.FC = () => (
   </ComponentProvider>
 );
 // 실제사용
-      <Route element={<OutletLayout />}>
+        <Route element={<내가원하는 컴포넌트 />}>
             <Route path="/MicTest" element={<MicTest2 />} />
-          </Route>
+        </Route>
 
 ```
 이러면 ComponentProvider가 무조건먼저 출력후에 MicTest2가 나옴

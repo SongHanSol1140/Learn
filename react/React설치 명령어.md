@@ -42,4 +42,8 @@ const OutletLayout: React.FC = () => (
         </Route>
 
 ```
-이러면 ComponentProvider가 무조건먼저 출력후에 MicTest2가 나옴
+    이러면 ComponentProvider가 무조건먼저 출력후에 MicTest2가 나옴
+
+    혹은, 저렇게 OutletLayout을 만들것 없이 CompnentProvider
+    컴포넌트 안에 Outlet을 import한뒤
+    자식라우터들이 있어야할 위치에 <Outlet/> 언먼한 해두면 문제없음

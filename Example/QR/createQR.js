@@ -7,7 +7,7 @@ const path = require('path');
 // QR 코드에 넣을 데이터
 // 전화번호 설정
 const phoneNumber = '01031277711';
-const telLink = `tel:07050809109`;
+const telLink = `tel:07040994350`;
 const url = `https://www.naver.com`;
 const longText = `asdfasdfasdfasdfasdfasdfasdfasdfasdfasdfasdfasdfasdfasdfasdfasdfasdfasdfasdfasdfasdfasdfasdfasdfasdfasdfasdfasdfasdfasdfasdfasdfasdfasdfasdfasdfasdfasdfasdfasdfasdfasdfasdfasdf`;
 
@@ -31,7 +31,7 @@ const qrCodeOptions = {
 const filePath = path.join(__dirname, "QR.png");
 
 // URL1을 QR 코드 데이터로 사용하여 파일 생성
-QRCode.toFile(filePath, longText, qrCodeOptions, (err) => {
+QRCode.toFile(filePath, telLink, qrCodeOptions, (err) => {
   if (err) {
     console.error('QR 코드 생성 중 오류가 발생했습니다:', err);
   } else {

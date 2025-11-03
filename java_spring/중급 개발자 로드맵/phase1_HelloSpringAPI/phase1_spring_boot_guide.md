@@ -801,42 +801,34 @@ class ErrorResponse {
 ### Step 7: 설정 파일 작성
 
 ```yaml
-# application.yml
-server:
-  port: 8080
-  servlet:
-    context-path: /
+# application.properties
+se# Server Configuration
+server.port=8080
+server.servlet.context-path=/
 
-spring:
-  application:
-    name: hello-spring-api
-    
-  # 개발 편의 설정
-  devtools:
-    restart:
-      enabled: true  # 코드 변경 시 자동 재시작
-    livereload:
-      enabled: true  # 브라우저 자동 새로고침
-      
-  # JSON 직렬화 설정
-  jackson:
-    serialization:
-      write-dates-as-timestamps: false  # 날짜를 ISO 형식으로
-      indent-output: true  # Pretty print
-    deserialization:
-      fail-on-unknown-properties: false  # 알 수 없는 속성 무시
+# Application Name
+spring.application.name=hello-spring-api
 
-# 로깅 설정
-logging:
-  level:
-    root: INFO
-    com.example.hellospringapi: DEBUG  # 우리 패키지는 DEBUG 레벨
-    org.springframework.web: DEBUG  # Spring Web 디버그 로그
-  pattern:
-    console: "%d{HH:mm:ss.SSS} [%thread] %-5level %logger{36} - %msg%n"
-    file: "%d %p %c{1.} [%t] %m%n"
-  file:
-    name: ./logs/application.log
+# DevTools
+spring.devtools.restart.enabled=true
+spring.devtools.livereload.enabled=true
+
+# Jackson Configuration
+spring.jackson.serialization.write-dates-as-timestamps=false
+spring.jackson.serialization.indent-output=true
+spring.jackson.deserialization.fail-on-unknown-properties=false
+
+# Logging Configuration
+logging.level.root=INFO
+logging.level.com.example.hellospringapi=DEBUG
+logging.level.org.springframework.web=DEBUG
+logging.pattern.console=%d{HH:mm:ss.SSS} [%thread] %-5level %logger{36} - %msg%n
+logging.file.name=./logs/application.log
+
+# Swagger Configuration
+springdoc.swagger-ui.path=/swagger-ui.html
+springdoc.swagger-ui.enabled=true
+springdoc.api-docs.path=/v3/api-docs
 ```
 
 ### Step 8: 메인 애플리케이션 클래스
@@ -865,17 +857,26 @@ public class HelloSpringApiApplication {
 ```
 
 ### Step 9: Swagger API 문서화 추가
-
-```xml
-<!-- pom.xml에 의존성 추가 -->
-<dependency>
-    <groupId>org.springdoc</groupId>
-    <artifactId>springdoc-openapi-starter-webmvc-ui</artifactId>
-    <version>2.3.0</version>
-</dependency>
+<!-- build.gradle.kts 파일을 열고: -->
 ```
+kotlindependencies {
+    // 기존 의존성들...
+    implementation("org.springframework.boot:spring-boot-starter-web")
+    implementation("org.springframework.boot:spring-boot-starter-validation")
+    compileOnly("org.projectlombok:lombok")
+    annotationProcessor("org.projectlombok:lombok")
+    developmentOnly("org.springframework.boot:spring-boot-devtools")
+    
+    // 👇 이 줄을 추가하세요!
+    implementation("org.springdoc:springdoc-openapi-starter-webmvc-ui:2.3.0")
+    
+    testImplementation("org.springframework.boot:spring-boot-starter-test")
+}
 
 ```java
+
+
+
 package com.example.hellospringapi.config;
 
 import io.swagger.v3.oas.models.OpenAPI;
@@ -1242,7 +1243,7 @@ curl -X DELETE http://localhost:8080/api/users/1
 - [ ] Mockito를 활용한 Mocking을 할 수 있다
 
 ### 도구 활용
-- [ ] application.yml 설정을 할 수 있다
+- [ ] application.properties 설정을 할 수 있다
 - [ ] Swagger를 통해 API 문서를 생성할 수 있다
 - [ ] 로깅을 효과적으로 활용할 수 있다
 - [ ] curl이나 Postman으로 API를 테스트할 수 있다

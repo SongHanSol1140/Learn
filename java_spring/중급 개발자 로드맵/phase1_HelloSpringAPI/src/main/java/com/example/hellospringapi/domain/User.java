@@ -62,9 +62,6 @@ import lombok.Builder;
         }
 
 
-
-
-
     @Builder의 사용
     기존 패턴
     // ❌ 생성자 - 뭐가 뭔지 모름

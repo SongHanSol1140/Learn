@@ -16,6 +16,8 @@ import java.util.Map;
 /**
  * 전역 예외 처리기
  * - @RestControllerAdvice: 모든 컨트롤러에서 발생하는 예외를 처리
+ *   프록시 패턴으로 구성되어 있음
+ *
  * - @ExceptionHandler: 특정 예외 타입을 처리
  */
 @RestControllerAdvice

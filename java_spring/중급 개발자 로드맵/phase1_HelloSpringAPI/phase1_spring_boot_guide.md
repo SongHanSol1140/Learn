@@ -868,7 +868,7 @@ kotlindependencies {
     developmentOnly("org.springframework.boot:spring-boot-devtools")
     
     // 👇 이 줄을 추가하세요!
-    implementation("org.springdoc:springdoc-openapi-starter-webmvc-ui:2.3.0")
+    implementation("org.springdoc:springdoc-openapi-starter-webmvc-ui:2.7.0")
     
     testImplementation("org.springframework.boot:spring-boot-starter-test")
 }
